@@ -8,5 +8,6 @@ namespace _20230101_Z
 {
     internal class TThumb
     {
+
     }
 }
