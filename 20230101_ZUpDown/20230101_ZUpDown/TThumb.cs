@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Xml.Linq;
 
+
 //前面移動、背面移動できた
 //対象は選択状態のThumbすべて
 //ZIndexは使わずに、要素のIndexを変更することで移動
