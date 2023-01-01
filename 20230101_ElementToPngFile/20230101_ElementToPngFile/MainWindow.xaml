@@ -5,16 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230101_ElementToPngFile"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="250" Width="600">
   <Grid>
-
-    <Canvas Name="MyCanvas" UseLayoutRounding="True" Width="300" Height="200"
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="200"/>
+    </Grid.ColumnDefinitions>
+    <ScrollViewer HorizontalScrollBarVisibility="Visible">
+      <Canvas Name="MyCanvas" UseLayoutRounding="True" Width="400" Height="300"
             HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gold">
-      <Rectangle Name="MyRectangle1" Width="100" Height="50" Fill="Orange" Stroke="RoyalBlue" StrokeThickness="20"
-                 Canvas.Left="10" Canvas.Top="10"/>
-      <Rectangle Name="MyRectangle2" Width="100" Height="50" Fill="Orange" Stroke="RoyalBlue"
-                 Canvas.Left="100" Canvas.Top="100"/>
-      <Button Content="save" Click="Button_Click" Canvas.Left="400" Width="100" Height="100"/>
-    </Canvas>
+        <Rectangle Name="MyRectangle1" Width="50" Height="50" Fill="Orange" Stroke="RoyalBlue"
+                 Canvas.Left="20" Canvas.Top="10"/>
+        <Rectangle Name="MyRectangle2" Width="100" Height="50" Fill="Orange" Stroke="RoyalBlue"
+                 Canvas.Left="100" Canvas.Top="100" RadiusX="10" RadiusY="10" RenderTransformOrigin="0.5,0.5">
+          <Rectangle.RenderTransform>
+            <TransformGroup>
+              <ScaleTransform/>
+              <SkewTransform/>
+              <RotateTransform Angle="18"/>
+              <TranslateTransform/>
+            </TransformGroup>
+          </Rectangle.RenderTransform>
+        </Rectangle>
+      </Canvas>
+    </ScrollViewer>
+    <StackPanel Grid.Column="1">
+      <Button Content="save" Click="Button_Click"/>
+      <Button Content="saveAll" Click="Button_Click_1"/>
+
+    </StackPanel>
   </Grid>
 </Window>
