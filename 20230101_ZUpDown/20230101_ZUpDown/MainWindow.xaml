@@ -5,8 +5,110 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230101_ZUpDown"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="550" Width="800">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="200"/>
+    </Grid.ColumnDefinitions>
+    <Grid.Resources>
+      <Style TargetType="local:TTTextBlock">
+        <Setter Property="FontSize" Value="20"/>
+      </Style>
+    </Grid.Resources>
+    <ScrollViewer HorizontalScrollBarVisibility="Visible">
+      <local:TTRoot x:Name="MyRootThumb" VerticalAlignment="top" HorizontalAlignment="Left" UseLayoutRounding="True">
+        <!--<local:TTTextBlock x:Name="Text_01" MyText="Text_01" MyLeft="100" MyTop="10"/>
+        <local:TTTextBlock x:Name="Text_02" MyText="Text_02" MyLeft="110" MyTop="40"/>
+        <local:TTGroup x:Name="TTG_0" MyLeft="0" MyTop="0">
+          <local:TTTextBlock x:Name="Text_03" MyText="Text_03" MyLeft="0" MyTop="0"/>
+          <local:TTTextBlock x:Name="Text_04" MyText="Text_04" MyLeft="50" MyTop="90"/>
+        </local:TTGroup>-->
+        <!--<local:TTGroup x:Name="TTG_1" Background="Gold" MyLeft="0" MyTop="0">
+          <local:TTTextBlock x:Name="Text_11" MyText="Text_11" MyLeft="0" MyTop="0"/>
+          <local:TTTextBlock x:Name="Text_12" MyText="Text_12" MyLeft="10" MyTop="30"/>
+          <local:TTGroup x:Name="TTG_2" MyLeft="20" MyTop="100">
+            <local:TTTextBlock x:Name="Text_21" MyText="Text_21" MyLeft="0" MyTop="0"/>
+            <local:TTTextBlock x:Name="Text_22" MyText="Text_22" MyLeft="80" MyTop="50"/>
+          </local:TTGroup>
+        </local:TTGroup>-->
+      </local:TTRoot>
+    </ScrollViewer>
 
-    </Grid>
+    <StackPanel Grid.Column="1">
+      <StackPanel.Resources>
+        <Style TargetType="TextBlock">
+          <Setter Property="Margin" Value="5,0,5,0"/>
+        </Style>
+      </StackPanel.Resources>
+      <GroupBox>
+        <StackPanel>
+          <Button x:Name="ButtonAdd" Content="Add" Click="ButtonAdd_Click"/>
+          <TextBox x:Name="TextBoxAdd" Text="追加要素"/>
+          <Button x:Name="ButtonRemove" Content="Remove" Click="ButtonRemove_Click"/>
+        </StackPanel>
+      </GroupBox>
+      <Button x:Name="ButtonRootActive" Content="RootActive" Click="ButtonRootActive_Click"/>
+      <DockPanel>
+        <Button x:Name="ButtonAddGroup" Content="グループ化" Click="ButtonAddGroup_Click" Width="100"/>
+        <Button x:Name="ButtonUnGroup" Content="グループ解除" Click="ButtonUnGroup_Click"/>
+      </DockPanel>
+      <DockPanel>
+        <Button x:Name="ButtonActiveInside" Content="ActiveInside" Click="ButtonActiveInside_Click" Width="100"/>
+        <Button x:Name="ButtonActiveOutside" Content="ActiveOutside" Click="ButtonActiveOutside_Click"/>
+      </DockPanel>
+      <DockPanel>
+        <Button x:Name="ButtonZUp" Content="前面へ移動" Click="ButtonZUp_Click" Width="100"/>
+        <Button x:Name="ButtonZUpFrontMost" Content="最前面へ移動" Click="ButtonZUpFrontMost_Click"/>
+      </DockPanel>
+      <DockPanel>
+        <Button x:Name="ButtonZDown" Content="背面へ移動" Click="ButtonZDown_Click" Width="100"/>
+        <Button x:Name="ButtonZDownBackMost" Content="最背面へ移動" Click="ButtonZDownBackMost_Click"/>
+      </DockPanel>
+      <StackPanel DataContext="{Binding ElementName=MyRootThumb}">
+        <GroupBox DataContext="{Binding ActiveGroup}" Header="ActiveGroup">
+          <WrapPanel>
+            <TextBlock Text="{Binding MyLeft, StringFormat=Left \= {0:0.0}}"/>
+            <TextBlock Text="{Binding MyTop, StringFormat=Top \= {0:0.0}}"/>
+            <TextBlock Text="{Binding Name, StringFormat=Name \= {0}}"/>
+            <TextBlock Text="{Binding ActualHeight, StringFormat=ActualHeight \= {0:0.0}}"/>
+            <TextBlock Text="{Binding ActualWidth, StringFormat=ActualWidth \= {0:0.0}}"/>
+          </WrapPanel>
+        </GroupBox>
+
+        <GroupBox DataContext="{Binding ClickedThumb}" Header="Clicked">
+          <StackPanel>
+            <WrapPanel>
+              <TextBlock Text="{Binding MyLeft, StringFormat=Left \= {0:0.0}}"/>
+              <TextBlock Text="{Binding MyTop, StringFormat=Top \= {0:0.0}}"/>
+              <TextBlock Text="{Binding Name, StringFormat=Name \= {0}}"/>
+            </WrapPanel>
+            <TextBlock Text="{Binding FontSize, StringFormat=FontSize \= {0:0.0}}"/>
+            <Slider Value="{Binding Path=FontSize}"
+              Minimum="10" Maximum="100" IsSnapToTickEnabled="True" TickFrequency="10"/>
+          </StackPanel>
+        </GroupBox>
+
+        <GroupBox DataContext="{Binding ActiveThumb}" Header="ActiveThumb">
+          <WrapPanel>
+            <TextBlock Text="{Binding MyLeft, StringFormat=Left \= {0:0.0}}"/>
+            <TextBlock Text="{Binding MyTop, StringFormat=Top \= {0:0.0}}"/>
+            <TextBlock Text="{Binding Name, StringFormat=Name \= {0}}"/>
+          </WrapPanel>
+        </GroupBox>
+
+        <StackPanel DataContext="{Binding SelectedThumbs}">
+          <TextBlock Text="{Binding Count, StringFormat=選択個数 \= {0}}"/>
+          <ListBox ItemsSource="{Binding}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding Name}"/>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </StackPanel>
+      </StackPanel>
+
+    </StackPanel>
+  </Grid>
 </Window>
