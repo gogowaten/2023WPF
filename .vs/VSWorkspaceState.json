@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\20230101_Z",
+    "\\20230101_Z\\20230101_Z"
   ],
-  "SelectedNode": "\\C:\\Users\\waten\\Source\\Repos\\2023WPF",
+  "SelectedNode": "\\20230101_Z\\20230101_Z\\MainWindow.xaml",
   "PreviewInSolutionExplorer": false
 }
