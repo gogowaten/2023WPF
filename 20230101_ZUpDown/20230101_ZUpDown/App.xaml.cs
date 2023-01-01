@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace _20230101_Z
+namespace _20230101_ZUpDown
 {
     /// <summary>
     /// Interaction logic for App.xaml

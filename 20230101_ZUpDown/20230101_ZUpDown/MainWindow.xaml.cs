@@ -12,8 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-//
-namespace _20230101_Z
+
+namespace _20230101_ZUpDown
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,7 +23,6 @@ namespace _20230101_Z
         public MainWindow()
         {
             InitializeComponent();
-             
         }
     }
 }
