@@ -1,0 +1,33 @@
+﻿<Window x:Class="_20230102_TextBlockToPng.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230102_TextBlockToPng"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="200"/>
+    </Grid.ColumnDefinitions>
+    <Canvas Name="ParentCanvas">
+      <!--<Canvas Name="MyCanvas" Width="100"
+              Height="100" UseLayoutRounding="False"
+            HorizontalAlignment="Left" VerticalAlignment="Top">-->
+      <Canvas Name="MyCanvas" UseLayoutRounding="False"
+              Width="{Binding ElementName=MyText, Path=ActualWidth}"
+              Height="{Binding ElementName=MyText, Path=ActualHeight}"
+            HorizontalAlignment="Left" VerticalAlignment="Top">
+        <Grid Name="MyInternalGrid" Canvas.Top="0" Canvas.Left="0">
+          <TextBlock Name="MyText" Text="Text" RenderOptions.ClearTypeHint="Enabled" FontSize="20"/>
+          <Rectangle Name="MyRectangle" Stroke="Blue" StrokeThickness="1" RenderOptions.EdgeMode="Aliased"
+                     />
+        </Grid>
+      </Canvas>
+    </Canvas>
+    <StackPanel Grid.Column="1">
+      <Button Content="Save" Click="Button_Click"/>
+    </StackPanel>
+  </Grid>
+</Window>
