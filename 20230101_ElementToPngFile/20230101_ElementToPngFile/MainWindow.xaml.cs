@@ -4,6 +4,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.IO;
 
+//WPF、Canvas全体やCanvasに配置した要素を画像(png)ファイルにする。回転や拡大変換要素にも対応版 - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/01/02/140519
+
 namespace _20230101_ElementToPngFile
 {
     public partial class MainWindow : Window
