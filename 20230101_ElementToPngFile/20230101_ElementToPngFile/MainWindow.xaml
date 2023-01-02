@@ -13,25 +13,36 @@
     </Grid.ColumnDefinitions>
     <ScrollViewer HorizontalScrollBarVisibility="Visible">
       <Canvas Name="MyCanvas" UseLayoutRounding="True" Width="400" Height="300"
-            HorizontalAlignment="Left" VerticalAlignment="Top" Background="Gold">
-        <Rectangle Name="MyRectangle1" Width="50" Height="50" Fill="Orange" Stroke="RoyalBlue"
-                 Canvas.Left="20" Canvas.Top="10"/>
-        <Rectangle Name="MyRectangle2" Width="100" Height="50" Fill="Orange" Stroke="RoyalBlue"
-                 Canvas.Left="100" Canvas.Top="100" RadiusX="10" RadiusY="10" RenderTransformOrigin="0.5,0.5">
+            HorizontalAlignment="Left" VerticalAlignment="Top" Background="MistyRose">
+        <Rectangle Name="MyRectangle1" Width="50" Height="50"
+                   Fill="Gold" Stroke="tomato "
+                   Canvas.Left="20" Canvas.Top="10"/>
+        <Rectangle Name="MyRectangle2" Width="100" Height="50"
+                   Fill="Gold" Stroke="Tomato"
+                   Canvas.Left="100" Canvas.Top="100" RadiusX="10" RadiusY="10"
+                   RenderTransformOrigin="0.5,0.5">
           <Rectangle.RenderTransform>
             <TransformGroup>
-              <ScaleTransform/>
+              <ScaleTransform ScaleX="1.35" ScaleY="1.4"/>
               <SkewTransform/>
               <RotateTransform Angle="18"/>
               <TranslateTransform/>
             </TransformGroup>
           </Rectangle.RenderTransform>
         </Rectangle>
+        <Canvas Name="MyCanvas2" Canvas.Left="100" Canvas.Top="10" Background="Tomato"
+                Width="200" Height="50">
+          <Rectangle Fill="Orange" Stroke="White" Width="100" Height="20"
+                     Canvas.Left="0" Canvas.Top="0"/>
+          <Rectangle Fill="Orange" Stroke="White" Width="100" Height="20"
+                     Canvas.Left="100" Canvas.Top="30"/>
+        </Canvas>
       </Canvas>
     </ScrollViewer>
     <StackPanel Grid.Column="1">
       <Button Content="save" Click="Button_Click"/>
-      <Button Content="saveAll" Click="Button_Click_1"/>
+      <Button Content="saveCanvas" Click="Button_Click_1"/>
+      <Button Content="saveCanvas2" Click="Button_Click_2"/>
 
     </StackPanel>
   </Grid>
