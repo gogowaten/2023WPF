@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230102_TextBlockToPng"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="150" Width="280">
   <Grid UseLayoutRounding="True">
     <Grid.ColumnDefinitions>
       <ColumnDefinition/>
@@ -15,18 +15,35 @@
       <!--<Canvas Name="MyCanvas" Width="100"
               Height="100" UseLayoutRounding="False"
             HorizontalAlignment="Left" VerticalAlignment="Top">-->
-      <Canvas Name="MyCanvas"
+      <Canvas Name="MyCanvas" TextOptions.TextRenderingMode="Auto" UseLayoutRounding="True"
               Width="{Binding ElementName=MyText, Path=ActualWidth}"
-              Height="{Binding ElementName=MyText, Path=ActualHeight}"
-            HorizontalAlignment="Left" VerticalAlignment="Top">
-        <Grid Name="MyInternalGrid" Canvas.Top="0" Canvas.Left="0">
-          <TextBlock Name="MyText" Text="Text" RenderOptions.ClearTypeHint="Enabled" FontSize="10" Padding="1"/>
-          <!--<Rectangle Name="MyRectangle" Stroke="Blue" StrokeThickness="1" RenderOptions.EdgeMode="Unspecified"/>-->
-        </Grid>
+              Height="{Binding ElementName=MyText, Path=ActualHeight}" Canvas.Left="0" Canvas.Top="0"
+            HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+        <Canvas.RenderTransform>
+          <TransformGroup>
+            <ScaleTransform ScaleX="1.25" ScaleY="1.25"/>
+            <SkewTransform/>
+            <RotateTransform Angle="0"/>
+            <TranslateTransform/>
+          </TransformGroup>
+        </Canvas.RenderTransform>
+        <TextBlock Name="MyText" Text="Text" Background="White" RenderOptions.ClearTypeHint="Enabled"
+                     FontSize="20" Padding="1"/>
+        <!--<Border x:Name="MyBorder" BorderBrush="Blue" BorderThickness="1.0">
+          <TextBlock Name="MyText" Text="Text" Background="White" RenderOptions.ClearTypeHint="Enabled"
+                     FontSize="20" Padding="1"/>
+        </Border>-->
+        <!--<Grid Name="MyInternalGrid" Canvas.Top="0" Canvas.Left="0">
+          <TextBlock Name="MyText" Text="Text" Background="White" RenderOptions.ClearTypeHint="Enabled"
+                     FontSize="20" Padding="1"/>
+          <Rectangle Name="MyRectangle" Stroke="Blue" StrokeThickness="1"/>
+        </Grid>-->
       </Canvas>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="Save" Click="Button_Click"/>
+      <!--<Slider Value="{Binding ElementName=MyTextBlock2, Path=FontSize}" Minimum="10" Maximum="100"
+              IsSnapToTickEnabled="True" TickFrequency="10"/>-->
     </StackPanel>
   </Grid>
 </Window>
