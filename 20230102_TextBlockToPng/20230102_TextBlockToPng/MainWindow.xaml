@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:_20230102_TextBlockToPng"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-  <Grid>
+  <Grid UseLayoutRounding="True">
     <Grid.ColumnDefinitions>
       <ColumnDefinition/>
       <ColumnDefinition Width="200"/>
@@ -15,14 +15,13 @@
       <!--<Canvas Name="MyCanvas" Width="100"
               Height="100" UseLayoutRounding="False"
             HorizontalAlignment="Left" VerticalAlignment="Top">-->
-      <Canvas Name="MyCanvas" UseLayoutRounding="False"
+      <Canvas Name="MyCanvas"
               Width="{Binding ElementName=MyText, Path=ActualWidth}"
               Height="{Binding ElementName=MyText, Path=ActualHeight}"
             HorizontalAlignment="Left" VerticalAlignment="Top">
         <Grid Name="MyInternalGrid" Canvas.Top="0" Canvas.Left="0">
-          <TextBlock Name="MyText" Text="Text" RenderOptions.ClearTypeHint="Enabled" FontSize="20"/>
-          <Rectangle Name="MyRectangle" Stroke="Blue" StrokeThickness="1" RenderOptions.EdgeMode="Aliased"
-                     />
+          <TextBlock Name="MyText" Text="Text" RenderOptions.ClearTypeHint="Enabled" FontSize="10" Padding="1"/>
+          <!--<Rectangle Name="MyRectangle" Stroke="Blue" StrokeThickness="1" RenderOptions.EdgeMode="Unspecified"/>-->
         </Grid>
       </Canvas>
     </Canvas>
