@@ -33,6 +33,38 @@ namespace _20230105_ItemsControl_Resource_DataTemplate
             DataContext = MyDataList;
             MyDataList.Add(new DataText() { Text = "test1", FontSize = 20, X = 0, Y = 0 });
             MyDataList.Add(new DataRectangle() { FillBrush = Brushes.Gold, Height = 20, Width = 120, X = 20, Y = 30 });
+            SetResourceToItemsControl(MyItemsControl);
+        }
+        private void SetResourceToItemsControl(ItemsControl itemsControl)
+        {
+            ResourceDictionary resource = new();
+            itemsControl.Resources = resource;
+            itemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding());
+            FrameworkElementFactory itemsPanel = new(typeof(Canvas));
+            itemsControl.ItemsPanel = new ItemsPanelTemplate(itemsPanel);
+
+            Style itemStyle = new();
+            itemStyle.Setters.Add(new Setter(Canvas.LeftProperty, new Binding(nameof(DataText.X))));
+            itemStyle.Setters.Add(new Setter(Canvas.TopProperty, new Binding(nameof(DataText.Y))));
+            itemsControl.ItemContainerStyle= itemStyle;
+
+
+            DataTemplate dt = new(typeof(DataText));
+            FrameworkElementFactory factory = new(typeof(TextBlock));
+            factory.SetBinding(TextBlock.TextProperty, new Binding(nameof(DataText.Text)));
+            factory.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(DataText.FontSize)));
+            dt.VisualTree = factory;
+            DataTemplateKey key = new(typeof(DataText));
+            resource.Add(key, dt);
+
+            dt = new(typeof(DataRectangle));
+            factory = new(typeof(Rectangle));
+            factory.SetBinding(WidthProperty, new Binding(nameof(DataRectangle.Width)));
+            factory.SetBinding(HeightProperty, new Binding(nameof(DataRectangle.Height)));
+            factory.SetBinding(Shape.FillProperty, new Binding(nameof(DataRectangle.FillBrush)));
+            dt.VisualTree = factory;
+            key = new(typeof(DataRectangle));
+            resource.Add(key, dt);
         }
     }
 

@@ -10,13 +10,17 @@
 
   </Window.Resources>
   <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
     <ItemsControl ItemsSource="{Binding}">
       <ItemsControl.Resources>
-        <DataTemplate DataType="local:DataText">
+        <DataTemplate DataType="{x:Type local:DataText}">
           <TextBlock Text="{Binding Text}"
                      FontSize="{Binding FontSize}"/>
         </DataTemplate>
-        <DataTemplate DataType="local:DataRectangle">
+        <DataTemplate DataType="{x:Type local:DataRectangle}">
           <Rectangle Fill="{Binding FillBrush}"
                      Width="{Binding Width}"
                      Height="{Binding Height}"/>
@@ -34,5 +38,6 @@
         </Style>
       </ItemsControl.ItemContainerStyle>
     </ItemsControl>
+    <ItemsControl x:Name="MyItemsControl" Grid.Column="1"/>
   </Grid>
 </Window>
