@@ -31,8 +31,15 @@ namespace _20230105_ItemsControl_Resource_DataTemplate
         {
             InitializeComponent();
             DataContext = MyDataList;
-            MyDataList.Add(new DataText() { Text = "test1", FontSize = 20, X = 0, Y = 0 });
-            MyDataList.Add(new DataRectangle() { FillBrush = Brushes.Gold, Height = 20, Width = 120, X = 20, Y = 30 });
+            MyDataList.Add(new DataText() { Text = "TestTextBlock", FontSize = 20, X = 0, Y = 0 });
+            MyDataList.Add(new DataRectangle()
+            {
+                FillBrush = Brushes.LightGray,
+                Height = 40,
+                Width = 120,
+                X = 20,
+                Y = 30
+            });
             SetResourceToItemsControl(MyItemsControl);
         }
         private void SetResourceToItemsControl(ItemsControl itemsControl)

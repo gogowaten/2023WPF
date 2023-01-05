@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230105_ItemsControl_Resource_DataTemplate"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="150" Width="400">
   <Window.Resources>
 
   </Window.Resources>
@@ -14,7 +14,8 @@
       <ColumnDefinition/>
       <ColumnDefinition/>
     </Grid.ColumnDefinitions>
-    <ItemsControl ItemsSource="{Binding}">
+    
+    <ItemsControl ItemsSource="{Binding}" Background="MediumSeaGreen">
       <ItemsControl.Resources>
         <DataTemplate DataType="{x:Type local:DataText}">
           <TextBlock Text="{Binding Text}"
@@ -38,6 +39,8 @@
         </Style>
       </ItemsControl.ItemContainerStyle>
     </ItemsControl>
-    <ItemsControl x:Name="MyItemsControl" Grid.Column="1"/>
+    
+    <ItemsControl x:Name="MyItemsControl" Grid.Column="1" Background="MediumOrchid"/>
+    
   </Grid>
 </Window>
