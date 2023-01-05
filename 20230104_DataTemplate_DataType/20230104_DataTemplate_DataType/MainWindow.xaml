@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:_20230104_DataTemplate_DataType"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="600">
+  <!--Canvasコントロールの子要素を動的に増減させたい
+https://teratail.com/questions/359699-->
+
   <Window.Resources>
     <DataTemplate DataType="{x:Type local:PathItem}">
       <Path
@@ -52,7 +55,7 @@
     <ItemsControl Name="MyItemsControl" ItemsSource="{Binding Items}">
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>
-          <Canvas />
+          <Canvas/>
         </ItemsPanelTemplate>
       </ItemsControl.ItemsPanel>
       <ItemsControl.ItemContainerStyle>

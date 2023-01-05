@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace _20230104_DataTemplate_DataType
 {
@@ -35,8 +36,10 @@ namespace _20230104_DataTemplate_DataType
         }
     }
 
+    [DebuggerDisplay("mydata = {" + nameof(MyData) + "}")]
     public class TTGroup : Thumb
     {
+        
         public ObservableCollection<Data> MyData { get; set; } = new();
         public TTGroup()
         {
@@ -44,11 +47,6 @@ namespace _20230104_DataTemplate_DataType
             SetTemplate();
             SetResource();
 
-            var neko = this.Resources;
-            foreach (var data in neko.Values)
-            {
-
-            }
 
         }
         private void SetTemplate()
@@ -62,7 +60,7 @@ namespace _20230104_DataTemplate_DataType
             Style ss = new();
             Setter sst = new(Canvas.LeftProperty, new Binding(nameof(Data.X)));
             ss.Setters.Add(sst);
-            sst=new(Canvas.TopProperty, new Binding(nameof(Data.Y)));
+            sst = new(Canvas.TopProperty, new Binding(nameof(Data.Y)));
             ss.Setters.Add(sst);
             fItems.SetValue(ItemsControl.ItemContainerStyleProperty, ss);
 
