@@ -51,6 +51,7 @@ https://teratail.com/questions/359699-->
     <Grid.ColumnDefinitions>
       <ColumnDefinition/>
       <ColumnDefinition/>
+      <ColumnDefinition/>
     </Grid.ColumnDefinitions>
     <ItemsControl Name="MyItemsControl" ItemsSource="{Binding Items}">
       <ItemsControl.ItemsPanel>
@@ -66,5 +67,13 @@ https://teratail.com/questions/359699-->
       </ItemsControl.ItemContainerStyle>
     </ItemsControl>
     <local:TTGroup Grid.Column="1" x:Name="MyTTGroup"/>
+    <Canvas Grid.Column="2" Name="MyCanvas" Background="Gold">
+      <ContentControl>
+        <TextBlock Text="22"/>
+      </ContentControl>
+      <!--<ContentPresenter>
+        <TextBlock Text="333"/>
+      </ContentPresenter>-->
+    </Canvas>
   </Grid>
 </Window>

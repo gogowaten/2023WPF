@@ -22,24 +22,78 @@ namespace _20230104_DataTemplate_DataType
     {
         public TThumb()
         {
-            DataTemplate dTemp = new(typeof(Rectangle));
 
         }
 
     }
     public class TTRectangle : TThumb
     {
-        public RectangleItem MyData { get; set; } = new();
+        //public DataRect MyData { get; set; } = new();
+
+
+        public DataRect MyData
+        {
+            get { return (DataRect)GetValue(MyDataProperty); }
+            set { SetValue(MyDataProperty, value); }
+        }
+        public static readonly DependencyProperty MyDataProperty =
+            DependencyProperty.Register(nameof(MyData), typeof(DataRect), typeof(TTRectangle), new PropertyMetadata(null));
+
+        public double MyWidth
+        {
+            get { return (double)GetValue(MyWidthProperty); }
+            set { SetValue(MyWidthProperty, value); }
+        }
+        public static readonly DependencyProperty MyWidthProperty =
+            DependencyProperty.Register(nameof(MyWidth), typeof(double), typeof(TTRectangle),
+                new FrameworkPropertyMetadata(0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public double MyHeight
+        {
+            get { return (double)GetValue(MyHeightProperty); }
+            set { SetValue(MyHeightProperty, value); }
+        }
+        public static readonly DependencyProperty MyHeightProperty =
+            DependencyProperty.Register(nameof(MyHeight), typeof(double), typeof(TTRectangle),
+                new FrameworkPropertyMetadata(0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public Brush MyFillBrush
+        {
+            get { return (Brush)GetValue(MyFillBrushProperty); }
+            set { SetValue(MyFillBrushProperty, value); }
+        }
+        public static readonly DependencyProperty MyFillBrushProperty =
+            DependencyProperty.Register(nameof(MyFillBrush), typeof(Brush), typeof(TTRectangle),
+                new FrameworkPropertyMetadata(Brushes.Blue,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
         public TTRectangle()
         {
-            DataContext = MyData;
+            DataContext = this;
+
+            FrameworkElementFactory factory = new(typeof(Rectangle));
+            factory.SetValue(WidthProperty, new Binding(nameof(MyWidth)));
+            factory.SetValue(HeightProperty, new Binding(nameof(MyHeight)));
+            factory.SetValue(Shape.FillProperty, Brushes.Tomato);
+            //factory.SetValue(Shape.FillProperty, new Binding(nameof(MyFillBrush)));
+            this.Template = new() { VisualTree = factory };
+
         }
+    }
+    public class TTTextBlock : TThumb
+    {
+
     }
 
     [DebuggerDisplay("mydata = {" + nameof(MyData) + "}")]
     public class TTGroup : Thumb
     {
-        
+
         public ObservableCollection<Data> MyData { get; set; } = new();
         public TTGroup()
         {
@@ -72,8 +126,8 @@ namespace _20230104_DataTemplate_DataType
             ResourceDictionary resource = new();
 
             FrameworkElementFactory factory = new(typeof(Rectangle));
-            factory.SetValue(WidthProperty, new Binding(nameof(Data.Width)));
-            factory.SetValue(HeightProperty, new Binding(nameof(Data.Height)));
+            factory.SetValue(WidthProperty, new Binding(nameof(DataRect.Width)));
+            factory.SetValue(HeightProperty, new Binding(nameof(DataRect.Height)));
             factory.SetValue(Shape.FillProperty, new Binding(nameof(DataRect.Brush)));
 
             DataTemplate dt = new(typeof(DataRect));
@@ -94,43 +148,61 @@ namespace _20230104_DataTemplate_DataType
         }
     }
 
+    public class DTThumb : ContentControl
+    {
+        public Data? MyData { get; set; }
+        public DTThumb(Data data)
+        {
+            MyData = data;
+            DataContext = MyData;
+            SetTemplate();
+            SetBinding(ContentControl.ContentProperty, new Binding());
+        }
+        private void SetTemplate()
+        {
+            ResourceDictionary resource = new();
+            FrameworkElementFactory factory = new(typeof(TTRectangle));
+            factory.SetBinding(TTRectangle.MyWidthProperty, new Binding(nameof(DataRect.Width)));
+            factory.SetBinding(TTRectangle.MyHeightProperty, new Binding(nameof(DataRect.Height)));
+            factory.SetBinding(TTRectangle.MyFillBrushProperty, new Binding(nameof(DataRect.Brush)));
+            factory.SetValue(TTRectangle.MyDataProperty, new Binding(nameof(MyData)));
+            //factory.SetValue(WidthProperty, 100.0);
+            //factory.SetValue(HeightProperty, 20.0);
+            //factory.SetValue(Shape.FillProperty, Brushes.Black);
+            DataTemplate dt = new(typeof(DataRect));
+            dt.VisualTree = factory;
+            resource.Add(new DataTemplateKey(typeof(DataRect)), dt);
+
+            factory = new(typeof(TTTextBlock));
+            factory.SetBinding(TextBlock.TextProperty, new Binding(nameof(DataText.Text)));
+            factory.SetBinding(TextBlock.FontSizeProperty, new Binding(nameof(DataText.FontSize)));
+            dt = new(typeof(DataText));
+            dt.VisualTree = factory;
+            resource.Add(new DataTemplateKey(typeof(DataText)), dt);
+
+            this.Resources = resource;
+
+        }
+
+    }
     public class Data
     {
         public Data() { }
-        public Data(double x, double y, double z, double width, double height)
-        {
-            X = x;
-            Y = y;
-            Z = z;
-            Width = width;
-            Height = height;
-        }
 
         public double X { get; set; }
         public double Y { get; set; }
-        public double Z { get; set; }
-        public double Width { get; set; }
-        public double Height { get; set; }
+
     }
     public class DataText : Data
     {
-        public DataText(string text, double fontSize, double x, double y, double z) : base(x, y, z, double.NaN, double.NaN)
-        {
-            Text = text;
-            FontSize = fontSize;
-        }
-
-        public string Text { get; set; }
+        public string Text { get; set; } = "";
         public double FontSize { get; set; }
     }
     public class DataRect : Data
     {
-        public DataRect(Brush brush, double x, double y, double z, double width, double height) : base(x, y, z, width, height)
-        {
-            Brush = brush;
-        }
-
-        public Brush Brush { get; set; }
+        public Brush Brush { get; set; } = Brushes.MediumAquamarine;
+        public double Width { get; set; }
+        public double Height { get; set; }
     }
 
 }

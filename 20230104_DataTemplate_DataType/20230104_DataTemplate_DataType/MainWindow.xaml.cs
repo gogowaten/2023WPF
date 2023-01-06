@@ -63,10 +63,20 @@ namespace _20230104_DataTemplate_DataType
 
 
             //
-            ObservableCollection<Data> myData= new();
-            myData.Add(new DataText("text", 20, 110, 110, 0));
+            ObservableCollection<Data> myData = new()
+            {
+                new DataText() { Text = "text", FontSize = 20, X = 110, Y = 110 }
+            };
 
             MyTTGroup.MyData = myData;
+
+            DTThumb dTThumb = new(new DataText() { FontSize = 20, Text = "text", X = 30, Y = 30 });
+            //dTThumb.MyData = new DataText() { FontSize = 20, Text = "text", X = 30, Y = 30 };
+            MyCanvas.Children.Add(dTThumb);
+            dTThumb = new(new DataRect() { Brush = Brushes.Red, Height = 30, Width = 100, X = 0, Y = 100 });
+            //dTThumb.MyData = new DataRect() { Brush = Brushes.Red, Height = 30, Width = 100, X = 0, Y = 100 };
+            MyCanvas.Children.Add(dTThumb);
+
         }
     }
 

@@ -18,6 +18,10 @@ using System.Windows.Shapes;
 //マツオソフトウェアブログ: Canvasにリストの中身をBindingする方法
 //http://my-clip-devdiary.blogspot.com/2011/01/canvasbinding.html
 //
+//DataTemplateを使って表示はできるけど、それで生成された要素にアクセスするのが
+//かなりめんどくさい感じなので使えないのがわかった
+//DataTemplateを使った表示は表示専用って感じ
+
 
 namespace _20230105_ItemsControl_Resource_DataTemplate
 {
