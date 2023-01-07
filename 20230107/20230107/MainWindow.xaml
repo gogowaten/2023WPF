@@ -12,7 +12,7 @@
       <ColumnDefinition Width="200"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      
+      <local:TTTextBlock TTText="asdfaaaaewef" TTLeft="20" TTTop="50"/>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>
