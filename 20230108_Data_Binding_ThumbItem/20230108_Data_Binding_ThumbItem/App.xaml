@@ -1,0 +1,9 @@
+﻿<Application x:Class="_20230108_Data_Binding_ThumbItem.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:_20230108_Data_Binding_ThumbItem"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>

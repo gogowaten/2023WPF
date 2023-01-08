@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -16,14 +17,20 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Collections.Specialized;
-using System.Configuration;
 
-namespace _20230107
+namespace _20230108_Data_Binding_ThumbItem
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
+    public enum TTType
+    {
+        None,
+        Item,
+        TextBlock,
+        Rectangle,
+        Group,
+        Root,
+    }
+
     public partial class MainWindow : Window
     {
         public Data? MyData { get; set; }
@@ -118,6 +125,8 @@ namespace _20230107
         }
     }
 
+    #region Data
+    
     public abstract class Data : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -127,7 +136,7 @@ namespace _20230107
             field = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        public TTType Type;
+        public TTType Type;// { get; private set; }
 
         private double _x; public double X { get => _x; set => SetProperty(ref _x, value); }
         private double _y; public double Y { get => _y; set => SetProperty(ref _y, value); }
@@ -185,7 +194,10 @@ namespace _20230107
     //{
 
     //}
+    #endregion Data
 
+    #region Thumb
+    
 
     public abstract class TThumb : Thumb
     {
@@ -477,14 +489,5 @@ namespace _20230107
 
         //}
     }
-
-    public enum TTType
-    {
-        None,
-        Item,
-        TextBlock,
-        Rectangle,
-        Group,
-        Root,
-    }
+    #endregion Thumb
 }
