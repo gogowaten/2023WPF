@@ -26,18 +26,19 @@ namespace _20230107
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Data MyData { get; set; } = new();
+        public Data? MyData { get; set; }
         public TextBlock? MyTextBlock { get; set; }
-        public TTTextBlock MyTTTextBlock { get; set; }
-        public TTRectangle MyTTR { get; set; }
-        public TTGroup MyTTG1 { get; set; }
+        public TTTextBlock? MyTTTextBlock { get; set; }
+        public TTRectangle? MyTTR { get; set; }
+        public TTGroup? MyTTG1 { get; set; }
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            //Test1();
-            //AddGroupFromItem();
-            //SetDataForMyRoot();
+            Test1();
+            AddGroupFromItem();
+            AddGroupFromData();
+            SetDataForMyRoot();
         }
 
         //通常のCanvasにItemThumb追加テスト
@@ -50,7 +51,7 @@ namespace _20230107
             //MyTextBlock.SetBinding(Canvas.TopProperty, new Binding(nameof(MyData.Y)) { Source = MyData });
             //MyCanvas.Children.Add(MyTextBlock);
 
-            var (text, rect) = MakeData(nameof(Test1), 0, 0, Brushes.Red);
+            var (text, rect) = MakeData(nameof(Test1) + "_Red", 0, 0, Brushes.Red);
             MyTTTextBlock = new(text);
             MyCanvas.Children.Add(MyTTTextBlock);
             MyTTR = new(rect);
@@ -60,14 +61,14 @@ namespace _20230107
         private (DataText text, DataRectangle rect) MakeData(string text, double x, double y, Brush brush)
         {
             return (new DataText() { Text = text, X = x, Y = y },
-                new DataRectangle() { FillBrush = brush, X = 100, Y = 100, W = 100, H = 30 });
+                new DataRectangle() { FillBrush = brush, X = 200, Y = 0, W = 100, H = 30 });
         }
         //通常のCanvasにGroupThumb追加テスト
         //GroupThumbコンストラクタにDataを渡して作成
         private void AddGroupFromData()
         {
             DataGroup dataGroup = new() { X = 30, Y = 30 };
-            var (text, rect) = MakeData(nameof(AddGroupFromData), 0, 0, Brushes.BlueViolet);
+            var (text, rect) = MakeData(nameof(AddGroupFromData) + "_BlueViolet", 0, 0, Brushes.BlueViolet);
             dataGroup.Datas.Add(text);
             dataGroup.Datas.Add(rect);
 
@@ -78,11 +79,11 @@ namespace _20230107
         //GroupThumbコンストラクタにDataを渡して作成
         private void AddGroupFromItem()
         {
-            var (text, rect) = MakeData(nameof(AddGroupFromItem), 0, 0, Brushes.BlueViolet);
+            var (text, rect) = MakeData(nameof(AddGroupFromItem) + "_Olive", 0, 0, Brushes.Olive);
             TTTextBlock tb = new(text);
             TTRectangle trec = new(rect);
 
-            DataGroup dataGroup = new() { X = 30, Y = 30 };
+            DataGroup dataGroup = new() { X = 30, Y = 60 };
             MyTTG1 = new TTGroup(dataGroup);
             MyTTG1.AddItem(tb);
             MyTTG1.AddItem(trec);
@@ -92,14 +93,14 @@ namespace _20230107
         //XAMLに用意してあるRootThumbにDataを追加
         private void SetDataForMyRoot()
         {
-            DataGroup dataGroup = new() { X = 10, Y = 10 };
-            var (text, rect) = MakeData(nameof(SetDataForMyRoot), 50, 50, Brushes.Gold);
+            DataGroup dataGroup = new() { X = 10, Y = 110 };
+            var (text, rect) = MakeData(nameof(SetDataForMyRoot) + "_Gold", 0, 0, Brushes.Gold);
             dataGroup.Datas.Add(text);
             dataGroup.Datas.Add(rect);
 
             DataGroup dataRoot = new();
             dataRoot.Datas.Add(dataGroup);
-            dataRoot.Datas.Add(new DataText() { Text = "roottyokka", X = 0, Y = 0 });
+            dataRoot.Datas.Add(new DataText() { Text = "roottyokka", X = 10, Y = 130 });
             MyRoot.SetData(dataRoot);
         }
 
@@ -117,8 +118,7 @@ namespace _20230107
         }
     }
 
-
-    public class Data : INotifyPropertyChanged
+    public abstract class Data : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
@@ -127,10 +127,12 @@ namespace _20230107
             field = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        public TTType Type;// { get; private set; }
 
         private double _x; public double X { get => _x; set => SetProperty(ref _x, value); }
         private double _y; public double Y { get => _y; set => SetProperty(ref _y, value); }
-
+        public Data() { SetType(); }
+        public abstract void SetType();// { Type = TTType.None; }
 
 
     }
@@ -139,7 +141,12 @@ namespace _20230107
 
         private string? _text;
         public string? Text { get => _text; set => SetProperty(ref _text, value); }
+        public DataText() { SetType(); }
 
+        public override void SetType()
+        {
+            Type = TTType.TextBlock;
+        }
     }
     public class DataRectangle : Data
     {
@@ -152,12 +159,27 @@ namespace _20230107
 
         private Brush? _fillBrush;
         public Brush? FillBrush { get => _fillBrush; set => SetProperty(ref _fillBrush, value); }
-
+        public DataRectangle() { SetType(); }
+        public override void SetType()
+        {
+            Type = TTType.Rectangle;
+        }
     }
     public class DataGroup : Data
     {
         private ObservableCollection<Data> _datas = new();
+
+        public DataGroup()
+        {
+            SetType();
+        }
+
         public ObservableCollection<Data> Datas { get => _datas; set => SetProperty(ref _datas, value); }
+
+        public override void SetType()
+        {
+            Type = TTType.Group;
+        }
     }
     //public class DataRoot : DataGroup
     //{
@@ -192,9 +214,10 @@ namespace _20230107
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
         #endregion プロパティ
 
-        public Data MyData { get; set; } = new();
+        public Data? MyData { get; set; }
         public TThumb()
         {
+            //MyData = new Data();
             DataContext = MyData;
             SetBinding(Canvas.LeftProperty, new Binding(nameof(MyData.X)));
             SetBinding(Canvas.TopProperty, new Binding(nameof(MyData.Y)));
@@ -414,7 +437,8 @@ namespace _20230107
         {
             var data = GetMyDataFromItem(thumb);
             if (data != null) { MyData.Datas.Add(data); }
-            Data? GetMyDataFromItem(TThumb tt)
+
+            static Data? GetMyDataFromItem(TThumb tt)
             {
                 return tt switch
                 {
@@ -433,6 +457,8 @@ namespace _20230107
         }
 
     }
+
+
     public class TTRoot : TTGroup
     {
         public TTGroup? ActiveGroup { get; set; }
@@ -445,12 +471,20 @@ namespace _20230107
         //    SetData(data);
         //}
 
-        public void AddItem(TThumb thumb)
-        {
-            Children.Add(thumb);
+        //public void AddItem(TThumb thumb)
+        //{
+        //    Children.Add(thumb);
 
-        }
+        //}
     }
 
-
+    public enum TTType
+    {
+        None,
+        Item,
+        TextBlock,
+        Rectangle,
+        Group,
+        Root,
+    }
 }
