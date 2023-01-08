@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.Specialized;
+using System.Configuration;
 
 namespace _20230107
 {
@@ -26,41 +27,93 @@ namespace _20230107
     public partial class MainWindow : Window
     {
         public Data MyData { get; set; } = new();
-        public TextBlock? tb { get; set; }
-        public TTTextBlock MyTTT { get; set; }
+        public TextBlock? MyTextBlock { get; set; }
+        public TTTextBlock MyTTTextBlock { get; set; }
         public TTRectangle MyTTR { get; set; }
+        public TTGroup MyTTG1 { get; set; }
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
             //Test1();
+            //AddGroupFromItem();
+            //SetDataForMyRoot();
         }
+
+        //通常のCanvasにItemThumb追加テスト
         private void Test1()
         {
-            MyData = new DataText() { Text = "test", X = 100, Y = 100 };
-            tb = new();
-            tb.SetBinding(TextBlock.TextProperty, new Binding(nameof(DataText.Text)) { Source = MyData });
-            tb.SetBinding(Canvas.LeftProperty, new Binding(nameof(MyData.X)) { Source = MyData });
-            tb.SetBinding(Canvas.TopProperty, new Binding(nameof(MyData.Y)) { Source = MyData });
-            MyCanvas.Children.Add(tb);
+            //MyData = new DataText() { Text = "test", X = 100, Y = 100 };
+            //MyTextBlock = new();
+            //MyTextBlock.SetBinding(TextBlock.TextProperty, new Binding(nameof(DataText.Text)) { Source = MyData });
+            //MyTextBlock.SetBinding(Canvas.LeftProperty, new Binding(nameof(MyData.X)) { Source = MyData });
+            //MyTextBlock.SetBinding(Canvas.TopProperty, new Binding(nameof(MyData.Y)) { Source = MyData });
+            //MyCanvas.Children.Add(MyTextBlock);
 
-            DataText data = new() { Text = "tttest", X = 100, Y = 10 };
-            MyTTT = new(data);
-            MyCanvas.Children.Add(MyTTT);
-
-
-            MyTTR = new(new() { X = 100, Y = 150, FillBrush = Brushes.Magenta });
+            var (text, rect) = MakeData(nameof(Test1), 0, 0, Brushes.Red);
+            MyTTTextBlock = new(text);
+            MyCanvas.Children.Add(MyTTTextBlock);
+            MyTTR = new(rect);
             MyCanvas.Children.Add(MyTTR);
+        }
+
+        private (DataText text, DataRectangle rect) MakeData(string text, double x, double y, Brush brush)
+        {
+            return (new DataText() { Text = text, X = x, Y = y },
+                new DataRectangle() { FillBrush = brush, X = 100, Y = 100, W = 100, H = 30 });
+        }
+        //通常のCanvasにGroupThumb追加テスト
+        //GroupThumbコンストラクタにDataを渡して作成
+        private void AddGroupFromData()
+        {
+            DataGroup dataGroup = new() { X = 30, Y = 30 };
+            var (text, rect) = MakeData(nameof(AddGroupFromData), 0, 0, Brushes.BlueViolet);
+            dataGroup.Datas.Add(text);
+            dataGroup.Datas.Add(rect);
+
+            MyTTG1 = new TTGroup(dataGroup);
+            MyCanvas.Children.Add(MyTTG1);
+        }
+        //通常のCanvasにGroupThumb追加テスト
+        //GroupThumbコンストラクタにDataを渡して作成
+        private void AddGroupFromItem()
+        {
+            var (text, rect) = MakeData(nameof(AddGroupFromItem), 0, 0, Brushes.BlueViolet);
+            TTTextBlock tb = new(text);
+            TTRectangle trec = new(rect);
+
+            DataGroup dataGroup = new() { X = 30, Y = 30 };
+            MyTTG1 = new TTGroup(dataGroup);
+            MyTTG1.AddItem(tb);
+            MyTTG1.AddItem(trec);
+            MyCanvas.Children.Add(MyTTG1);
+        }
+
+        //XAMLに用意してあるRootThumbにDataを追加
+        private void SetDataForMyRoot()
+        {
+            DataGroup dataGroup = new() { X = 10, Y = 10 };
+            var (text, rect) = MakeData(nameof(SetDataForMyRoot), 50, 50, Brushes.Gold);
+            dataGroup.Datas.Add(text);
+            dataGroup.Datas.Add(rect);
+
+            DataGroup dataRoot = new();
+            dataRoot.Datas.Add(dataGroup);
+            dataRoot.Datas.Add(new DataText() { Text = "roottyokka", X = 0, Y = 0 });
+            MyRoot.SetData(dataRoot);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //MyData.Text = "henkou";
             if (MyData is DataText data) { data.Text = "henkou"; }
-            //tb.Text = "henkou";
-            var neko = MyGroup1.MyData;
-            //MyTTT.MyData.Text = "henkouuuu";
-            //MyTTT.TTText = "dipendencyProperty";
+            //MyTextBlock.Text = "henkou";
+            //var neko = MyTTG1.MyData;
+            //var inu = MyGroup1.MyData;
+            var uma = MyRoot.MyData;
+            MyRoot.AddItem(new TTTextBlock(new DataText() { Text = "addtext", X = 20, Y = 50 }));
+            //MyTTTextBlock.TTText = "dipendencyProperty";
+            MyRoot.MyData.Datas[0].X = 200;
         }
     }
 
@@ -79,7 +132,7 @@ namespace _20230107
         private double _y; public double Y { get => _y; set => SetProperty(ref _y, value); }
 
 
-        public Data() { }
+
     }
     public class DataText : Data
     {
@@ -103,12 +156,18 @@ namespace _20230107
     }
     public class DataGroup : Data
     {
-        private ObservableCollection<Data>? _datas = new();
-        public ObservableCollection<Data>? Datas { get => _datas; set => SetProperty(ref _datas, value); }
+        private ObservableCollection<Data> _datas = new();
+        public ObservableCollection<Data> Datas { get => _datas; set => SetProperty(ref _datas, value); }
     }
+    //public class DataRoot : DataGroup
+    //{
+
+    //}
+
 
     public abstract class TThumb : Thumb
     {
+        #region プロパティ
 
         public double TTLeft
         {
@@ -131,6 +190,7 @@ namespace _20230107
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
+        #endregion プロパティ
 
         public Data MyData { get; set; } = new();
         public TThumb()
@@ -141,6 +201,7 @@ namespace _20230107
             SetBinding(TTLeftProperty, new Binding(nameof(MyData.X)) { Mode = BindingMode.TwoWay });
             SetBinding(TTTopProperty, new Binding(nameof(MyData.Y)) { Mode = BindingMode.TwoWay });
         }
+
         internal abstract void SetTemplateAndBinding();
 
 
@@ -148,9 +209,16 @@ namespace _20230107
     public abstract class TThumbItem : TThumb { }
     public class TTTextBlock : TThumbItem
     {
+        #region プロパティ
+
         public new DataText MyData { get; private set; } = new();
 
-        //デザイナー画面でのリアルタイム更新のために
+        //図形コントロール
+        //        http://www.kanazawa-net.ne.jp/~pmansato/wpf/wpf_graph_drawtool.htm#arrow
+        //C#のWPFでコントロールを自作する その２ - Ararami Studio
+        //        https://araramistudio.jimdo.com/2016/09/30/wpf%E3%81%A7%E3%82%B3%E3%83%B3%E3%83%88%E3%83%AD%E3%83%BC%E3%83%AB%E3%82%92%E8%87%AA%E4%BD%9C%E3%81%99%E3%82%8B-%E3%81%9D%E3%81%AE%EF%BC%92/
+
+        //デザイナー画面でのリアルタイム更新と規定で双方向Bindingのために
         //FrameworkPropertyMetadataOptionsが必要
         public string TTText
         {
@@ -161,8 +229,9 @@ namespace _20230107
             DependencyProperty.Register(nameof(TTText), typeof(string), typeof(TTTextBlock),
                 new FrameworkPropertyMetadata("",
                     FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure));
-
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        #endregion プロパティ
 
         public TTTextBlock()
         {
@@ -186,8 +255,9 @@ namespace _20230107
             factory.AppendChild(fTextBlock);
             fTextBlock.SetBinding(TextBlock.TextProperty, new Binding(nameof(MyData.Text)));
             this.Template = new() { VisualTree = factory };
-            //これは双方向Bindingが必要
-            SetBinding(TTTextProperty, new Binding(nameof(MyData.Text)) { Mode = BindingMode.TwoWay });
+            //これは双方向Bindingが必要と思ってたけど、依存プロパティのメタデータの設定でBindsTwoWayByDefaultを指定しておくと不必要だった
+            SetBinding(TTTextProperty, new Binding(nameof(MyData.Text)));
+            //SetBinding(TTTextProperty, new Binding(nameof(MyData.Text)) { Mode = BindingMode.TwoWay });
 
         }
     }
@@ -263,6 +333,7 @@ namespace _20230107
     {
         public new DataGroup MyData { get; set; } = new();
         public ObservableCollection<TThumb> Children { get; set; } = new();
+        #region 初期設定
 
         public TTGroup()
         {
@@ -270,18 +341,64 @@ namespace _20230107
             SetTemplateAndBinding();
             Children.CollectionChanged += Children_CollectionChanged;
         }
+        public TTGroup(DataGroup data)
+        {
+            MyData = data;
+            DataContext = MyData;
+            SetTemplateAndBinding();
+            SetData(data);
 
+        }
+        internal override void SetTemplateAndBinding()
+        {
+            FrameworkElementFactory factory = new(typeof(ItemsControl));
+            factory.SetValue(ItemsControl.ItemsPanelProperty,
+                new ItemsPanelTemplate(new FrameworkElementFactory(typeof(Canvas))));
+            factory.SetValue(ItemsControl.ItemsSourceProperty, new Binding(nameof(Children)) { Source = this });
+            this.Template = new() { VisualTree = factory };
+        }
+
+        public void SetData(DataGroup data)
+        {
+            foreach (var item in data.Datas)
+            {
+                TThumb? tt = null;
+                switch (item)
+                {
+                    case DataText dataText:
+                        tt = new TTTextBlock(dataText);
+                        break;
+                    case DataRectangle rectangle:
+                        tt = new TTRectangle(rectangle);
+                        break;
+                    case DataGroup dataGroup:
+                        tt = new TTGroup(dataGroup);
+                        break;
+                }
+                if (tt != null)
+                {
+                    Children.Add(tt);
+                    //tt.DragDelta += TThumb_DragDelta;
+                }
+            }
+        }
+
+        #endregion 初期設定
+
+        public void AddItem(TThumb thumb)
+        {
+            Children.Add(thumb);
+            AddItemData(thumb);
+        }
         private void Children_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            var nItem = e.NewItems?[0] as TThumb;
-            var oItem = e.OldItems?[0] as TThumb;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    if (nItem != null) { MyData.Datas?.Add(nItem.MyData); }
+                    if (e.NewItems?[0] is TThumb nItem) { AddItemData(nItem); }
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    if (oItem != null) { MyData.Datas?.Remove(oItem.MyData); }
+                    if (e.OldItems?[0] is TThumb oItem) { MyData.Datas.Remove(oItem.MyData); }
                     break;
                 case NotifyCollectionChangedAction.Replace:
                     break;
@@ -293,22 +410,47 @@ namespace _20230107
                     break;
             }
         }
-
-        public TTGroup(DataGroup data)
+        void AddItemData(TThumb thumb)
         {
-            MyData = data;
+            var data = GetMyDataFromItem(thumb);
+            if (data != null) { MyData.Datas.Add(data); }
+            Data? GetMyDataFromItem(TThumb tt)
+            {
+                return tt switch
+                {
+                    TTTextBlock text => text.MyData,
+                    TTRectangle rect => rect.MyData,
+                    TTGroup group => group.MyData,
+                    _ => null,
+                };
+                ;
+            }
+        }
+        private void TThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            TTTop += e.VerticalChange;
+            TTLeft += e.HorizontalChange;
+        }
+
+    }
+    public class TTRoot : TTGroup
+    {
+        public TTGroup? ActiveGroup { get; set; }
+        public TTRoot()
+        {
             DataContext = MyData;
         }
-        internal override void SetTemplateAndBinding()
+        //public TTRoot(DataGroup data) : this()
+        //{
+        //    SetData(data);
+        //}
+
+        public void AddItem(TThumb thumb)
         {
-            FrameworkElementFactory factory = new(typeof(ItemsControl));
-            factory.SetValue(ItemsControl.ItemsPanelProperty,
-                new ItemsPanelTemplate(new FrameworkElementFactory(typeof(Canvas))));
-            factory.SetValue(ItemsControl.ItemsSourceProperty, new Binding(nameof(Children)) { Source = this });
-            this.Template = new() { VisualTree = factory };
+            Children.Add(thumb);
+
         }
     }
-
 
 
 }
