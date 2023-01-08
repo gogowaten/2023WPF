@@ -12,7 +12,13 @@
       <ColumnDefinition Width="200"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      <local:TTTextBlock TTText="asdfaaaaewef" TTLeft="20" TTTop="50"/>
+      <!--<local:TTRectangle Width="200" Height="50" TTFillBrush="Aqua"/>-->
+      <!--<local:TTTextBlock TTText="asdfaaaaewef" TTLeft="20" TTTop="50"/>-->
+      <local:TTGroup x:Name="MyGroup1" TTLeft="50" TTTop="20">
+        <local:TTTextBlock TTText="groupnotext"/>
+        <local:TTTextBlock TTText="groupnotext2" TTLeft="50" TTTop="30"/>
+        <local:TTRectangle Width="100" Height="20" TTTop="100" TTFillBrush="MediumAquamarine"/>
+      </local:TTGroup>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>
