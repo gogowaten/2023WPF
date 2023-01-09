@@ -18,6 +18,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace _20230107
 {
@@ -35,10 +38,10 @@ namespace _20230107
         {
             InitializeComponent();
             DataContext = this;
-            Test1();
-            AddGroupFromItem();
-            AddGroupFromData();
-            SetDataForMyRoot();
+            //Test1();
+            //AddGroupFromItem();
+            //AddGroupFromData();
+            //SetDataForMyRoot();
         }
 
         //通常のCanvasにItemThumb追加テスト
@@ -116,9 +119,26 @@ namespace _20230107
             //MyTTTextBlock.TTText = "dipendencyProperty";
             MyRoot.MyData.Datas[0].X = 200;
         }
-    }
 
-    public abstract class Data : INotifyPropertyChanged
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MyRoot.SaveData("E:\\MyData20230109.xml");
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            var data=MyRoot.LoadData("E:\\MyData20230109.xml");
+            MyRoot.add
+        }
+    }
+    [DataContract]
+    [KnownType(typeof(DataText))]
+    [KnownType(typeof(DataRectangle))]
+    [KnownType(typeof(DataGroup))]
+    [KnownType(typeof(SolidColorBrush))]
+    [KnownType(typeof(MatrixTransform))]
+
+    public class Data : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
@@ -127,59 +147,67 @@ namespace _20230107
             field = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        public TTType Type;
+        [DataMember] public TTType Type { get; set; }//DataMemver属性を付けないと保存されない
 
-        private double _x; public double X { get => _x; set => SetProperty(ref _x, value); }
-        private double _y; public double Y { get => _y; set => SetProperty(ref _y, value); }
-        public Data() { SetType(); }
-        public abstract void SetType();// { Type = TTType.None; }
+        [DataMember] private double _x; public double X { get => _x; set => SetProperty(ref _x, value); }
+        [DataMember] private double _y; public double Y { get => _y; set => SetProperty(ref _y, value); }
+        //public Data() { SetType(); }
+        //public  void SetType();// { Type = TTType.None; }
 
 
     }
+
     public class DataText : Data
     {
 
-        private string? _text;
+        [DataMember] private string? _text;
         public string? Text { get => _text; set => SetProperty(ref _text, value); }
-        public DataText() { SetType(); }
 
-        public override void SetType()
+        public DataText()
         {
             Type = TTType.TextBlock;
         }
+
+        //public override void SetType()
+        //{
+        //    //Type = TTType.TextBlock;
+        //}
     }
     public class DataRectangle : Data
     {
 
-        private double _w = 100.0;
+        [DataMember] private double _w = 100.0;
         public double W { get => _w; set => SetProperty(ref _w, value); }
 
-        private double _h = 100.0;
+        [DataMember] private double _h = 100.0;
         public double H { get => _h; set => SetProperty(ref _h, value); }
 
-        private Brush? _fillBrush;
+        [DataMember] private Brush? _fillBrush;
         public Brush? FillBrush { get => _fillBrush; set => SetProperty(ref _fillBrush, value); }
-        public DataRectangle() { SetType(); }
-        public override void SetType()
+        public DataRectangle()
         {
             Type = TTType.Rectangle;
         }
+        //public override void SetType()
+        //{
+        //    //Type = TTType.Rectangle;
+        //}
     }
     public class DataGroup : Data
     {
-        private ObservableCollection<Data> _datas = new();
+        [DataMember] private ObservableCollection<Data> _datas = new();
 
         public DataGroup()
         {
-            SetType();
+            Type = TTType.Group;
         }
 
         public ObservableCollection<Data> Datas { get => _datas; set => SetProperty(ref _datas, value); }
 
-        public override void SetType()
-        {
-            Type = TTType.Group;
-        }
+        //public override void SetType()
+        //{
+        //    //Type = TTType.Group;
+        //}
     }
     //public class DataRoot : DataGroup
     //{
@@ -466,16 +494,44 @@ namespace _20230107
         {
             DataContext = MyData;
         }
-        //public TTRoot(DataGroup data) : this()
-        //{
-        //    SetData(data);
-        //}
+        public void SaveData(string filePath)
+        {
+            XmlWriterSettings settings = new()
+            {
+                Encoding = new UTF8Encoding(false),
+                Indent = true,
+                NewLineOnAttributes = false,
+                ConformanceLevel = ConformanceLevel.Fragment
+            };
+            XmlWriter writer;
+            DataContractSerializer serializer = new(typeof(DataGroup));
+            using (writer = XmlWriter.Create(filePath, settings))
+            {
+                try
+                {
+                    serializer.WriteObject(writer, MyData);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
 
-        //public void AddItem(TThumb thumb)
-        //{
-        //    Children.Add(thumb);
-
-        //}
+        public DataGroup? LoadData(string filePath)
+        {
+            DataContractSerializer serializer = new(typeof(DataGroup));
+            try
+            {
+                using XmlReader reader = XmlReader.Create(filePath); ;
+                return (DataGroup?)serializer.ReadObject(reader);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
     }
 
     public enum TTType
@@ -487,4 +543,7 @@ namespace _20230107
         Group,
         Root,
     }
+
+
+
 }
