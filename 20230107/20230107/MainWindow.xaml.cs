@@ -175,12 +175,6 @@ namespace _20230107
         }
     }
 
-    //[DataContract]
-    //[KnownType(typeof(DataText))]
-    //[KnownType(typeof(DataRectangle))]
-    //[KnownType(typeof(DataGroup))]
-    //[KnownType(typeof(SolidColorBrush))]
-    //[KnownType(typeof(MatrixTransform))]
     public class Data : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
