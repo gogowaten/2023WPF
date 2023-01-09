@@ -21,6 +21,7 @@ using System.Configuration;
 using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace _20230107
 {
@@ -127,17 +128,59 @@ namespace _20230107
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            var data=MyRoot.LoadData("E:\\MyData20230109.xml");
-            MyRoot.add
+            var data = MyRoot.LoadData("E:\\MyData20230109.xml");
+            DData dd = (DData)data;
+            DataGroup dgroup = (DataGroup)dd.Data;
+            MyRoot.SetData(dgroup);
         }
     }
+
+
+
     [DataContract]
     [KnownType(typeof(DataText))]
     [KnownType(typeof(DataRectangle))]
     [KnownType(typeof(DataGroup))]
     [KnownType(typeof(SolidColorBrush))]
     [KnownType(typeof(MatrixTransform))]
+    public class DData
+    {
+        [DataMember] public TTType Type { get; set; }
+        [DataMember] public Data? Data { get; set; }
+        public DData(TTType type)
+        {
+            Type = type;
+            switch (type)
+            {
+                case TTType.None:
 
+                    break;
+                case TTType.Item:
+                    break;
+                case TTType.TextBlock:
+                    Data = new DataText();
+                    break;
+                case TTType.Rectangle:
+                    Data = new DataRectangle();
+                    break;
+                case TTType.Group:
+                    Data = new DataGroup();
+                    break;
+                case TTType.Root:
+                    Data = new DataGroup();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    //[DataContract]
+    //[KnownType(typeof(DataText))]
+    //[KnownType(typeof(DataRectangle))]
+    //[KnownType(typeof(DataGroup))]
+    //[KnownType(typeof(SolidColorBrush))]
+    //[KnownType(typeof(MatrixTransform))]
     public class Data : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -243,6 +286,7 @@ namespace _20230107
         #endregion プロパティ
 
         public Data? MyData { get; set; }
+        public abstract DData DData { get; set; }
         public TThumb()
         {
             //MyData = new Data();
@@ -260,9 +304,10 @@ namespace _20230107
     public abstract class TThumbItem : TThumb { }
     public class TTTextBlock : TThumbItem
     {
+        public new DataText MyData { get; private set; } = new();
+
         #region プロパティ
 
-        public new DataText MyData { get; private set; } = new();
 
         //図形コントロール
         //        http://www.kanazawa-net.ne.jp/~pmansato/wpf/wpf_graph_drawtool.htm#arrow
@@ -276,6 +321,9 @@ namespace _20230107
             get { return (string)GetValue(TTTextProperty); }
             set { SetValue(TTTextProperty, value); }
         }
+
+        public override DData DData { get; set; }
+
         public static readonly DependencyProperty TTTextProperty =
             DependencyProperty.Register(nameof(TTText), typeof(string), typeof(TTTextBlock),
                 new FrameworkPropertyMetadata("",
@@ -287,6 +335,7 @@ namespace _20230107
         public TTTextBlock()
         {
             DataContext = MyData;
+            DData = new(TTType.TextBlock) { Data = MyData };
             SetTemplateAndBinding();
         }
         public TTTextBlock(DataText data)
@@ -297,6 +346,7 @@ namespace _20230107
             //Bindingの設定を先にしたいときはSourceを明示すればBindingできる
             MyData = data;
             DataContext = MyData;
+            DData = new(TTType.TextBlock) { Data = MyData };
             SetTemplateAndBinding();
         }
         internal override void SetTemplateAndBinding()
@@ -350,16 +400,19 @@ namespace _20230107
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
         #endregion プロパティ
 
+        public override DData DData { get; set; }
         public new DataRectangle MyData { get; set; } = new();
         public TTRectangle()
         {
             DataContext = MyData;
+            DData = new(TTType.Rectangle) { Data = MyData };
             SetTemplateAndBinding();
         }
         public TTRectangle(DataRectangle data)
         {
             MyData = data;
             DataContext = MyData;
+            DData = new(TTType.Rectangle) { Data = MyData };
             SetTemplateAndBinding();
         }
         internal override void SetTemplateAndBinding()
@@ -384,11 +437,13 @@ namespace _20230107
     {
         public new DataGroup MyData { get; set; } = new();
         public ObservableCollection<TThumb> Children { get; set; } = new();
+        public override DData DData { get; set; }
         #region 初期設定
 
         public TTGroup()
         {
             DataContext = MyData;
+            DData = new(TTType.Group) { Data = MyData };
             SetTemplateAndBinding();
             Children.CollectionChanged += Children_CollectionChanged;
         }
@@ -396,6 +451,7 @@ namespace _20230107
         {
             MyData = data;
             DataContext = MyData;
+            DData = new(TTType.Group) { Data = MyData };
             SetTemplateAndBinding();
             SetData(data);
 
@@ -489,10 +545,12 @@ namespace _20230107
 
     public class TTRoot : TTGroup
     {
+        public override DData DData { get; set; }
         public TTGroup? ActiveGroup { get; set; }
         public TTRoot()
         {
             DataContext = MyData;
+            DData = new(TTType.Root) { Data = MyData };
         }
         public void SaveData(string filePath)
         {
@@ -504,12 +562,12 @@ namespace _20230107
                 ConformanceLevel = ConformanceLevel.Fragment
             };
             XmlWriter writer;
-            DataContractSerializer serializer = new(typeof(DataGroup));
+            DataContractSerializer serializer = new(typeof(DData));
             using (writer = XmlWriter.Create(filePath, settings))
             {
                 try
                 {
-                    serializer.WriteObject(writer, MyData);
+                    serializer.WriteObject(writer, DData);
                 }
                 catch (Exception ex)
                 {
@@ -518,13 +576,27 @@ namespace _20230107
             }
         }
 
-        public DataGroup? LoadData(string filePath)
+        public DData? LoadData(string filePath)
         {
-            DataContractSerializer serializer = new(typeof(DataGroup));
+            DataContractSerializer serializer = new(typeof(DData));
             try
             {
                 using XmlReader reader = XmlReader.Create(filePath); ;
-                return (DataGroup?)serializer.ReadObject(reader);
+                return (DData?)serializer.ReadObject(reader);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+        public Data? LoadData2(string filePath)
+        {
+            DataContractSerializer serializer = new(typeof(Data));
+            try
+            {
+                using XmlReader reader = XmlReader.Create(filePath); ;
+                return (Data)serializer.ReadObject(reader);
             }
             catch (Exception ex)
             {
