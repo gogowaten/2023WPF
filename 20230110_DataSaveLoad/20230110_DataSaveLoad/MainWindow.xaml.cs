@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,18 +18,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Collections.Specialized;
-using System.Configuration;
-using System.Runtime.Serialization;
 using System.Xml;
-using System.Xml.Serialization;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json;
+using System.IO;
+using System.Runtime.Serialization.Json;
 
-namespace _20230107
+namespace _20230110_DataSaveLoad
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public Data? MyData { get; set; }
@@ -123,12 +120,14 @@ namespace _20230107
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MyRoot.SaveData("E:\\MyData20230109.xml");
+            MyRoot.SaveData("E:\\MyData20230109.json");
+            //MyRoot.SaveData("E:\\MyData20230109.xml");
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            var data = MyRoot.LoadData("E:\\MyData20230109.xml");
+            var data = MyRoot.LoadData("E:\\MyData20230109.json");
+            //var data = MyRoot.LoadData("E:\\MyData20230109.xml");
             DData dd = (DData)data;
             DataGroup dgroup = (DataGroup)dd.Data;
             MyRoot.SetData(dgroup);
@@ -137,7 +136,7 @@ namespace _20230107
 
 
 
-    [DataContract(Namespace = "")]
+    [DataContract]
     [KnownType(typeof(DataText))]
     [KnownType(typeof(DataRectangle))]
     [KnownType(typeof(DataGroup))]
@@ -546,50 +545,125 @@ namespace _20230107
             DataContext = MyData;
             DData = new(TTType.Root) { Data = MyData };
         }
+
         public void SaveData(string filePath)
         {
-            XmlWriterSettings settings = new()
+            //using MemoryStream stream = new();
+            //using FileStream fs = new(filePath, FileMode.Create);
+            //using (var sw = new StreamWriter(fs))
+            //{
+            //    DataContractJsonSerializerSettings settings = new();
+            //    var ser = new DataContractJsonSerializer(typeof(DData));
+            //    ser.WriteObject(stream, DData);
+            //    var str2write = Encoding.UTF8.GetString(stream.ToArray());
+            //    sw.Write(str2write);
+            //}
+
+            //using var stream = new MemoryStream();
+            //using var reader = new StreamReader(stream);
+            //using (var writer = new StreamWriter(filePath, false))
+            //{
+            //    var ser = new DataContractJsonSerializer(typeof(DData));
+            //    ser.WriteObject(stream, DData);
+            //    stream.Position = 0;
+            //    writer.WriteLine(reader.ReadToEnd());
+            //}
+
+            ////オブジェクトの配列形式のJSONを書き出す : C# | iPentec
+            ////        https://www.ipentec.com/document/csharp-class-serialize-write-json-array-file
+
+            //DataContractJsonSerializer serializer = new(typeof(DData));
+            //using var stream = new FileStream(filePath, FileMode.Create);
+            //try
+            //{
+            //    serializer.WriteObject(stream, DData);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+
+            //C#でJsonをSerialize/Deserializeする方法 - Qiita
+            //        https://qiita.com/Jinten/items/3d4745c2663d8b4fa3cc
+            using var fs = new FileStream(filePath, FileMode.Create);
+            DataContractJsonSerializer serializer = new(typeof(DData));
+            //改行できてる？
+            using var writer = JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, true, "  ");
+            try
             {
-                Encoding = new UTF8Encoding(false),
-                Indent = true,
-                NewLineOnAttributes = false,
-                ConformanceLevel = ConformanceLevel.Fragment
-            };
-            XmlWriter writer;
-            DataContractSerializer serializer = new(typeof(DData));
-            using (writer = XmlWriter.Create(filePath, settings))
-            {
-                try
-                {
-                    serializer.WriteObject(writer, DData);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                serializer.WriteObject(fs, DData);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+
         }
+        //public void SaveData(string filePath)
+        //{
+        //    XmlWriterSettings settings = new()
+        //    {
+        //        Encoding = new UTF8Encoding(false),
+        //        Indent = true,
+        //        NewLineOnAttributes = false,
+        //        ConformanceLevel = ConformanceLevel.Fragment
+        //    };
+        //    XmlWriter writer;
+        //    DataContractSerializer serializer = new(typeof(DData));
+        //    using (writer = XmlWriter.Create(filePath, settings))
+        //    {
+        //        try
+        //        {
+        //            serializer.WriteObject(writer, DData);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show(ex.Message);
+        //        }
+        //    }
+        //}
+
 
         public DData? LoadData(string filePath)
         {
-            DataContractSerializer serializer = new(typeof(DData));
+            using var fs = new FileStream(filePath, FileMode.Open);
+            DataContractJsonSerializer serializer = new(typeof(DData));
+            using var reader = JsonReaderWriterFactory.CreateJsonReader(fs, XmlDictionaryReaderQuotas.Max);
             try
             {
-                using XmlReader reader = XmlReader.Create(filePath); ;
-                return (DData?)serializer.ReadObject(reader);
+                var dest = serializer.ReadObject(reader);
+                if(dest is DData data)
+                {
+                    return data;
+                }
+                return null;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return null;
             }
+
+
+            //DataContractSerializer serializer = new(typeof(DData));
+            //try
+            //{
+            //    using XmlReader reader = XmlReader.Create(filePath);
+            //    return (DData?)serializer.ReadObject(reader);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //    return null;
+            //}
         }
         public Data? LoadData2(string filePath)
         {
             DataContractSerializer serializer = new(typeof(Data));
             try
             {
-                using XmlReader reader = XmlReader.Create(filePath); ;
+                using XmlReader reader = XmlReader.Create(filePath);
                 return (Data)serializer.ReadObject(reader);
             }
             catch (Exception ex)
@@ -609,7 +683,4 @@ namespace _20230107
         Group,
         Root,
     }
-
-
-
 }
