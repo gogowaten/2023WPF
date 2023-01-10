@@ -120,8 +120,8 @@ namespace _20230110_DataSaveLoad
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MyRoot.SaveData("E:\\MyData20230109.json");
-            //MyRoot.SaveData("E:\\MyData20230109.xml");
+            //MyRoot.SaveDataToJson("E:\\MyData20230109.json");
+            MyRoot.SaveData("E:\\MyData20230109.xml", MyRoot.DData);
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -546,7 +546,8 @@ namespace _20230110_DataSaveLoad
             DData = new(TTType.Root) { Data = MyData };
         }
 
-        public void SaveData(string filePath)
+        //JSON形式で保存、XMLをあんまり変わらないかな
+        public void SaveDataToJson(string filePath)
         {
             //using MemoryStream stream = new();
             //using FileStream fs = new(filePath, FileMode.Create);
@@ -588,7 +589,7 @@ namespace _20230110_DataSaveLoad
             using var fs = new FileStream(filePath, FileMode.Create);
             DataContractJsonSerializer serializer = new(typeof(DData));
             //改行できてる？
-            using var writer = JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, true, "  ");
+            using var writer = JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, true);
             try
             {
                 serializer.WriteObject(fs, DData);
@@ -600,29 +601,30 @@ namespace _20230110_DataSaveLoad
 
 
         }
-        //public void SaveData(string filePath)
-        //{
-        //    XmlWriterSettings settings = new()
-        //    {
-        //        Encoding = new UTF8Encoding(false),
-        //        Indent = true,
-        //        NewLineOnAttributes = false,
-        //        ConformanceLevel = ConformanceLevel.Fragment
-        //    };
-        //    XmlWriter writer;
-        //    DataContractSerializer serializer = new(typeof(DData));
-        //    using (writer = XmlWriter.Create(filePath, settings))
-        //    {
-        //        try
-        //        {
-        //            serializer.WriteObject(writer, DData);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show(ex.Message);
-        //        }
-        //    }
-        //}
+
+        public void SaveData<T>(string filePath, T data)
+        {
+            XmlWriterSettings settings = new()
+            {
+                Encoding = new UTF8Encoding(false),
+                Indent = true,
+                NewLineOnAttributes = false,
+                ConformanceLevel = ConformanceLevel.Fragment
+            };
+            XmlWriter writer;
+            DataContractSerializer serializer = new(typeof(T));
+            using (writer = XmlWriter.Create(filePath, settings))
+            {
+                try
+                {
+                    serializer.WriteObject(writer, data);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
 
 
         public DData? LoadData(string filePath)
@@ -633,7 +635,7 @@ namespace _20230110_DataSaveLoad
             try
             {
                 var dest = serializer.ReadObject(reader);
-                if(dest is DData data)
+                if (dest is DData data)
                 {
                     return data;
                 }
