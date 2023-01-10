@@ -23,7 +23,6 @@ namespace _20230110_XmlSerialize
     public partial class MainWindow : Window
     {
         private Data MyData;
-        //public DDShape MyDDShape { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -60,15 +59,28 @@ namespace _20230110_XmlSerialize
 
 
 
-            MyData = new();
-            MyData.X = 123;
-            MyData.FillBrush = Brushes.MediumAquamarine;
-            //MyData.SolidColorBrush=Brushes.Black;
-            DataSave($"E:\\202301101756.xml", MyData);
+            MyData = new()
+            {
+                X = 123,
+                FillBrush = Brushes.MediumAquamarine
+            };
+            Serialize($"E:\\202301101756.xml", MyData);
             Data? data = Deserialize<Data>($"E:\\202301101756.xml");
-            //  MyDDShape = new() { X = 200, FillBrush = Brushes.MediumAquamarine };
+            //継承して作成した子クラスのDataをデシリアライズしたいときは
+            //その型を指定する必要がある。けど、事前にそれがわからないときは
+            //総当たりでCastするしかない？
+            //それ以外の方法だと、列挙型を作成してそれをDataに追加してSwitch
+            //他には、Data型をプロパティに持つクラスを別に作成して、それをシリアライズ
+            //Data
+            // ┣Text
+            // ┣Shape
+            // ┣Geometry
+            //とかあった場合
+            //Matomeクラスを作成、Data型プロパティを持たせる、その中に派生したData型を入れる
+            //シリアル化するのはMatomeクラスだけになって、デシリアライズしたものから
+            //もとのData型を取得することができる
         }
-        private static void DataSave<T>(string filePath, T data)
+        private static void Serialize<T>(string filePath, T data)
         {
             XmlWriterSettings settings = new()
             {
@@ -106,7 +118,7 @@ namespace _20230110_XmlSerialize
             }
         }
 
-        //private void DataSave(string filePath, Data data)
+        //private void Serialize(string filePath, Data data)
         //{
         //    XmlWriterSettings settings = new()
         //    {
@@ -132,8 +144,8 @@ namespace _20230110_XmlSerialize
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            //DataSave("E:\\202301101756.xml", MyDDShape);
-            DataSave("E:\\202301101756.xml", MyData);
+            //Serialize("E:\\202301101756.xml", MyDDShape);
+            Serialize("E:\\202301101756.xml", MyData);
         }
 
         private void BtnLoad_Click(object sender, RoutedEventArgs e)
