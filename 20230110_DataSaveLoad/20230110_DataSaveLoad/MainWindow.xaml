@@ -24,8 +24,8 @@
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>
-      <Button Content="SaveData" Click="Button_Click_1"/>
-      <Button Content="LoadData" Click="Button_Click_2"/>
+      <Button Content="SaveData" Click="ButtonSave_Click_1"/>
+      <Button Content="LoadData" Click="ButtonLoad_Click_2"/>
     </StackPanel>
   </Grid>
 </Window>

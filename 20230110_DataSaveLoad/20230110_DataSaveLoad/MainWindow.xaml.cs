@@ -39,7 +39,7 @@ namespace _20230110_DataSaveLoad
             //Test1();
             //AddGroupFromItem();
             //AddGroupFromData();
-            SetDataForMyRoot();
+            //SetDataForMyRoot();
         }
 
         //通常のCanvasにItemThumb追加テスト
@@ -118,137 +118,20 @@ namespace _20230110_DataSaveLoad
             MyRoot.MyData.Datas[0].X = 200;
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ButtonSave_Click_1(object sender, RoutedEventArgs e)
         {
             //MyRoot.SaveDataToJson("E:\\MyData20230109.json");
-            MyRoot.SaveData("E:\\MyData20230109.xml", MyRoot.DData);
+            MyRoot.MySerializeData("E:\\MyData20230109.xml", MyRoot.MyData);
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void ButtonLoad_Click_2(object sender, RoutedEventArgs e)
         {
-            var data = MyRoot.LoadData("E:\\MyData20230109.json");
-            //var data = MyRoot.LoadData("E:\\MyData20230109.xml");
-            DData dd = (DData)data;
-            DataGroup dgroup = (DataGroup)dd.Data;
-            MyRoot.SetData(dgroup);
+            //var ddata = MyRoot.MyDeserializeDData("E:\\MyData20230109.json");
+            var data = MyRoot.MyDeserialize<Data>("E:\\MyData20230109.xml");
+            if(data is DataGroup group) { MyRoot.SetData(group); }
         }
     }
 
-
-
-    [DataContract]
-    [KnownType(typeof(DataText))]
-    [KnownType(typeof(DataRectangle))]
-    [KnownType(typeof(DataGroup))]
-    [KnownType(typeof(SolidColorBrush))]
-    [KnownType(typeof(MatrixTransform))]
-    public class DData
-    {
-        [DataMember] public TTType Type { get; set; }
-        [DataMember] public Data? Data { get; set; }
-        public DData(TTType type)
-        {
-            Type = type;
-            switch (type)
-            {
-                case TTType.None:
-
-                    break;
-                case TTType.Item:
-                    break;
-                case TTType.TextBlock:
-                    Data = new DataText();
-                    break;
-                case TTType.Rectangle:
-                    Data = new DataRectangle();
-                    break;
-                case TTType.Group:
-                    Data = new DataGroup();
-                    break;
-                case TTType.Root:
-                    Data = new DataGroup();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    public class Data : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-            field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-        [DataMember] public TTType Type { get; set; }//DataMemver属性を付けないと保存されない
-
-        [DataMember] private double _x; public double X { get => _x; set => SetProperty(ref _x, value); }
-        [DataMember] private double _y; public double Y { get => _y; set => SetProperty(ref _y, value); }
-        //public Data() { SetType(); }
-        //public  void SetType();// { Type = TTType.None; }
-
-
-    }
-
-    public class DataText : Data
-    {
-
-        [DataMember] private string? _text;
-        public string? Text { get => _text; set => SetProperty(ref _text, value); }
-
-        public DataText()
-        {
-            Type = TTType.TextBlock;
-        }
-
-        //public override void SetType()
-        //{
-        //    //Type = TTType.TextBlock;
-        //}
-    }
-    public class DataRectangle : Data
-    {
-
-        [DataMember] private double _w = 100.0;
-        public double W { get => _w; set => SetProperty(ref _w, value); }
-
-        [DataMember] private double _h = 100.0;
-        public double H { get => _h; set => SetProperty(ref _h, value); }
-
-        [DataMember] private Brush? _fillBrush;
-        public Brush? FillBrush { get => _fillBrush; set => SetProperty(ref _fillBrush, value); }
-        public DataRectangle()
-        {
-            Type = TTType.Rectangle;
-        }
-        //public override void SetType()
-        //{
-        //    //Type = TTType.Rectangle;
-        //}
-    }
-    public class DataGroup : Data
-    {
-        [DataMember] private ObservableCollection<Data> _datas = new();
-
-        public DataGroup()
-        {
-            Type = TTType.Group;
-        }
-
-        public ObservableCollection<Data> Datas { get => _datas; set => SetProperty(ref _datas, value); }
-
-        //public override void SetType()
-        //{
-        //    //Type = TTType.Group;
-        //}
-    }
-    //public class DataRoot : DataGroup
-    //{
-
-    //}
 
 
     public abstract class TThumb : Thumb
@@ -279,7 +162,6 @@ namespace _20230110_DataSaveLoad
         #endregion プロパティ
 
         public Data? MyData { get; set; }
-        public abstract DData DData { get; set; }
         public TThumb()
         {
             //MyData = new Data();
@@ -315,7 +197,6 @@ namespace _20230110_DataSaveLoad
             set { SetValue(TTTextProperty, value); }
         }
 
-        public override DData DData { get; set; }
 
         public static readonly DependencyProperty TTTextProperty =
             DependencyProperty.Register(nameof(TTText), typeof(string), typeof(TTTextBlock),
@@ -328,7 +209,7 @@ namespace _20230110_DataSaveLoad
         public TTTextBlock()
         {
             DataContext = MyData;
-            DData = new(TTType.TextBlock) { Data = MyData };
+            //DData = new(TTType.TextBlock) { Data = MyData };
             SetTemplateAndBinding();
         }
         public TTTextBlock(DataText data)
@@ -339,7 +220,7 @@ namespace _20230110_DataSaveLoad
             //Bindingの設定を先にしたいときはSourceを明示すればBindingできる
             MyData = data;
             DataContext = MyData;
-            DData = new(TTType.TextBlock) { Data = MyData };
+            //DData = new(TTType.TextBlock) { Data = MyData };
             SetTemplateAndBinding();
         }
         internal override void SetTemplateAndBinding()
@@ -359,28 +240,7 @@ namespace _20230110_DataSaveLoad
     {
         #region プロパティ
 
-        //public double TTWidth
-        //{
-        //    get { return (double)GetValue(TTWidthProperty); }
-        //    set { SetValue(TTWidthProperty, value); }
-        //}
-        //public static readonly DependencyProperty TTWidthProperty =
-        //    DependencyProperty.Register(nameof(TTWidth), typeof(double), typeof(TTRectangle),
-        //        new FrameworkPropertyMetadata(100.0,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-        //public double TTHeight
-        //{
-        //    get { return (double)GetValue(TTHeightProperty); }
-        //    set { SetValue(TTHeightProperty, value); }
-        //}
-        //public static readonly DependencyProperty TTHeightProperty =
-        //    DependencyProperty.Register(nameof(TTHeight), typeof(double), typeof(TTRectangle),
-        //        new FrameworkPropertyMetadata(100.0,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure));
-
+        
         public Brush TTFillBrush
         {
             get { return (Brush)GetValue(TTFillBrushProperty); }
@@ -393,19 +253,16 @@ namespace _20230110_DataSaveLoad
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
         #endregion プロパティ
 
-        public override DData DData { get; set; }
         public new DataRectangle MyData { get; set; } = new();
         public TTRectangle()
         {
             DataContext = MyData;
-            DData = new(TTType.Rectangle) { Data = MyData };
             SetTemplateAndBinding();
         }
         public TTRectangle(DataRectangle data)
         {
             MyData = data;
             DataContext = MyData;
-            DData = new(TTType.Rectangle) { Data = MyData };
             SetTemplateAndBinding();
         }
         internal override void SetTemplateAndBinding()
@@ -430,13 +287,11 @@ namespace _20230110_DataSaveLoad
     {
         public new DataGroup MyData { get; set; } = new();
         public ObservableCollection<TThumb> Children { get; set; } = new();
-        public override DData DData { get; set; }
         #region 初期設定
 
         public TTGroup()
         {
             DataContext = MyData;
-            DData = new(TTType.Group) { Data = MyData };
             SetTemplateAndBinding();
             Children.CollectionChanged += Children_CollectionChanged;
         }
@@ -444,7 +299,6 @@ namespace _20230110_DataSaveLoad
         {
             MyData = data;
             DataContext = MyData;
-            DData = new(TTType.Group) { Data = MyData };
             SetTemplateAndBinding();
             SetData(data);
 
@@ -538,71 +392,83 @@ namespace _20230110_DataSaveLoad
 
     public class TTRoot : TTGroup
     {
-        public override DData DData { get; set; }
         public TTGroup? ActiveGroup { get; set; }
         public TTRoot()
         {
             DataContext = MyData;
-            DData = new(TTType.Root) { Data = MyData };
         }
 
         //JSON形式で保存、XMLをあんまり変わらないかな
-        public void SaveDataToJson(string filePath)
-        {
-            //using MemoryStream stream = new();
-            //using FileStream fs = new(filePath, FileMode.Create);
-            //using (var sw = new StreamWriter(fs))
-            //{
-            //    DataContractJsonSerializerSettings settings = new();
-            //    var ser = new DataContractJsonSerializer(typeof(DData));
-            //    ser.WriteObject(stream, DData);
-            //    var str2write = Encoding.UTF8.GetString(stream.ToArray());
-            //    sw.Write(str2write);
-            //}
+        //public void SaveDataToJson(string filePath)
+        //{
+        //    //using MemoryStream stream = new();
+        //    //using FileStream fs = new(filePath, FileMode.Create);
+        //    //using (var sw = new StreamWriter(fs))
+        //    //{
+        //    //    DataContractJsonSerializerSettings settings = new();
+        //    //    var ser = new DataContractJsonSerializer(typeof(DData));
+        //    //    ser.WriteObject(stream, DData);
+        //    //    var str2write = Encoding.UTF8.GetString(stream.ToArray());
+        //    //    sw.Write(str2write);
+        //    //}
 
-            //using var stream = new MemoryStream();
-            //using var reader = new StreamReader(stream);
-            //using (var writer = new StreamWriter(filePath, false))
-            //{
-            //    var ser = new DataContractJsonSerializer(typeof(DData));
-            //    ser.WriteObject(stream, DData);
-            //    stream.Position = 0;
-            //    writer.WriteLine(reader.ReadToEnd());
-            //}
+        //    //using var stream = new MemoryStream();
+        //    //using var reader = new StreamReader(stream);
+        //    //using (var writer = new StreamWriter(filePath, false))
+        //    //{
+        //    //    var ser = new DataContractJsonSerializer(typeof(DData));
+        //    //    ser.WriteObject(stream, DData);
+        //    //    stream.Position = 0;
+        //    //    writer.WriteLine(reader.ReadToEnd());
+        //    //}
 
-            ////オブジェクトの配列形式のJSONを書き出す : C# | iPentec
-            ////        https://www.ipentec.com/document/csharp-class-serialize-write-json-array-file
+        //    ////オブジェクトの配列形式のJSONを書き出す : C# | iPentec
+        //    ////        https://www.ipentec.com/document/csharp-class-serialize-write-json-array-file
 
-            //DataContractJsonSerializer serializer = new(typeof(DData));
-            //using var stream = new FileStream(filePath, FileMode.Create);
-            //try
-            //{
-            //    serializer.WriteObject(stream, DData);
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //}
+        //    //DataContractJsonSerializer serializer = new(typeof(DData));
+        //    //using var stream = new FileStream(filePath, FileMode.Create);
+        //    //try
+        //    //{
+        //    //    serializer.WriteObject(stream, DData);
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    MessageBox.Show(ex.Message);
+        //    //}
 
-            //C#でJsonをSerialize/Deserializeする方法 - Qiita
-            //        https://qiita.com/Jinten/items/3d4745c2663d8b4fa3cc
-            using var fs = new FileStream(filePath, FileMode.Create);
-            DataContractJsonSerializer serializer = new(typeof(DData));
-            //改行できてる？
-            using var writer = JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, true);
-            try
-            {
-                serializer.WriteObject(fs, DData);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+        //    //C#でJsonをSerialize/Deserializeする方法 - Qiita
+        //    //        https://qiita.com/Jinten/items/3d4745c2663d8b4fa3cc
+        //    using var fs = new FileStream(filePath, FileMode.Create);
+        //    //DataContractJsonSerializer serializer = new(typeof(DData));
+        //    //改行できてる？
+        //    using var writer = JsonReaderWriterFactory.CreateJsonWriter(fs, Encoding.UTF8, true, true);
+        //    try
+        //    {
+        //        serializer.WriteObject(fs, DData);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
 
 
-        }
+        //}
 
-        public void SaveData<T>(string filePath, T data)
+        //public void MySerialize<T>(string filePath, T data)
+        //{
+        //    XmlWriterSettings settings = new()
+        //    {
+        //        Encoding = new UTF8Encoding(false),
+        //        Indent = true,
+        //        NewLineOnAttributes = false,
+        //        ConformanceLevel = ConformanceLevel.Fragment
+        //    };
+        //    DataContractSerializer serializer = new(typeof(T));
+        //    using var writer = XmlWriter.Create(filePath, settings);
+        //    try { serializer.WriteObject(writer, data); }
+        //    catch (Exception ex) { MessageBox.Show(ex.Message); }
+        //}
+        public void MySerializeData(string filePath, Data data)
         {
             XmlWriterSettings settings = new()
             {
@@ -611,78 +477,28 @@ namespace _20230110_DataSaveLoad
                 NewLineOnAttributes = false,
                 ConformanceLevel = ConformanceLevel.Fragment
             };
-            XmlWriter writer;
-            DataContractSerializer serializer = new(typeof(T));
-            using (writer = XmlWriter.Create(filePath, settings))
-            {
-                try
-                {
-                    serializer.WriteObject(writer, data);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }
-
-
-        public DData? LoadData(string filePath)
-        {
-            using var fs = new FileStream(filePath, FileMode.Open);
-            DataContractJsonSerializer serializer = new(typeof(DData));
-            using var reader = JsonReaderWriterFactory.CreateJsonReader(fs, XmlDictionaryReaderQuotas.Max);
-            try
-            {
-                var dest = serializer.ReadObject(reader);
-                if (dest is DData data)
-                {
-                    return data;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                return null;
-            }
-
-
-            //DataContractSerializer serializer = new(typeof(DData));
-            //try
-            //{
-            //    using XmlReader reader = XmlReader.Create(filePath);
-            //    return (DData?)serializer.ReadObject(reader);
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message);
-            //    return null;
-            //}
-        }
-        public Data? LoadData2(string filePath)
-        {
             DataContractSerializer serializer = new(typeof(Data));
+            using var writer = XmlWriter.Create(filePath, settings);
+            try { serializer.WriteObject(writer, data); }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
+        }
+
+
+      
+        public T? MyDeserialize<T>(string filePath)
+        {
+            DataContractSerializer serializer = new(typeof(T));
             try
             {
                 using XmlReader reader = XmlReader.Create(filePath);
-                return (Data)serializer.ReadObject(reader);
+                return (T?)serializer.ReadObject(reader);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                return null;
+                return default;
             }
         }
     }
 
-    public enum TTType
-    {
-        None,
-        Item,
-        TextBlock,
-        Rectangle,
-        Group,
-        Root,
-    }
 }
