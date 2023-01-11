@@ -38,10 +38,10 @@ namespace _20230111_XmlSerializeMatome
         public MainWindow()
         {
             InitializeComponent();
-            //Test1();
-            //TestB();
-            //TestC();
-            //TestD();
+            Test1();
+            TestB();
+            TestC();
+            TestD();
             Test4Group();
             //Test5();
             Test6Matome();
