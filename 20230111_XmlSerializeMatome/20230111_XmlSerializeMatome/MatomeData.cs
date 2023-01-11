@@ -7,10 +7,13 @@ namespace _20230111_XmlSerializeMatome
     public enum DType { None, Text, Shape, Group }
     //すべてのDataの基本にするクラス
     [KnownType(typeof(DataText)), KnownType(typeof(DataGroup))]
-    public class Data
+    public class Data : IExtensibleDataObject
     {
         public DType DType { get; set; }
         public double X { get; set; }
+        //上位下位互換性維持
+        public ExtensionDataObject? ExtensionData { get; set; }
+
         public Data() { DType = DType.None; }
     }
 
