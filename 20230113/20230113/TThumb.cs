@@ -60,7 +60,7 @@ namespace _20230113
 
         #endregion 依存プロパティ
 
-        public new DataGroup Data { get; set; }
+        public DataGroup Data { get; set; }
         private ItemsControl MyTemplateElement;
         public ObservableCollection<TThumb> Items { get; set; } = new();
 
@@ -83,7 +83,7 @@ namespace _20230113
             SetBinding(TTTopProperty, nameof(Data.Y));
 
             ItemsControl resultElement = SetTemplate();
-            //SetBinding(TTTextProperty, nameof(Data.Text));
+            //SetBinding(TTSourceProperty, nameof(Data.Text));
             resultElement.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(Items)) { Source = this });
 
             return resultElement;
@@ -122,6 +122,7 @@ namespace _20230113
                 case TType.Group:
                     break;
                 case TType.Image:
+                    AddItem(new TTImage((DataImage)data), data);
                     break;
                 case TType.Rectangle:
                     break;
@@ -149,7 +150,7 @@ namespace _20230113
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion 依存プロパティ
 
-        public new DataTextBlock Data { get; set; }
+        public DataTextBlock Data { get; set; }
         private TextBlock MyTemplateElement;
 
         public TTTextBlock()
@@ -167,9 +168,8 @@ namespace _20230113
             this.DataContext = Data;
             SetBinding(TTLeftProperty, nameof(Data.X));
             SetBinding(TTTopProperty, nameof(Data.Y));
-
-            TextBlock resultElement = SetTemplate();
             SetBinding(TTTextProperty, nameof(Data.Text));
+            TextBlock resultElement = SetTemplate();
             resultElement.SetBinding(TextBlock.TextProperty, nameof(Data.Text));
 
             return resultElement;
@@ -180,6 +180,58 @@ namespace _20230113
             this.Template = new() { VisualTree = factory };
             this.ApplyTemplate();
             if (Template.FindName("nemo", this) is TextBlock element)
+            { return element; }
+            else { throw new ArgumentException("テンプレートの要素取得できんかった"); }
+        }
+    }
+    public class TTImage : TThumb
+    {
+        #region 依存プロパティ
+
+        public string TTSource
+        {
+            get { return (string)GetValue(TTSourceProperty); }
+            set { SetValue(TTSourceProperty, value); }
+        }
+        public static readonly DependencyProperty TTSourceProperty =
+            DependencyProperty.Register(nameof(TTSource), typeof(string), typeof(TTTextBlock),
+                new FrameworkPropertyMetadata("",
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        #endregion 依存プロパティ
+
+        public DataImage Data { get; set; }
+        private Image MyTemplateElement;
+        public Guid Guid { get; set; }=Guid.NewGuid();
+
+        public TTImage()
+        {
+            Data = new DataImage();
+            MyTemplateElement = SetMyBinding();
+        }
+        public TTImage(DataImage data)
+        {
+            Data = data;
+            MyTemplateElement = SetMyBinding();
+        }
+        private Image SetMyBinding()
+        {
+            this.DataContext = Data;
+            SetBinding(TTLeftProperty, nameof(Data.X));
+            SetBinding(TTTopProperty, nameof(Data.Y));
+            SetBinding(TTSourceProperty, nameof(Data.ImageSource));
+            Image resultElement = SetTemplate();
+            resultElement.SetBinding(Image.SourceProperty, nameof(Data.ImageSource));
+
+            return resultElement;
+        }
+        private Image SetTemplate()
+        {
+            FrameworkElementFactory factory = new(typeof(Image), "nemo");
+            this.Template = new() { VisualTree = factory };
+            this.ApplyTemplate();
+            if (Template.FindName("nemo", this) is Image element)
             { return element; }
             else { throw new ArgumentException("テンプレートの要素取得できんかった"); }
         }

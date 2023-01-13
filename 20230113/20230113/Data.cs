@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace _20230113
 {
@@ -54,5 +55,12 @@ namespace _20230113
     {
         private SolidColorBrush? _fillBrush;
         public SolidColorBrush? FillBrush { get => _fillBrush; set => SetProperty(ref _fillBrush, value); }
+    }
+    public class DataImage : Data
+    {
+
+        private BitmapSource? _imageSource;
+        public BitmapSource? ImageSource { get => _imageSource; set => SetProperty(ref _imageSource, value); }
+        //public Guid Guid { get; set; }= Guid.NewGuid();
     }
 }
