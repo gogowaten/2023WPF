@@ -16,7 +16,7 @@ namespace _20230113
     public enum TType { None = 0, TextBlock, Group, Image, Rectangle }
 
 
-
+    [KnownType(typeof(DataImage)),KnownType(typeof(DataGroup)),KnownType(typeof(DataTextBlock))]
     public class Data : INotifyPropertyChanged, IExtensibleDataObject
     {
         public ExtensionDataObject? ExtensionData { get; set; }
@@ -56,11 +56,12 @@ namespace _20230113
         private SolidColorBrush? _fillBrush;
         public SolidColorBrush? FillBrush { get => _fillBrush; set => SetProperty(ref _fillBrush, value); }
     }
+    
     public class DataImage : Data
     {
 
         private BitmapSource? _imageSource;
-        public BitmapSource? ImageSource { get => _imageSource; set => SetProperty(ref _imageSource, value); }
+       [IgnoreDataMember] public BitmapSource? ImageSource { get => _imageSource; set => SetProperty(ref _imageSource, value); }
         //public Guid Guid { get; set; }= Guid.NewGuid();
     }
 }
