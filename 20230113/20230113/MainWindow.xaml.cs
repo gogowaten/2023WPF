@@ -27,6 +27,15 @@ namespace _20230113
             TTTextBlock tTTextBlock = new(new DataTextBlock() { Text = "TTT", X = 100, Y = 100 });
             MyCanvas.Children.Add(tTTextBlock);
 
+            DataTextBlock data = new() { Text = "TTT2", X = 120, Y = 120 };
+            tTTextBlock = new(data);
+            //MyRoot.AddItem(tTTextBlock, tTTextBlock.Data);
+            MyRoot.AddItem(data);
+        }
+
+        private void ButtonTest1_Click(object sender, RoutedEventArgs e)
+        {
+            var neko = MyRoot.Data;
         }
     }
 }

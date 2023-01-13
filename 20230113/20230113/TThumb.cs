@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Markup;
 
 namespace _20230113
 {
@@ -38,14 +40,97 @@ namespace _20230113
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         #endregion 依存プロパティ
-        //public Data Data { get; set; }
+        //public Data Data { get; set; } = new();
         public TThumb()
         {
+
             //Data = new Data();
             //DataContext = this;
             SetBinding(Canvas.LeftProperty, new Binding() { Path = new PropertyPath(TTLeftProperty), Source = this });
             SetBinding(Canvas.TopProperty, new Binding() { Path = new PropertyPath(TTTopProperty), Source = this });
         }
+    }
+
+
+    [ContentProperty(nameof(Items))]
+    public class TTGroup : TThumb
+    {
+        #region 依存プロパティ
+
+
+        #endregion 依存プロパティ
+
+        public new DataGroup Data { get; set; }
+        private ItemsControl MyTemplateElement;
+        public ObservableCollection<TThumb> Items { get; set; } = new();
+
+        public TTGroup()
+        {
+            Data = new DataGroup();
+            MyTemplateElement = SetMyBinding();
+        }
+        public TTGroup(DataGroup data)
+        {
+            Data = data;
+            MyTemplateElement = SetMyBinding();
+        }
+        #region 初期設定
+
+        private ItemsControl SetMyBinding()
+        {
+            this.DataContext = Data;
+            SetBinding(TTLeftProperty, nameof(Data.X));
+            SetBinding(TTTopProperty, nameof(Data.Y));
+
+            ItemsControl resultElement = SetTemplate();
+            //SetBinding(TTTextProperty, nameof(Data.Text));
+            resultElement.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(Items)) { Source = this });
+
+            return resultElement;
+        }
+        private ItemsControl SetTemplate()
+        {
+            FrameworkElementFactory factory = new(typeof(ItemsControl), "nemo");
+            factory.SetValue(ItemsControl.ItemsPanelProperty, new ItemsPanelTemplate(new FrameworkElementFactory(typeof(Canvas))));
+            this.Template = new() { VisualTree = factory };
+            this.ApplyTemplate();
+            if (Template.FindName("nemo", this) is ItemsControl element)
+            { return element; }
+            else { throw new ArgumentException("テンプレートの要素取得できんかった"); }
+        }
+        #endregion 初期設定
+
+        public void AddItem(TThumb thumb, Data data)
+        {
+            Items.Add(thumb);
+            Data.Datas.Add(data);
+        }
+        public void RemoveItem(TThumb thumb, Data data)
+        {
+            Items.Remove(thumb);
+            Data.Datas.Remove(data);
+        }
+        public void AddItem(Data data)
+        {
+            switch (data.Type)
+            {
+                case TType.None:
+                    break;
+                case TType.TextBlock:
+                    //TTTextBlock thumb = new((DataTextBlock)data);
+                    AddItem(new TTTextBlock((DataTextBlock)data), data);
+                    break;
+                case TType.Group:
+                    break;
+                case TType.Image:
+                    break;
+                case TType.Rectangle:
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 
     public class TTTextBlock : TThumb
@@ -65,7 +150,7 @@ namespace _20230113
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion 依存プロパティ
 
-        public DataTextBlock Data { get; set; }
+        public new DataTextBlock Data { get; set; }
         private TextBlock MyTemplateElement;
 
         public TTTextBlock()
@@ -92,7 +177,7 @@ namespace _20230113
         }
         private TextBlock SetTemplate()
         {
-            FrameworkElementFactory factory = new(typeof(TextBlock), "n1emo");
+            FrameworkElementFactory factory = new(typeof(TextBlock), "nemo");
             this.Template = new() { VisualTree = factory };
             this.ApplyTemplate();
             if (Template.FindName("nemo", this) is TextBlock element)
