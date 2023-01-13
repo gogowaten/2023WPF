@@ -117,7 +117,6 @@ namespace _20230113
                 case TType.None:
                     break;
                 case TType.TextBlock:
-                    //TTTextBlock thumb = new((DataTextBlock)data);
                     AddItem(new TTTextBlock((DataTextBlock)data), data);
                     break;
                 case TType.Group:
