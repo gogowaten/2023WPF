@@ -6,7 +6,20 @@
         xmlns:local="clr-namespace:_20230114_SaveDataGroupWithBitmap"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="200"/>
+    </Grid.ColumnDefinitions>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+      <Canvas Name="MyCanvas">
+        <local:TTGroup x:Name="MyRoot">
+          <local:TTTextBlock x:Name="MyTTTextBlock" TTText="test" TTLeft="50" TTTop="10"/>
+        </local:TTGroup>
+      </Canvas>
+    </ScrollViewer>
+    <StackPanel Grid.Column="1">
+      <Button x:Name="ButtonTest1" Content="check" Click="ButtonTest1_Click"/>
+    </StackPanel>
+  </Grid>
 </Window>
