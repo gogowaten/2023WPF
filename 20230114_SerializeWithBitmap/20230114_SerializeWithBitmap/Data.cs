@@ -37,5 +37,6 @@ namespace _20230114_SerializeWithBitmap
         [IgnoreDataMember] public BitmapSource? ImageSource;
         //シリアライズ時の画像ファイル名に使用、Guidで一意の名前作成している
         public string Guid { get; set; } = System.Guid.NewGuid().ToString();
+        public DataImage() { Type = TType.Image; }
     }
 }

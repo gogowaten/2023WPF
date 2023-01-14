@@ -11,8 +11,8 @@ namespace _20230114_SerializeWithBitmap
 {
     public partial class MainWindow : Window
     {
-        private string ZIP_FILE_PATH = "E:\\20230113.zip";
-        private string XML_FILE_NAME = "Data.xml";
+        private readonly string ZIP_FILE_PATH = "E:\\20230113.zip";
+        private readonly string XML_FILE_NAME = "Data.xml";
 
         public MainWindow()
         {
@@ -38,17 +38,25 @@ namespace _20230114_SerializeWithBitmap
             {
                 X = 120,
                 Y = 120,
-                Text = "マヨネー樹の花の色、常勝不敗の理を顕す"
+                Text = "マヨネー樹の花の色"
             };
 
-            //DataGroupでセーブロード確認
-            DataGroup dataGroup = new() { X = 10, Y = 10 };
-            dataGroup.Datas.Add(dataImage1);
-            dataGroup.Datas.Add(dataTextBlock);
-            dataGroup.Datas.Add(dataImage2);
-            SaveToZip(ZIP_FILE_PATH, dataGroup);
+            //階層構造DataGroupにシリアライズできる値とBitmapを混ぜたDataｗセーブロード確認
+            DataGroup dataGroupRoot = new() { X = 10, Y = 10 };
+            dataGroupRoot.Datas.Add(dataImage1);
+            dataGroupRoot.Datas.Add(dataTextBlock);
+            dataGroupRoot.Datas.Add(dataImage2);
+            DataGroup dataGroup1 = new() { X = 20, Y = 30 };
+            dataGroup1.Datas.Add(new DataTextBlock() { X= 20, Y = 30 ,Text= "常勝不敗の理を顕す" });
+            dataGroupRoot.Datas.Add(dataGroup1);
+            SaveToZip(ZIP_FILE_PATH, dataGroupRoot);
             Data? inu = LoadFromZip(ZIP_FILE_PATH);
-
+            //DataGroup_Root
+            //  ┣DataImage_1
+            //  ┣DataTextBlock
+            //  ┣DataImage_2
+            //  ┗DataGroup_1
+            //      ┗DataTextBlock
         }
 
 
