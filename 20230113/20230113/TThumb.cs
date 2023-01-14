@@ -203,7 +203,7 @@ namespace _20230113
 
         public DataImage Data { get; set; }
         private Image MyTemplateElement;
-        public Guid Guid { get; set; }=Guid.NewGuid();
+        //public Guid Guid { get; set; }=Guid.NewGuid();
 
         public TTImage()
         {

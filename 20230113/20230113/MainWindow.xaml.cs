@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -38,23 +39,40 @@ namespace _20230113
 
             Uri uriSource = new($"D:\\ブログ用\\テスト用画像\\collection1.png");
             BitmapImage bitmap = new(uriSource);
+            BitmapImage image = GetBitmapImage($"D:\\ブログ用\\テスト用画像\\collection1.png");
             DataImage dImage = new() { ImageSource = bitmap, X = 30, Y = 40 };
             TTImage MyTTImage = new(dImage);
             MyRoot.AddItem(MyTTImage, dImage);
 
             Serialize2($"E:\\20230113.xml", MyRoot.Data);
             var dedata = Deserializer<Data>($"E:\\20230113.xml");
-            MakePng($"E:\\20230113.zip", MyRoot.Data);
+            SaveToZip($"E:\\20230113.zip", MyRoot.Data);
+            var neko = LoadFromZip($"E:\\20230113.zip");
+            var inu = LoadFromZip1($"E:\\20230113.zip");
         }
 
-        private void MakePng(string filePath, Data data)
+        private BitmapImage GetBitmapImage(string path)
+        {
+            BitmapImage bitmap = new();
+            using (var stream = File.OpenRead(path))
+            {
+                bitmap.BeginInit();
+                bitmap.StreamSource = stream;
+                //bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
+                bitmap.EndInit();
+                //bitmap.Freeze();
+            }
+            return bitmap;
+        }
+        private void SaveToZip(string filePath, Data data)
         {
             using (var zipStream = File.Create(filePath))
             {
                 using (ZipArchive archive = new(zipStream, ZipArchiveMode.Create))
                 {
                     //xmlをzipに詰め込む
-                    ZipArchiveEntry entry = archive.CreateEntry("20230113.xml");
+                    ZipArchiveEntry entry = archive.CreateEntry("Data.xml");
                     using (var entryStream = entry.Open())
                     {
                         XmlWriterSettings settings = new()
@@ -78,7 +96,8 @@ namespace _20230113
                         {
                             if (item is DataImage dImage)
                             {
-                                entry = archive.CreateEntry("20230113_" + imageCount + ".png");
+                                entry = archive.CreateEntry(dImage.Guid);
+                                //entry = archive.CreateEntry("20230113_" + imageCount + ".png");
                                 using (var entryStream = entry.Open())
                                 {
                                     PngBitmapEncoder encoder = new();
@@ -102,6 +121,179 @@ namespace _20230113
 
         }
 
+        private object? LoadFromZip(string filePath)
+        {
+            using (var zipStream = File.OpenRead(filePath))
+            {
+                using (var archive = new ZipArchive(zipStream, ZipArchiveMode.Read))
+                {
+                    var entry = archive.GetEntry("Data.xml");
+                    if (entry != null)
+                    {
+                        using (var entryStream = entry.Open())
+                        {
+                            DataContractSerializer serializer = new(typeof(Data));
+                            try
+                            {
+                                using (var reader = XmlReader.Create(entryStream))
+                                {
+                                    Data? data = (Data?)serializer.ReadObject(reader);
+                                    if (data is DataGroup group)
+                                    {
+                                        foreach (var item in group.Datas)
+                                        {
+                                            if (item is DataImage dImage)
+                                            {
+                                                var neko = dImage.Guid;
+                                                var imageEntry = archive.GetEntry(neko);
+                                                if (imageEntry != null)
+                                                {
+                                                    using (var imageStream = imageEntry.Open())
+                                                    {
+                                                        PngBitmapDecoder decoder =
+                                                            new(imageStream,
+                                                            BitmapCreateOptions.None,
+                                                            BitmapCacheOption.Default);
+                                                        dImage.ImageSource = decoder.Frames[0];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    return data;
+                                }
+                            }
+                            catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+        private Data? LoadFromZip1(string filePath)
+        {
+            try
+            {
+                using FileStream zipStream = File.OpenRead(filePath);
+                using ZipArchive archive = new(zipStream, ZipArchiveMode.Read);
+                ZipArchiveEntry? entry = archive.GetEntry("Data.xml");
+                if (entry != null)
+                {
+                    using Stream entryStream = entry.Open();
+                    DataContractSerializer serializer = new(typeof(Data));
+                    using var reader = XmlReader.Create(entryStream);
+                    Data? data = (Data?)serializer.ReadObject(reader);
+                    if (data is null) return null;
+                    Sub(data, archive);
+                    return data;
+                }
+            }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            return null;
+
+            void Sub(Data data, ZipArchive archive)
+            {
+                if (data is DataGroup group)
+                {
+                    foreach (Data item in group.Datas)
+                    {
+                        if (item is DataImage dImage)
+                        {
+                            SubSub(dImage, archive);
+                        }
+                    }
+                }
+                else if (data is DataImage dataImage)
+                {
+                    SubSub(dataImage, archive);
+                }
+            }
+            void SubSub(DataImage data, ZipArchive archive)
+            {
+                ZipArchiveEntry? imageEntry = archive.GetEntry(data.Guid);
+                if (imageEntry != null)
+                {
+                    using Stream imageStream = imageEntry.Open();
+                    PngBitmapDecoder decoder =
+                        new(imageStream,
+                        BitmapCreateOptions.None,
+                        BitmapCacheOption.Default);
+                    data.ImageSource = decoder.Frames[0];
+                }
+            }
+        }
+
+        //private void SetImageSource(Data data, ZipArchive archive)
+        //{
+        //    if (data is DataGroup group)
+        //    {
+        //        foreach (var item in group.Datas)
+        //        {
+        //            if (item is DataImage dImage)
+        //            {
+        //                DecodeAndSetID(dImage, archive);
+        //            }
+        //        }
+        //    }
+        //    else if (data is DataImage dataImage)
+        //    {
+        //        DecodeAndSetID(dataImage, archive);
+        //    }
+        //}
+        //private void DecodeAndSetID(DataImage data, ZipArchive archive)
+        //{
+        //    string imageID = data.Guid;
+        //    var imageEntry = archive.GetEntry(imageID);
+        //    if (imageEntry != null)
+        //    {
+        //        using Stream imageStream = imageEntry.Open();
+        //        PngBitmapDecoder decoder =
+        //            new(imageStream,
+        //            BitmapCreateOptions.None,
+        //            BitmapCacheOption.Default);
+        //        data.ImageSource = decoder.Frames[0];
+        //    }
+        //}
+        private object? LoadFromZip2(string filePath)
+        {
+            using (var zipStream = File.OpenRead(filePath))
+            {
+                using var archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
+                var entry = archive.GetEntry("20230113.xml");
+                if (entry != null)
+                {
+                    using var entryStream = entry.Open();
+                    DataContractSerializer serializer = new(typeof(Data));
+                    try
+                    {
+                        using var reader = XmlReader.Create(entryStream);
+                        Data? data = (Data?)serializer.ReadObject(reader);
+                        if (data is DataGroup group)
+                        {
+                            foreach (var item in group.Datas)
+                            {
+                                if (item is DataImage dImage)
+                                {
+                                    var neko = dImage.Guid;
+                                    var imageEntry = archive.GetEntry(neko);
+                                    if (imageEntry != null)
+                                    {
+                                        using var imageStream = imageEntry.Open();
+                                        PngBitmapDecoder decoder =
+                                            new(imageStream, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                                        dImage.ImageSource = decoder.Frames[0];
+                                    }
+                                }
+                            }
+                        }
+                        return data;
+                    }
+                    catch (Exception ex) { MessageBox.Show(ex.Message); }
+                }
+            }
+            return null;
+        }
 
 
         #region シリアライズ
