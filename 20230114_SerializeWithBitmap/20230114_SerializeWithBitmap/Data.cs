@@ -4,11 +4,13 @@ using System.Windows.Media.Imaging;
 
 namespace _20230114_SerializeWithBitmap
 {
+    
+    // 型の識別用に用意したけど今回は未使用    
     public enum TType { None = 0, TextBlock, Group, Image, Rectangle }
 
 
     [KnownType(typeof(DataImage)), KnownType(typeof(DataGroup)), KnownType(typeof(DataTextBlock))]
-    public class Data : IExtensibleDataObject
+    public abstract class Data : IExtensibleDataObject
     {
         public ExtensionDataObject? ExtensionData { get; set; }
 

@@ -7,6 +7,10 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml;
 
+
+//WPF、BitmapSourceを含んだクラスをシリアライズ、と言うかファイルに保存と読み込みできた - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/01/15/144935
+
 namespace _20230114_SerializeWithBitmap
 {
     public partial class MainWindow : Window
@@ -18,45 +22,48 @@ namespace _20230114_SerializeWithBitmap
         {
             InitializeComponent();
 
+            //DataImage、Bitmapを含むDataクラス
             DataImage dataImage1 = new()
             {
                 X = 150,
                 Y = 10,
                 ImageSource = GetBitmapImage("D:\\ブログ用\\テスト用画像\\NEC_0541_2017_07_21_午後わてん__Matrix4x4_1.png")
             };
+
             //DataImage単体でセーブロード確認
             SaveToZip(ZIP_FILE_PATH, dataImage1);
-            Data? neko = LoadFromZip(ZIP_FILE_PATH);
+            Data? DataImage単体確認用 = LoadFromZip(ZIP_FILE_PATH);
 
-            DataImage dataImage2 = new()
-            {
-                X = 30,
-                Y = 140,
-                ImageSource = GetBitmapImage($"D:\\ブログ用\\テスト用画像\\collection1.png")
-            };
-            DataTextBlock dataTextBlock = new()
+
+            //階層構造DataGroup、普通にシリアライズできる値とBitmapを混ぜたData
+            //DataGroup_Root
+            //  ┣DataImage
+            //  ┣DataTextBlock
+            //  ┣DataImage
+            //  ┗DataGroup
+            //      ┗DataTextBlock
+            DataGroup dataGroupRoot = new() { X = 10, Y = 10 };
+            dataGroupRoot.Datas.Add(dataImage1);
+            dataGroupRoot.Datas.Add(new DataTextBlock()
             {
                 X = 120,
                 Y = 120,
                 Text = "マヨネー樹の花の色"
-            };
-
-            //階層構造DataGroupにシリアライズできる値とBitmapを混ぜたDataｗセーブロード確認
-            DataGroup dataGroupRoot = new() { X = 10, Y = 10 };
-            dataGroupRoot.Datas.Add(dataImage1);
-            dataGroupRoot.Datas.Add(dataTextBlock);
-            dataGroupRoot.Datas.Add(dataImage2);
+            });
+            dataGroupRoot.Datas.Add(new DataImage()
+            {
+                X = 30,
+                Y = 140,
+                ImageSource = GetBitmapImage($"D:\\ブログ用\\テスト用画像\\collection1.png")
+            });
             DataGroup dataGroup1 = new() { X = 20, Y = 30 };
-            dataGroup1.Datas.Add(new DataTextBlock() { X= 20, Y = 30 ,Text= "常勝不敗の理を顕す" });
+            dataGroup1.Datas.Add(new DataTextBlock() { X = 20, Y = 30, Text = "東方不敗の理を顕す" });
             dataGroupRoot.Datas.Add(dataGroup1);
+
+            //階層構造Dataのセーブロード確認
             SaveToZip(ZIP_FILE_PATH, dataGroupRoot);
-            Data? inu = LoadFromZip(ZIP_FILE_PATH);
-            //DataGroup_Root
-            //  ┣DataImage_1
-            //  ┣DataTextBlock
-            //  ┣DataImage_2
-            //  ┗DataGroup_1
-            //      ┗DataTextBlock
+            Data? 階層構造Data確認用 = LoadFromZip(ZIP_FILE_PATH);
+
         }
 
 
@@ -77,31 +84,38 @@ namespace _20230114_SerializeWithBitmap
 
         private void SaveToZip(string filePath, Data data)
         {
-            using FileStream zipStream = File.Create(filePath);
-            using (ZipArchive archive = new(zipStream, ZipArchiveMode.Create))
+            try
             {
-                //xml形式にシリアライズして、それをzipに詰め込む
-                ZipArchiveEntry entry = archive.CreateEntry(XML_FILE_NAME);
-                using (Stream entryStream = entry.Open())
+                using FileStream zipStream = File.Create(filePath);
+                using (ZipArchive archive = new(zipStream, ZipArchiveMode.Create))
                 {
-                    XmlWriterSettings settings = new()
+                    //xml形式にシリアライズして、それをzipに詰め込む
+                    ZipArchiveEntry entry = archive.CreateEntry(XML_FILE_NAME);
+                    using (Stream entryStream = entry.Open())
                     {
-                        Indent = true,
-                        Encoding = Encoding.UTF8,
-                        NewLineOnAttributes = true,
-                        ConformanceLevel = ConformanceLevel.Fragment,
-                    };
-                    DataContractSerializer serializer = new(typeof(Data));
-                    using var writer = XmlWriter.Create(entryStream, settings);
-                    try { serializer.WriteObject(writer, data); }
-                    catch (Exception ex) { MessageBox.Show(ex.Message); }
+                        XmlWriterSettings settings = new()
+                        {
+                            Indent = true,
+                            Encoding = Encoding.UTF8,
+                            NewLineOnAttributes = true,
+                            ConformanceLevel = ConformanceLevel.Fragment,
+                        };
+                        //シリアライズする型は基底クラス型のDataで大丈夫
+                        DataContractSerializer serializer = new(typeof(Data));
+                        using var writer = XmlWriter.Create(entryStream, settings);
+                        try { serializer.WriteObject(writer, data); }
+                        catch (Exception ex) { MessageBox.Show(ex.Message); }
+                    }
+                    //png形式にした画像をzipに詰め込む
+                    AAA(archive);
                 }
-                //png形式にした画像をzipに詰め込む
-                AAA(archive);
+
             }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
 
             void AAA(ZipArchive archive)
             {
+                //if (data.Type == TType.Group)//こっちの方が速いかも
                 if (data is DataGroup group)
                 {
                     foreach (var item in group.Datas)
@@ -187,8 +201,8 @@ namespace _20230114_SerializeWithBitmap
             }
         }
 
-
-        #region シリアライズ
+        //未使用
+        #region シリアライズ、未使用
 
         ////それぞれのクラス型でシリアライズ
         //private static void Serialize<T>(string filePath, T obj)
@@ -232,7 +246,7 @@ namespace _20230114_SerializeWithBitmap
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); return default; }
         }
-        #endregion シリアライズ
+        #endregion シリアライズ、未使用
 
 
 
