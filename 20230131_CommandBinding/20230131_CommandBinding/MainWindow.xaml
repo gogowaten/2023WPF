@@ -16,6 +16,9 @@
   </Window.InputBindings>
     <Grid>
     <StackPanel>
+      <Menu>
+        <MenuItem Command="ApplicationCommands.Copy"/>
+      </Menu>
       <Button Content="test" Command="{x:Static local:MainWindow.MyCommand}"/>
       <CheckBox x:Name="MyCheckBox"/>
       <Button Content="Copy"

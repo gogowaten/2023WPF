@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,8 @@ using System.Windows.Shapes;
 //http://www.wisdomsoft.jp/448.html
 //WPF4.5入門 その57「コマンド」 - かずきのBlog@hatena
 //https://blog.okazuki.jp/entry/2014/10/29/221029
+//Pixtack2nd/MainWindow.xaml at 2591c4dcfcbd28cf340ae5d21283098bf383eefa · gogowaten/Pixtack2nd
+//https://github.com/gogowaten/Pixtack2nd/blob/2591c4dcfcbd28cf340ae5d21283098bf383eefa/Wpf_Pixtack_test2_ExThumb/Wpf_Pixtack_test2_ExThumb/MainWindow.xaml
 
 namespace _20230131_CommandBinding
 {
@@ -26,10 +29,11 @@ namespace _20230131_CommandBinding
     /// </summary>
     public partial class MainWindow : Window
     {
-        public static RoutedCommand MyCommand = new();
+        public static RoutedCommand MyCommand { get; } = new();
         public MainWindow()
         {
             InitializeComponent();
+            
         }
 
         private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
