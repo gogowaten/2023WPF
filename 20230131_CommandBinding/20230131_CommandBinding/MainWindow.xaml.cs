@@ -21,6 +21,8 @@ using System.Windows.Shapes;
 //https://blog.okazuki.jp/entry/2014/10/29/221029
 //Pixtack2nd/MainWindow.xaml at 2591c4dcfcbd28cf340ae5d21283098bf383eefa · gogowaten/Pixtack2nd
 //https://github.com/gogowaten/Pixtack2nd/blob/2591c4dcfcbd28cf340ae5d21283098bf383eefa/Wpf_Pixtack_test2_ExThumb/Wpf_Pixtack_test2_ExThumb/MainWindow.xaml
+//第6回　「コマンド」と「MVVMパターン」を理解する：連載：WPF入門（2/3 ページ） - ＠IT
+//https://atmarkit.itmedia.co.jp/ait/articles/1011/09/news102_2.html
 
 namespace _20230131_CommandBinding
 {
