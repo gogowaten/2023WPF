@@ -1,0 +1,16 @@
+﻿<Window x:Class="_20230208_HutaTextBox.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230208_HutaTextBox"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+  <Grid x:Name="MyGrid" PreviewMouseDown="My_MouseDown">
+    <Canvas>
+      <TextBox Text="textbox" x:Name="MyTextBox" PreviewMouseDown="My_MouseDown"/>
+      <local:HutaTextBox x:Name="MyHutaTextBox" Canvas.Left="20" Canvas.Top="20" Text="hutaaaaa"/>
+      <local:TTTextBox x:Name="MyTTTextBox" Canvas.Left="20" Canvas.Top="40" Text="TTTTTTTTTTTTTT"/>
+    </Canvas>
+  </Grid>
+</Window>
