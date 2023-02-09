@@ -33,14 +33,40 @@ namespace _20230208_HutaTextBox
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        public bool IsEdit
+        {
+            get { return (bool)GetValue(IsEditProperty); }
+            set { SetValue(IsEditProperty, value); }
+        }
+        public static readonly DependencyProperty IsEditProperty =
+            DependencyProperty.Register(nameof(IsEdit), typeof(bool), typeof(HutaTextBox),
+                new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnIsEditChanged)));
+        //ダブルクリックでテキスト編集状態の切り替え
+        //蓋の背景色が透明色ならnullにしてTextBoxを編集状態にする
+        //蓋の背景色がnullだった場合は透明色にして編集状態終了
+        private static void OnIsEditChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is HutaTextBox hutaText)
+            {
+                if (hutaText.HutaGrid.Background == Brushes.Transparent)
+                {
+                    hutaText.HutaGrid.Background = null;
+                    Keyboard.Focus(hutaText.MyTextBox);
+                }
+                else
+                {
+                    hutaText.HutaGrid.Background = Brushes.Transparent;
+                    Keyboard.ClearFocus();
+                }
+            }
+        }
+
         public HutaTextBox()
         {
 
             SetTemplata();
             HutaGrid = (Grid)Template.FindName(HUTA, this);
             MyTextBox = (TextBox)Template.FindName(TEXTBOX, this);
-            MouseDoubleClick += HutaTextBox_MouseDoubleClick;
-
         }
 
         private void SetTemplata()
@@ -55,23 +81,6 @@ namespace _20230208_HutaTextBox
             baseGrid.AppendChild(huta);
             Template = new() { VisualTree = baseGrid };
             ApplyTemplate();
-        }
-
-        //ダブルクリックでテキスト編集状態の切り替え
-        //蓋の背景色が透明色ならnullにしてTextBoxを編集状態にする
-        //蓋の背景色がnullだった場合は透明色にして編集状態終了
-        private void HutaTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (HutaGrid.Background == Brushes.Transparent)
-            {
-                HutaGrid.Background = null;
-                Keyboard.Focus(MyTextBox);
-            }
-            else
-            {
-                HutaGrid.Background = Brushes.Transparent;
-                Keyboard.ClearFocus();
-            }
         }
 
     }
@@ -94,10 +103,27 @@ namespace _20230208_HutaTextBox
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
 
+
+        public bool IsEdit
+        {
+            get { return (bool)GetValue(IsEditProperty); }
+            set { SetValue(IsEditProperty, value); }
+        }
+        public static readonly DependencyProperty IsEditProperty =
+                    DependencyProperty.Register("IsEdit", typeof(bool), typeof(TTTextBox), new PropertyMetadata(false));
+
+
+
         public TTTextBox()
         {
             SetTemplate();
             DragDelta += TTTextBox_DragDelta;
+            MouseDoubleClick += TTTextBox_MouseDoubleClick;
+        }
+
+        private void TTTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            IsEdit = !IsEdit;
         }
 
         private void TTTextBox_DragDelta(object sender, DragDeltaEventArgs e)
@@ -110,6 +136,7 @@ namespace _20230208_HutaTextBox
         {
             FrameworkElementFactory factory = new(typeof(HutaTextBox));
             factory.SetValue(HutaTextBox.MyTextProperty, new Binding() { Source = this, Path = new PropertyPath(MyTextProperty) });
+            factory.SetValue(HutaTextBox.IsEditProperty, new Binding() { Source = this,Path=new PropertyPath(IsEditProperty) });
             Template = new() { VisualTree = factory };
         }
     }

@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="600">
   <Grid x:Name="MyGrid" PreviewMouseDown="My_MouseDown">
     <Canvas>
-      <TextBox Text="textbox" x:Name="MyTextBox" PreviewMouseDown="My_MouseDown"/>
+      <TextBox Text="textbox" x:Name="MyTextBox" PreviewMouseDown="My_MouseDown" IsReadOnly="True"/>
       <local:HutaTextBox x:Name="MyHutaTextBox" Canvas.Left="20" Canvas.Top="20" Text="hutaaaaa"/>
       <local:TTTextBox x:Name="MyTTTextBox" Canvas.Left="20" Canvas.Top="40" Text="TTTTTTTTTTTTTT"/>
     </Canvas>
