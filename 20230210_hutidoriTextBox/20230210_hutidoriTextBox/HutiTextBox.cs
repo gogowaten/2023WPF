@@ -81,7 +81,7 @@ namespace _20230210_hutidoriTextBox
             var ww = fText.MaxTextWidth;
             var www = fText.WidthIncludingTrailingWhitespace;
             fText.TextAlignment= TextAlignment.Center;
-
+            
             drawingContext.DrawGeometry(
                 new SolidColorBrush(BrushColor),
                 new Pen(new SolidColorBrush(PenColor), PenSize),
