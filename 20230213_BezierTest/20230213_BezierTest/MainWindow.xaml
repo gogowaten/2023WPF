@@ -8,6 +8,8 @@
         Title="MainWindow" Height="450" Width="600">
   <Grid>
     <Canvas x:Name="MyCanvas">
+      <local:TTBezier3 x:Name="MyTTBezier3" Stroke="Red"/>
+      <Button Content="test" Canvas.Left="150" Width="100" Click="Button_Click"/>
       <Canvas Canvas.Top="0">
         <local:TTBezier Stroke="Blue" StrokeThickness="1" X1="1" Y1="1" X2="200" Y2="100" X3="300" Y3="0"/>
       </Canvas>
@@ -29,6 +31,9 @@
       </Canvas>
       <Canvas Canvas.Top="110">
         <Path Stroke="ForestGreen" StrokeThickness="1" Data="M 1,1 Q 200,100 300,0" RenderOptions.EdgeMode="Aliased"/>
+      </Canvas>
+      <Canvas Canvas.Top="150">
+        <local:TTPolyLine x:Name="MyTTPolyLine"/>
       </Canvas>
     </Canvas>
   </Grid>

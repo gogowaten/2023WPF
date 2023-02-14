@@ -24,5 +24,11 @@ namespace _20230213_BezierTest
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MyTTBezier3.Points[1] = new Point(100, 100);
+            MyTTPolyLine.MyPP[1]=new Point(110, 210);
+        }
     }
 }
