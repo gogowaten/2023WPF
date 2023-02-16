@@ -10,30 +10,201 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Data;
+using Microsoft.VisualBasic;
 
 namespace _20230213_BezierTest
 {
     public class TTPolyLine : Thumb
     {
-        PolyLineCanvas MyTemplate { get; set; }
+        PolyLineCanvas2 MyTemplate { get; set; }
+        public Data MyData { get; set; }
 
-        public PointCollection MyPP;
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TTPolyLine),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double MyThickness
+        {
+            get { return (double)GetValue(MyPropertyProperty); }
+            set { SetValue(MyPropertyProperty, value); }
+        }
+        public static readonly DependencyProperty MyPropertyProperty =
+            DependencyProperty.Register(nameof(MyThickness), typeof(double), typeof(TTPolyLine),
+                new FrameworkPropertyMetadata(0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public Brush MyBrush
+        {
+            get { return (Brush)GetValue(MyBrushProperty); }
+            set { SetValue(MyBrushProperty, value); }
+        }
+        public static readonly DependencyProperty MyBrushProperty =
+            DependencyProperty.Register(nameof(MyBrush), typeof(Brush), typeof(TTPolyLine), new PropertyMetadata(Brushes.MediumAquamarine));
+
         public TTPolyLine()
         {
+            MyData = new();
             SetTemplate();
-            MyTemplate = (PolyLineCanvas)this.Template.FindName("name", this);
-            MyPP = MyTemplate.MyPoints;
+            MyTemplate = (PolyLineCanvas2)this.Template.FindName("name", this);
+            MyTemplate.SetBinding(PolyLineCanvas2.MyPointsProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay,Path= new PropertyPath(MyPointsProperty) });
+            MyTemplate.SetBinding(PolyLineCanvas2.MyPointsProperty, new TemplateBindingExtension(TTPolyLine.MyPointsProperty));
+            SetBinding(MyPointsProperty, new Binding(nameof(MyData.Points)) { Source = MyData, Mode = BindingMode.TwoWay });
+
         }
         private void SetTemplate()
         {
             FrameworkElementFactory bGrid = new(typeof(Grid));
-            FrameworkElementFactory factory = new(typeof(PolyLineCanvas), "name");
+            FrameworkElementFactory factory = new(typeof(PolyLineCanvas2), "name");
 
             bGrid.AppendChild(factory);
             this.Template = new() { VisualTree = factory };
             this.ApplyTemplate();
 
         }
+    }
+    public class PolyLineCanvas2 : Canvas
+    {
+        #region Property
+
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(PolyLineCanvas2),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public Brush MyBrush
+        {
+            get { return (Brush)GetValue(MyBrushProperty); }
+            set { SetValue(MyBrushProperty, value); }
+        }
+        public static readonly DependencyProperty MyBrushProperty =
+            DependencyProperty.Register(nameof(MyBrush), typeof(Brush), typeof(PolyLineCanvas2), new PropertyMetadata(Brushes.MediumAquamarine));
+
+        public double MyThickness
+        {
+            get { return (double)GetValue(MyThicknessProperty); }
+            set { SetValue(MyThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty MyThicknessProperty =
+            DependencyProperty.Register(nameof(MyThickness), typeof(double), typeof(PolyLineCanvas2),
+                new FrameworkPropertyMetadata(1.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public readonly List<TThumb> MyThumbs = new();
+        //public PointCollection MyPoints = new();
+
+        public Polyline MyPolyline;
+        //クリックしたThumb
+        public TThumb? MyCurrentThumb { get; private set; }
+        public bool IsThumbVisible = true;
+        #endregion Property
+        public PolyLineCanvas2()
+        {
+            MyPoints = new();
+            MyPolyline = new()
+            {
+                Stroke = MyBrush,
+                StrokeThickness = MyThickness,
+                Points = MyPoints,
+            };
+            MyPolyline.SetBinding(Polyline.PointsProperty, new Binding(nameof(MyPoints)) { Source = this });
+            SetBinding(WidthProperty, new Binding()
+            {
+                Source = MyPolyline,
+                Path = new PropertyPath(Polyline.ActualWidthProperty),
+            });
+            SetBinding(HeightProperty, new Binding()
+            {
+                Source = MyPolyline,
+                Path = new PropertyPath(Polyline.ActualHeightProperty),
+            });
+
+            //MyPoints.Add(new(0, 0));
+            //MyPoints.Add(new(100, 100));
+            //MyPoints.Add(new(200, 20));
+            this.Children.Add(MyPolyline);
+        }
+        public PolyLineCanvas2(Brush stroke, double thickness)
+        {
+            MyPolyline = new()
+            {
+                Stroke = stroke,
+                StrokeThickness = thickness,
+                Points = MyPoints
+            };
+            this.Children.Add(MyPolyline);
+        }
+
+        public void AddPoint(Point p)
+        {
+            TThumb t = new() { Width = 20, Height = 20 };
+            t.DragDelta += Thumb_DragDelta;
+            t.PreviewMouseDown += Thumb_PreviewMouseDown;
+            SetLeft(t, p.X); SetTop(t, p.Y);
+            MyPoints.Add(p);
+            MyThumbs.Add(t);
+            this.Children.Add(t);
+        }
+
+        public void RemovePoint()
+        {
+            if (MyCurrentThumb is null) { return; }
+            int i = MyThumbs.IndexOf(MyCurrentThumb);
+            MyPoints.RemoveAt(i);
+            MyThumbs.Remove(MyCurrentThumb);
+            this.Children.Remove(MyCurrentThumb);
+            MyCurrentThumb = null;
+        }
+        public void ChangeVisibleThumb()
+        {
+            if (IsThumbVisible)
+            {
+                for (int i = 1; i < MyThumbs.Count; i++)
+                {
+                    MyThumbs[i].Visibility = Visibility.Collapsed;
+                }
+                IsThumbVisible = false;
+            }
+            else
+            {
+                for (int i = 1; i < MyThumbs.Count; i++)
+                {
+                    MyThumbs[i].Visibility = Visibility.Visible;
+                }
+                IsThumbVisible = true;
+            }
+        }
+
+        private void Thumb_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            MyCurrentThumb = sender as TThumb;
+        }
+
+        private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (sender is not TThumb t) { return; }
+            double x = GetLeft(t) + e.HorizontalChange;
+            double y = GetTop(t) + e.VerticalChange;
+            MyPoints[MyThumbs.IndexOf(t)] = new Point(x, y);
+            SetLeft(t, x); SetTop(t, y);
+        }
+
     }
 
     //2022WPF/MainWindow.xaml.cs at 7f77724e85c6c57f8bbebcf46376450dd0b99d3b · gogowaten/2022WPF
@@ -43,13 +214,26 @@ namespace _20230213_BezierTest
     public class PolyLineCanvas : Canvas
     {
         public readonly List<TThumb> MyThumbs = new();
-        public readonly PointCollection MyPoints = new();
-        public readonly Polyline MyPolyline;
+        public PointCollection MyPoints = new();
+
+        //public PointCollection MyPoints
+        //{
+        //    get { return (PointCollection)GetValue(MyPointsProperty); }
+        //    set { SetValue(MyPointsProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyPointsProperty =
+        //    DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(PolyLineCanvas),
+        //        new FrameworkPropertyMetadata(null,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public Polyline MyPolyline;
         //クリックしたThumb
         public TThumb? MyCurrentThumb { get; private set; }
         public bool IsThumbVisible = true;
         public PolyLineCanvas()
         {
+            MyPoints = new();
             MyPolyline = new()
             {
                 Stroke = Brushes.Red,
