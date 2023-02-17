@@ -27,11 +27,12 @@ namespace _20230213_BezierTest
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyTTBezier3.Points[1] = new Point(100, 100);
+            //MyTTBezier3.Points[1] = new Point(100, 100);
             //MyTTPolyLine.MyPP[1]=new Point(110, 210);
-            var points = MyTTPolyLine.MyPoints;
-            var data = MyTTPolyLine.MyData;
-
+            var points = MyPolyWithVT.MyPoints;
+            var data = MyPolyWithVT.MyData;
+            var linepoint = MyPolyWithVT.MyPolyLine.Points;
+            MyPolyWithVT.AddPoint(200, 300);
         }
     }
 }

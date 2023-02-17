@@ -14,10 +14,116 @@ using Microsoft.VisualBasic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace _20230213_BezierTest
 {
-    [TypeConverter(typeof(MyConverter))]
+    public class PolyLineWithVThumb : Thumb
+    {
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(PolyLineWithVThumb),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,new PropertyChangedCallback(OnMyPoints)));
+
+        private static void OnMyPoints(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if(d is PolyLineWithVThumb poly)
+            {
+                var neko = e.NewValue;
+            };
+        }
+
+
+        public ObservableCollection<Point> ObPoints
+        {
+            get { return (ObservableCollection<Point>)GetValue(ObPointsProperty); }
+            set { SetValue(ObPointsProperty, value); }
+        }
+        public static readonly DependencyProperty ObPointsProperty =
+            DependencyProperty.Register(nameof(ObPoints), typeof(ObservableCollection<Point>), typeof(PolyLineWithVThumb), new PropertyMetadata(null));
+         
+        public Data MyData { get; set; } = new();
+        public Polyline MyPolyLine;
+        public Canvas? MyCanvas;
+        
+        public ObservableCollection<TThumb> VThumbs = new();
+        public PolyLineWithVThumb()
+        {
+            MyPolyLine = SetTemplate();
+            
+            
+            MyPolyLine.SetBinding(Polyline.PointsProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(MyPointsProperty)
+            });
+
+            SetBinding(MyPointsProperty, new Binding(nameof(MyData.PointCollection))
+            {
+                Source = this.MyData,
+                Mode = BindingMode.TwoWay,
+            });
+            Loaded += PolyLineWithVThumb_Loaded;
+            if (MyCanvas != null)
+            {
+                MyCanvas.SetBinding(WidthProperty, new Binding() { Source = MyPolyLine, Path = new PropertyPath(ActualWidthProperty) });
+                MyCanvas.SetBinding(HeightProperty, new Binding() { Source = MyPolyLine, Path = new PropertyPath(ActualHeightProperty) });
+            }
+        }
+
+        
+        private void PolyLineWithVThumb_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (MyCanvas is null) return;
+            foreach (var item in MyPoints)
+            {
+                TThumb tt = new();
+                tt.Width = 20;
+                tt.Height = 20;
+                Canvas.SetLeft(tt, item.X);
+                Canvas.SetTop(tt, item.Y);
+                VThumbs.Add(tt);
+                MyCanvas.Children.Add(tt);
+            }
+        }
+
+        private Polyline SetTemplate()
+        {
+            FrameworkElementFactory fPanel = new(typeof(Canvas),"canvas");
+            FrameworkElementFactory fRect = new(typeof(Rectangle));
+            FrameworkElementFactory line = new(typeof(Polyline), "line");
+            fPanel.AppendChild(fRect);
+            fPanel.AppendChild(line);
+            fRect.SetValue(Rectangle.StrokeProperty, Brushes.Gray);
+            line.SetValue(Polyline.StrokeProperty, Brushes.Red);
+            line.SetValue(Polyline.StrokeThicknessProperty, 1.0);
+            
+            this.Template = new() { VisualTree = fPanel };
+            this.ApplyTemplate();
+            MyCanvas = (Canvas?)Template.FindName("canvas", this);
+            if (this.Template.FindName("line", this) is Polyline tempLine)
+            {
+                return tempLine;
+            }
+            else throw new Exception();
+        }
+        public void AddPoint(double x,double y)
+        {
+            MyPoints.Add(new Point(x, y));
+        }
+    }
+
+
+
+
     public class ObservarablePointsLine : ContentControl
     {
 
@@ -35,14 +141,14 @@ namespace _20230213_BezierTest
         private readonly Polyline polyline = new();
         public ObservarablePointsLine()
         {
-            
+
             polyline.SetBinding(Polyline.PointsProperty, new Binding(nameof(MyPoints))
             {
                 Source = this,
                 Mode = BindingMode.TwoWay
             });
             this.Content = polyline;
-            //polyline.Points = Points;
+            //polyline.PointCollection = PointCollection;
             polyline.StrokeThickness = 1;
             polyline.Stroke = Brushes.Gray;
         }
@@ -113,7 +219,7 @@ namespace _20230213_BezierTest
             MyData = new();
 
             SetTemplate();
-            SetBinding(MyPointsProperty, new Binding(nameof(MyData.Points)) { Source = MyData, Mode = BindingMode.TwoWay });
+            SetBinding(MyPointsProperty, new Binding(nameof(MyData.PointCollection)) { Source = MyData, Mode = BindingMode.TwoWay });
 
         }
 
@@ -180,7 +286,7 @@ namespace _20230213_BezierTest
             MyTemplate = (PolyLineCanvas2)this.Template.FindName("name", this);
             MyTemplate.SetBinding(PolyLineCanvas2.MyPointsProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay, Path = new PropertyPath(MyPointsProperty) });
 
-            SetBinding(MyPointsProperty, new Binding(nameof(MyData.Points)) { Source = MyData, Mode = BindingMode.TwoWay });
+            SetBinding(MyPointsProperty, new Binding(nameof(MyData.PointCollection)) { Source = MyData, Mode = BindingMode.TwoWay });
 
         }
         private void SetTemplate()
@@ -456,34 +562,34 @@ namespace _20230213_BezierTest
             return template;
         }
     }
-    public class MyConverter : TypeConverter
-    {
-        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
-        {
-            if (sourceType == typeof(string)) return true;
-            return base.CanConvertFrom(context, sourceType);
-        }
-        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
-        {
-            if (value == null) return null;
-            if (value is string str)
-            {
-                string[] ss = str.Split(' ');
-                ObservableCollection<Point> points = new();
-                foreach (var item in ss)
-                {
-                    string[] xy = item.Split(',');
-                    double x;
-                    double y;
-                    if (double.TryParse(xy[0], out x) && double.TryParse(xy[1], out y))
-                    {
-                        Point point = new(x, y);
-                        points.Add(point);
-                    }
-                }
-                return points;
-            }
-            return base.ConvertFrom(context, culture, value);
-        }
-    }
+    //public class MyConverter : TypeConverter
+    //{
+    //    public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
+    //    {
+    //        if (sourceType == typeof(string)) return true;
+    //        return base.CanConvertFrom(context, sourceType);
+    //    }
+    //    public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+    //    {
+    //        if (value == null) return null;
+    //        if (value is string str)
+    //        {
+    //            string[] ss = str.Split(' ');
+    //            ObservableCollection<Point> points = new();
+    //            foreach (var item in ss)
+    //            {
+    //                string[] xy = item.Split(',');
+    //                double x;
+    //                double y;
+    //                if (double.TryParse(xy[0], out x) && double.TryParse(xy[1], out y))
+    //                {
+    //                    Point point = new(x, y);
+    //                    points.Add(point);
+    //                }
+    //            }
+    //            return points;
+    //        }
+    //        return base.ConvertFrom(context, culture, value);
+    //    }
+    //}
 }

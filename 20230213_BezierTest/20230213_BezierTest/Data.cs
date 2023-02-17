@@ -21,10 +21,10 @@ namespace _20230213_BezierTest
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private PointCollection _points = new();
+        private PointCollection _pointCollection = new();
 
 
-        public PointCollection Points { get => _points; set => SetProperty(ref _points, value); }
+        public PointCollection PointCollection { get => _pointCollection; set => SetProperty(ref _pointCollection, value); }
 
         public Data()
         {
