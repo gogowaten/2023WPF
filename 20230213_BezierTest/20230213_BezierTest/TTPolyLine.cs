@@ -11,11 +11,134 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Data;
 using Microsoft.VisualBasic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace _20230213_BezierTest
 {
+    [TypeConverter(typeof(MyConverter))]
+    public class ObservarablePointsLine : ContentControl
+    {
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(ObservarablePointsLine),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        private readonly Polyline polyline = new();
+        public ObservarablePointsLine()
+        {
+            
+            polyline.SetBinding(Polyline.PointsProperty, new Binding(nameof(MyPoints))
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay
+            });
+            this.Content = polyline;
+            //polyline.Points = Points;
+            polyline.StrokeThickness = 1;
+            polyline.Stroke = Brushes.Gray;
+        }
+
+    }
+    public class TTPolyLine2 : Thumb
+    {
+
+        #region DependencyProperty
+
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TTPolyLine2),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        private static void CallBackPoints(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is TTPolyLine2 ttpl)
+            {
+                var neko = e.NewValue;
+            }
+        }
+
+        public PointCollection MyPCollection
+        {
+            get { return (PointCollection)GetValue(MyPCollectionProperty); }
+            set { SetValue(MyPCollectionProperty, value); }
+        }
+        public static readonly DependencyProperty MyPCollectionProperty =
+            DependencyProperty.Register(nameof(MyPCollection),
+                typeof(PointCollection),
+                typeof(TTPolyLine2),
+                new PropertyMetadata(null));
+
+
+        public double MyThickness
+        {
+            get { return (double)GetValue(MyPropertyProperty); }
+            set { SetValue(MyPropertyProperty, value); }
+        }
+        public static readonly DependencyProperty MyPropertyProperty =
+            DependencyProperty.Register(nameof(MyThickness), typeof(double), typeof(TTPolyLine2),
+                new FrameworkPropertyMetadata(0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public Brush MyBrush
+        {
+            get { return (Brush)GetValue(MyBrushProperty); }
+            set { SetValue(MyBrushProperty, value); }
+        }
+        public static readonly DependencyProperty MyBrushProperty =
+            DependencyProperty.Register(nameof(MyBrush), typeof(Brush), typeof(TTPolyLine2), new PropertyMetadata(Brushes.DodgerBlue));
+        #endregion DependencyProperty
+        public Data MyData { get; set; }
+        private readonly List<TThumb> Thumbs = new();
+        private readonly Polyline MyLine = new();
+        public TTPolyLine2()
+        {
+            MyData = new();
+
+            SetTemplate();
+            SetBinding(MyPointsProperty, new Binding(nameof(MyData.Points)) { Source = MyData, Mode = BindingMode.TwoWay });
+
+        }
+
+
+
+        private void SetTemplate()
+        {
+            FrameworkElementFactory bGrid = new(typeof(Grid));
+            FrameworkElementFactory factory = new(typeof(PolyLineCanvas2), "name");
+
+            bGrid.AppendChild(factory);
+            this.Template = new() { VisualTree = factory };
+            this.ApplyTemplate();
+
+        }
+    }
+
+
+
+
+
     public class TTPolyLine : Thumb
     {
+        #region Property
+
         PolyLineCanvas2 MyTemplate { get; set; }
         public Data MyData { get; set; }
 
@@ -49,14 +172,14 @@ namespace _20230213_BezierTest
         }
         public static readonly DependencyProperty MyBrushProperty =
             DependencyProperty.Register(nameof(MyBrush), typeof(Brush), typeof(TTPolyLine), new PropertyMetadata(Brushes.MediumAquamarine));
-
+        #endregion Property
         public TTPolyLine()
         {
             MyData = new();
             SetTemplate();
             MyTemplate = (PolyLineCanvas2)this.Template.FindName("name", this);
-            MyTemplate.SetBinding(PolyLineCanvas2.MyPointsProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay,Path= new PropertyPath(MyPointsProperty) });
-            MyTemplate.SetBinding(PolyLineCanvas2.MyPointsProperty, new TemplateBindingExtension(TTPolyLine.MyPointsProperty));
+            MyTemplate.SetBinding(PolyLineCanvas2.MyPointsProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay, Path = new PropertyPath(MyPointsProperty) });
+
             SetBinding(MyPointsProperty, new Binding(nameof(MyData.Points)) { Source = MyData, Mode = BindingMode.TwoWay });
 
         }
@@ -70,7 +193,10 @@ namespace _20230213_BezierTest
             this.ApplyTemplate();
 
         }
+
     }
+
+
     public class PolyLineCanvas2 : Canvas
     {
         #region Property
@@ -330,5 +456,34 @@ namespace _20230213_BezierTest
             return template;
         }
     }
-
+    public class MyConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
+        {
+            if (sourceType == typeof(string)) return true;
+            return base.CanConvertFrom(context, sourceType);
+        }
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+        {
+            if (value == null) return null;
+            if (value is string str)
+            {
+                string[] ss = str.Split(' ');
+                ObservableCollection<Point> points = new();
+                foreach (var item in ss)
+                {
+                    string[] xy = item.Split(',');
+                    double x;
+                    double y;
+                    if (double.TryParse(xy[0], out x) && double.TryParse(xy[1], out y))
+                    {
+                        Point point = new(x, y);
+                        points.Add(point);
+                    }
+                }
+                return points;
+            }
+            return base.ConvertFrom(context, culture, value);
+        }
+    }
 }

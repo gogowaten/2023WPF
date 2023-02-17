@@ -21,7 +21,7 @@ namespace _20230213_BezierTest
             Points.Add(new Point(0, 0));
             Points.Add(new Point(20, 50));
             Points.Add(new Point(100, 20));
-            //Points.Add(new Point(100, 00));
+            //MyPoints.Add(new Point(100, 00));
             MakePoints();
             Points.CollectionChanged += Points_CollectionChanged;
         }
@@ -68,9 +68,9 @@ namespace _20230213_BezierTest
             context.PolyBezierTo(BezierPoints, true, false);
             //context.PolyBezierTo(new List<Point>()
             //{
-            //    Points[1],
-            //    Points[1],Points[1],Points[1],
-            //    Points[1],Points[1],
+            //    MyPoints[1],
+            //    MyPoints[1],MyPoints[1],MyPoints[1],
+            //    MyPoints[1],MyPoints[1],
             //}
             //, true, false);//isStroke, isSmoothJoin
         }
