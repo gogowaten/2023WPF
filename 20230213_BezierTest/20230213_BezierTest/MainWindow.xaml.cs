@@ -29,10 +29,17 @@ namespace _20230213_BezierTest
         {
             //MyTTBezier3.Points[1] = new Point(100, 100);
             //MyTTPolyLine.MyPP[1]=new Point(110, 210);
-            var points = MyPolyWithVT.MyPoints;
-            var data = MyPolyWithVT.MyData;
-            var linepoint = MyPolyWithVT.MyPolyLine.Points;
-            MyPolyWithVT.AddPoint(200, 300);
+            var points = MyTTLine.MyPoints;
+            var data = MyTTLine.MyData;
+            var linepoint = MyTTLine.MyLine.Points;
+            Point p0 = new(200, 200);
+            Point p1 = new(300, 200);
+            //MyTTLine.MyData.PointCollection.Add(p0);
+            //MyTTLine.MyData.PointCollection.Add(p1);
+            MyTTLine.MyPoints.Add(p0);
+            MyTTLine.MyPoints.Add(p1);
+            //MyTTLine.MyLine.Points.Add(p0);
+            //MyTTLine.MyLine.Points.Add(p1);
         }
     }
 }

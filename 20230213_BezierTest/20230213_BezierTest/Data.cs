@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Controls;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace _20230213_BezierTest
 {
@@ -25,7 +26,7 @@ namespace _20230213_BezierTest
 
 
         public PointCollection PointCollection { get => _pointCollection; set => SetProperty(ref _pointCollection, value); }
-
+        public ObservableCollection<Point> ObPoints { get; set; } = new();
         public Data()
         {
 

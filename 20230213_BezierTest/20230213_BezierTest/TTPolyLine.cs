@@ -15,9 +15,182 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Collections.Specialized;
 
 namespace _20230213_BezierTest
 {
+
+    public class TTLine3 : Thumb
+    {
+        public Data MyData { get; set; } = new();
+        public Polyline MyLine { get; set; }
+
+        
+        [TypeConverter(typeof(MyTypeConverterPoints))]
+        public ObservableCollection<Point> MyPoints
+        {
+            get { return (ObservableCollection<Point>)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(ObservableCollection<Point>), typeof(TTLine3),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public TTLine3()
+        {
+            MyLine = SetTemplate();
+            MyLine.Stroke = Brushes.Red;
+            MyLine.StrokeThickness = 10.0;
+
+            MyLine.SetBinding(Polyline.PointsProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(MyPointsProperty),
+                Converter=new MyConverterPointCollection(),
+            });
+            Loaded += (a, b) => { MyData.ObPoints = MyPoints; };
+
+            //SetBinding(MyPointsProperty, new Binding(nameof(MyData.ObPoints))
+            //{
+            //    Source = MyData,
+            //    Mode = BindingMode.TwoWay
+            //});
+            MyPoints.CollectionChanged += MyPoints_CollectionChanged;
+        }
+
+        private void MyPoints_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                    break;
+            }
+        }
+
+        private Polyline SetTemplate()
+        {
+            FrameworkElementFactory fLine = new(typeof(Polyline), "line");
+            this.Template = new() { VisualTree = fLine };
+            this.ApplyTemplate();
+            if (Template.FindName("line", this) is Polyline line)
+            {
+                return line;
+            }
+            else { throw new Exception(); }
+        }
+    }
+    
+    public class TTLine2 : Thumb
+    {
+        public Polyline MyLine { get; set; }
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TTLine2),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        //[TypeConverter(typeof(MyTypeConverterPoints))]
+        //public ObservableCollection<Point> MyPoints
+        //{
+        //    get { return (ObservableCollection<Point>)GetValue(MyPointsProperty); }
+        //    set { SetValue(MyPointsProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyPointsProperty =
+        //    DependencyProperty.Register(nameof(MyPoints), typeof(ObservableCollection<Point>), typeof(TTLine2),
+        //        new FrameworkPropertyMetadata(null,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public Data MyData { get; set; } = new();
+
+        public TTLine2()
+        {
+            MyLine = SetTemplate();
+            MyLine.Stroke = Brushes.Red;
+            MyLine.StrokeThickness = 10.0;
+
+            MyLine.SetBinding(Polyline.PointsProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(MyPointsProperty)
+            });
+            //依存プロパティとDataのPointCollectionをBindingしたいけど、なぜか
+            //値は更新されるのにPolyLineは変化しないので"="、これだと変化する
+            Loaded += (a, b) => { MyData.PointCollection = MyPoints; };
+            //SetBinding(MyPointsProperty, new Binding(nameof(MyData.PointCollection))
+            //{
+            //    Source = MyData,
+            //    Mode = BindingMode.TwoWay
+            //});
+
+        }
+
+        private Polyline SetTemplate()
+        {
+            FrameworkElementFactory fLine = new(typeof(Polyline), "line");
+            this.Template = new() { VisualTree = fLine };
+            this.ApplyTemplate();
+            if (Template.FindName("line", this) is Polyline line)
+            {
+                return line;
+            }
+            else { throw new Exception(); }
+        }
+    }
+
+    public class TTLine : Thumb
+    {
+        public Polyline MyLine { get; set; }
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TTLine),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public TTLine()
+        {
+            MyLine = SetTemplate();
+            MyLine.Stroke = Brushes.Red;
+            MyLine.StrokeThickness = 10.0;
+            MyLine.SetBinding(Polyline.PointsProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(MyPointsProperty),
+            });
+        }
+        private Polyline SetTemplate()
+        {
+            FrameworkElementFactory fLine = new(typeof(Polyline), "line");
+            this.Template = new() { VisualTree = fLine };
+            this.ApplyTemplate();
+            if (Template.FindName("line", this) is Polyline line)
+            {
+                return line;
+            }
+            else
+            {
+                throw new Exception();
+            }
+
+        }
+    }
     public class PolyLineWithVThumb : Thumb
     {
 
@@ -31,11 +204,11 @@ namespace _20230213_BezierTest
                 new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,new PropertyChangedCallback(OnMyPoints)));
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnMyPoints)));
 
         private static void OnMyPoints(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if(d is PolyLineWithVThumb poly)
+            if (d is PolyLineWithVThumb poly)
             {
                 var neko = e.NewValue;
             };
@@ -49,17 +222,17 @@ namespace _20230213_BezierTest
         }
         public static readonly DependencyProperty ObPointsProperty =
             DependencyProperty.Register(nameof(ObPoints), typeof(ObservableCollection<Point>), typeof(PolyLineWithVThumb), new PropertyMetadata(null));
-         
+
         public Data MyData { get; set; } = new();
         public Polyline MyPolyLine;
         public Canvas? MyCanvas;
-        
+
         public ObservableCollection<TThumb> VThumbs = new();
         public PolyLineWithVThumb()
         {
             MyPolyLine = SetTemplate();
-            
-            
+
+
             MyPolyLine.SetBinding(Polyline.PointsProperty, new Binding()
             {
                 Source = this,
@@ -79,7 +252,7 @@ namespace _20230213_BezierTest
             }
         }
 
-        
+
         private void PolyLineWithVThumb_Loaded(object sender, RoutedEventArgs e)
         {
             if (MyCanvas is null) return;
@@ -97,7 +270,7 @@ namespace _20230213_BezierTest
 
         private Polyline SetTemplate()
         {
-            FrameworkElementFactory fPanel = new(typeof(Canvas),"canvas");
+            FrameworkElementFactory fPanel = new(typeof(Canvas), "canvas");
             FrameworkElementFactory fRect = new(typeof(Rectangle));
             FrameworkElementFactory line = new(typeof(Polyline), "line");
             fPanel.AppendChild(fRect);
@@ -105,7 +278,7 @@ namespace _20230213_BezierTest
             fRect.SetValue(Rectangle.StrokeProperty, Brushes.Gray);
             line.SetValue(Polyline.StrokeProperty, Brushes.Red);
             line.SetValue(Polyline.StrokeThicknessProperty, 1.0);
-            
+
             this.Template = new() { VisualTree = fPanel };
             this.ApplyTemplate();
             MyCanvas = (Canvas?)Template.FindName("canvas", this);
@@ -115,7 +288,7 @@ namespace _20230213_BezierTest
             }
             else throw new Exception();
         }
-        public void AddPoint(double x,double y)
+        public void AddPoint(double x, double y)
         {
             MyPoints.Add(new Point(x, y));
         }
@@ -562,34 +735,57 @@ namespace _20230213_BezierTest
             return template;
         }
     }
-    //public class MyConverter : TypeConverter
-    //{
-    //    public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
-    //    {
-    //        if (sourceType == typeof(string)) return true;
-    //        return base.CanConvertFrom(context, sourceType);
-    //    }
-    //    public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
-    //    {
-    //        if (value == null) return null;
-    //        if (value is string str)
-    //        {
-    //            string[] ss = str.Split(' ');
-    //            ObservableCollection<Point> points = new();
-    //            foreach (var item in ss)
-    //            {
-    //                string[] xy = item.Split(',');
-    //                double x;
-    //                double y;
-    //                if (double.TryParse(xy[0], out x) && double.TryParse(xy[1], out y))
-    //                {
-    //                    Point point = new(x, y);
-    //                    points.Add(point);
-    //                }
-    //            }
-    //            return points;
-    //        }
-    //        return base.ConvertFrom(context, culture, value);
-    //    }
-    //}
+
+    public class MyConverterPointCollection : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is ObservableCollection<Point> points)
+            {
+                return new PointCollection(points);
+            }
+            else { return DependencyProperty.UnsetValue; }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is PointCollection points)
+            {
+                return new ObservableCollection<Point>(points);
+            }
+            else { return DependencyProperty.UnsetValue; }
+        }
+    }
+
+    //c# - コレクションDPのWPF TypeConversionAttribute
+    //    https://stackoverflow.com/questions/5154230/wpf-typeconversionattribute-for-collection-dp
+
+    public class MyTypeConverterPoints : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
+        {
+            if (sourceType == typeof(string)) return true;
+            return base.CanConvertFrom(context, sourceType);
+        }
+        public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
+        {
+            if (value == null) return null;
+            if (value is string str)
+            {
+                string[] ss = str.Split(' ');
+                ObservableCollection<Point> points = new();
+                foreach (var item in ss)
+                {
+                    string[] xy = item.Split(',');
+                    if (double.TryParse(xy[0], out double x) && double.TryParse(xy[1], out double y))
+                    {
+                        Point point = new(x, y);
+                        points.Add(point);
+                    }
+                }
+                return points;
+            }
+            return base.ConvertFrom(context, culture, value);
+        }
+    }
 }
