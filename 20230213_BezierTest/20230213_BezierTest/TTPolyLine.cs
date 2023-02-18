@@ -50,10 +50,23 @@ namespace _20230213_BezierTest
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        public ArrowHeadType HeadType
+        {
+            get { return (ArrowHeadType)GetValue(HeadTypeProperty); }
+            set { SetValue(HeadTypeProperty, value); }
+        }
+        public static readonly DependencyProperty HeadTypeProperty =
+            DependencyProperty.Register(nameof(HeadType), typeof(ArrowHeadType), typeof(TTLine3),
+                new FrameworkPropertyMetadata(ArrowHeadType.None,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure|
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
         public TTLine3()
         {
             MyLine = SetTemplate();
             MyLine.Stroke = Brushes.Red;
+            MyLine.Fill = Brushes.Red;
             MyLine.StrokeThickness = 10.0;
 
             MyLine.SetBinding(Arrow.MyPointsProperty, new Binding()
@@ -69,6 +82,11 @@ namespace _20230213_BezierTest
             //    Source = MyData,
             //    Mode = BindingMode.TwoWay
             //});
+            MyLine.SetBinding(Arrow.HeadTypeProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(HeadTypeProperty),
+            });
 
             Canvas.SetLeft(this, 0);
             Canvas.SetTop(this, 0);

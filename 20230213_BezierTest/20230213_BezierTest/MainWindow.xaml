@@ -19,7 +19,8 @@
         <local:Arrow MyPoints="0,0 100,100 200,50" Stroke="Red" StrokeThickness="10"/>
       </Canvas>
       <Canvas Canvas.Top="200">
-        <local:TTLine3 MyPoints="0,0 40,30"/>
+        <local:TTLine3 MyPoints="0,0 100,30 200,100 180,50" HeadType="Arrow"/>
+        <Polyline Stroke="Black" Points="0,0 100,30 200,100 180,50"/>
       </Canvas>
     </Canvas>
   </Grid>

@@ -134,6 +134,7 @@ namespace _20230213_BezierTest
                             Draw(context);
                             break;
                         case ArrowHeadType.Arrow:
+                            DrawArrow(context);
                             break;
                         case ArrowHeadType.Square:
                             break;
@@ -154,6 +155,48 @@ namespace _20230213_BezierTest
             {
                 context.LineTo(MyPoints[i], true, false);
             }
+        }
+        private void DrawArrow(StreamGeometryContext context)
+        {
+            double x1 = MyPoints[^1].X;
+            double x2 = MyPoints[^2].X;
+            double y1 = MyPoints[^1].Y;
+            double y2 = MyPoints[^2].Y;
+            double baseRadian = Math.Atan2(y2 - y1, x2 - x1);
+            double bCos = Math.Cos(baseRadian);
+            double bSin = Math.Sin(baseRadian);
+            double radian = DegreeToRadian(Angle);
+            double rCos = Math.Cos(radian);
+            double headSize = StrokeThickness * 1.0 / Math.Sin(radian);
+            double sideLength = headSize * rCos - 1.5;
+            Point pContact = new(x1 + (bCos * sideLength), y1 + bSin * sideLength);
+
+            double arrowHeadRadian = baseRadian + radian;
+            Point pWing1 = new(
+                x1 + headSize * Math.Cos(arrowHeadRadian),
+                y1 + headSize * Math.Sin(arrowHeadRadian));
+
+            arrowHeadRadian = baseRadian - radian;
+            Point pWing2 = new(
+                x1 + headSize * Math.Cos(arrowHeadRadian),
+                y1 + headSize * Math.Sin(arrowHeadRadian));
+
+            context.BeginFigure(MyPoints[0], false, false);
+            for (int i = 1; i < MyPoints.Count - 1; i++)
+            {
+                context.LineTo(MyPoints[i], true, false);
+            }
+            context.LineTo(pContact, true, false);
+
+            context.BeginFigure(MyPoints[^1], true, true);
+            context.LineTo(pWing1, false, false);
+            context.LineTo(pWing2, false, false);
+            context.LineTo(MyPoints[^1], false, false);
+
+        }
+        private static double DegreeToRadian(double degree)
+        {
+            return degree / 360.0 * (Math.PI * 2.0);
         }
     }
 }
