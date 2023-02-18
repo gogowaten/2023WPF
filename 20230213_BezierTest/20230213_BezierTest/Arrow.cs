@@ -9,67 +9,15 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
+//2022WPF/Arrow.cs at master · gogowaten/2022WPF
+//https://github.com/gogowaten/2022WPF/blob/master/20221203_%E7%9F%A2%E5%8D%B0%E5%9B%B3%E5%BD%A2/20221203_%E7%9F%A2%E5%8D%B0%E5%9B%B3%E5%BD%A2/Arrow.cs
+
 namespace _20230213_BezierTest
 {
     public enum ArrowHeadType { None = 0, Arrow, Square, Round }
     public class Arrow : Shape
     {
         #region 依存プロパティ
-        public double X1
-        {
-            get { return (double)GetValue(X1Property); }
-            set { SetValue(X1Property, value); }
-        }
-        public static readonly DependencyProperty X1Property =
-            DependencyProperty.Register(nameof(X1), typeof(double), typeof(Arrow),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.AffectsRender));
-
-        public double Y1
-        {
-            get { return (double)GetValue(Y1Property); }
-            set { SetValue(Y1Property, value); }
-        }
-        public static readonly DependencyProperty Y1Property =
-            DependencyProperty.Register(nameof(Y1), typeof(double), typeof(Arrow),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-        public double X2
-        {
-            get { return (double)GetValue(X2Property); }
-            set { SetValue(X2Property, value); }
-        }
-        public static readonly DependencyProperty X2Property =
-            DependencyProperty.Register(nameof(X2), typeof(double), typeof(Arrow),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-        public double Y2
-        {
-            get { return (double)GetValue(Y2Property); }
-            set { SetValue(Y2Property, value); }
-        }
-        public static readonly DependencyProperty Y2Property =
-            DependencyProperty.Register(nameof(Y2), typeof(double), typeof(Arrow),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure));
-
-
-        public double HeadSize
-        {
-            get { return (double)GetValue(HeadSizeProperty); }
-            set { SetValue(HeadSizeProperty, value); }
-        }
-        public static readonly DependencyProperty HeadSizeProperty =
-            DependencyProperty.Register(nameof(HeadSize), typeof(double), typeof(Arrow),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 
         public ArrowHeadType HeadType
@@ -168,8 +116,19 @@ namespace _20230213_BezierTest
             double radian = DegreeToRadian(Angle);
             double rCos = Math.Cos(radian);
             double headSize = StrokeThickness * 1.0 / Math.Sin(radian);
+            if (StrokeThickness <= 4.0 || Angle > 60)
+            {
+                headSize = StrokeThickness * 2.0 / Math.Sin(radian);
+            }
             double sideLength = headSize * rCos - 1.5;
             Point pContact = new(x1 + (bCos * sideLength), y1 + bSin * sideLength);
+            //直線部分描画、Stroke(線)で描画
+            context.BeginFigure(MyPoints[0], false, false);
+            for (int i = 1; i < MyPoints.Count - 1; i++)
+            {
+                context.LineTo(MyPoints[i], true, false);
+            }
+            context.LineTo(pContact, true, false);
 
             double arrowHeadRadian = baseRadian + radian;
             Point pWing1 = new(
@@ -181,13 +140,7 @@ namespace _20230213_BezierTest
                 x1 + headSize * Math.Cos(arrowHeadRadian),
                 y1 + headSize * Math.Sin(arrowHeadRadian));
 
-            context.BeginFigure(MyPoints[0], false, false);
-            for (int i = 1; i < MyPoints.Count - 1; i++)
-            {
-                context.LineTo(MyPoints[i], true, false);
-            }
-            context.LineTo(pContact, true, false);
-
+            //アローヘッド描画、Fill(塗りつぶし)で描画
             context.BeginFigure(MyPoints[^1], true, true);
             context.LineTo(pWing1, false, false);
             context.LineTo(pWing2, false, false);

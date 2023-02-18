@@ -67,7 +67,7 @@ namespace _20230213_BezierTest
             MyLine = SetTemplate();
             MyLine.Stroke = Brushes.Red;
             MyLine.Fill = Brushes.Red;
-            MyLine.StrokeThickness = 10.0;
+            MyLine.StrokeThickness = 4.0;
 
             MyLine.SetBinding(Arrow.MyPointsProperty, new Binding()
             {
