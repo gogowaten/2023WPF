@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections.Specialized;
+
 
 namespace _20230213_BezierTest
 {
@@ -20,9 +23,11 @@ namespace _20230213_BezierTest
     /// </summary>
     public partial class MainWindow : Window
     {
+        //private ThumbsCanvas MyThumbsCanvas;
         public MainWindow()
         {
             InitializeComponent();
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -40,6 +45,57 @@ namespace _20230213_BezierTest
             MyTTLine.MyPoints.Add(p1);
             //MyTTLine.MyLine.Points.Add(p0);
             //MyTTLine.MyLine.Points.Add(p1);
+            
+        }
+    }
+    public class ThumbsCanvas : Canvas
+    {
+        public ObservableCollection<Point> Points { get; set; } = new();
+        public List<TThumb> Thumbs { get; set; } = new();
+        public ThumbsCanvas()
+        {
+            Points.CollectionChanged += Points_CollectionChanged;
+        }
+
+        private void Points_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    if (e.NewItems?[0] is Point p)
+                    {
+                        AddThumb(p);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        private void AddThumb(Point point)
+        {
+            TThumb tt = new();
+            tt.Width = 20;
+            tt.Height = 20;
+            Canvas.SetLeft(tt, point.X);
+            Canvas.SetTop(tt, point.Y);
+            this.Children.Add(tt);
+            tt.DragDelta += Tt_DragDelta;
+        }
+
+        private void Tt_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        {
+            if (sender is TThumb tt)
+            {
+                double x = GetLeft(tt) + e.HorizontalChange;
+                double y = GetTop(tt) + e.VerticalChange;
+                SetLeft(tt, x);
+                SetTop(tt, y);
+            }
         }
     }
 }

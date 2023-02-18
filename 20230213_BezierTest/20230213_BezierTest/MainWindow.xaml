@@ -9,12 +9,18 @@
   <Grid>
     <Canvas x:Name="MyCanvas">
       <Button Content="addPointTest" Click="Button_Click" Canvas.Left="200"/>
-      <local:TTLine3 x:Name="MyTTLine" MyPoints="0,0 30,50 100,30">
+      <local:TTLine2 x:Name="MyTTLine" MyPoints="0,0 30,50 100,30">
         
         <!--<local:TTLine2.MyData>
           <local:Data PointCollection="0,0 30,50 100,130"/>
         </local:TTLine2.MyData>-->
-      </local:TTLine3>
+      </local:TTLine2>
+      <Canvas Canvas.Top="100">
+        <local:Arrow MyPoints="0,0 100,100 200,50" Stroke="Red" StrokeThickness="10"/>
+      </Canvas>
+      <Canvas Canvas.Top="200">
+        <local:TTLine3 MyPoints="0,0 40,30"/>
+      </Canvas>
     </Canvas>
   </Grid>
 </Window>

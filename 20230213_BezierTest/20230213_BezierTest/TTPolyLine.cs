@@ -22,10 +22,21 @@ namespace _20230213_BezierTest
 
     public class TTLine3 : Thumb
     {
+        public Arrow MyLine { get; set; }
         public Data MyData { get; set; } = new();
-        public Polyline MyLine { get; set; }
 
-        
+        //public PointCollection MyPoints
+        //{
+        //    get { return (PointCollection)GetValue(MyPointsProperty); }
+        //    set { SetValue(MyPointsProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyPointsProperty =
+        //    DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TTLine3),
+        //        new FrameworkPropertyMetadata(null,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
         [TypeConverter(typeof(MyTypeConverterPoints))]
         public ObservableCollection<Point> MyPoints
         {
@@ -45,47 +56,58 @@ namespace _20230213_BezierTest
             MyLine.Stroke = Brushes.Red;
             MyLine.StrokeThickness = 10.0;
 
-            MyLine.SetBinding(Polyline.PointsProperty, new Binding()
+            MyLine.SetBinding(Arrow.MyPointsProperty, new Binding()
             {
                 Source = this,
                 Path = new PropertyPath(MyPointsProperty),
-                Converter=new MyConverterPointCollection(),
             });
+            //依存プロパティとDataのPointCollectionをBindingしたいけど、なぜか
+            //値は更新されるのにPolyLineは変化しないので"="、これだと変化する
             Loaded += (a, b) => { MyData.ObPoints = MyPoints; };
-
-            //SetBinding(MyPointsProperty, new Binding(nameof(MyData.ObPoints))
+            //SetBinding(MyPointsProperty, new Binding(nameof(MyData.PointCollection))
             //{
             //    Source = MyData,
             //    Mode = BindingMode.TwoWay
             //});
-            MyPoints.CollectionChanged += MyPoints_CollectionChanged;
+
+            Canvas.SetLeft(this, 0);
+            Canvas.SetTop(this, 0);
+            DragDelta += TTLine_DragDelta;
         }
 
-        private void MyPoints_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void TTLine_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            switch (e.Action)
+            if (sender is TTLine3 line)
             {
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                    break;
+                Canvas.SetLeft(line, Canvas.GetLeft(line) + e.HorizontalChange);
+                Canvas.SetTop(line, Canvas.GetTop(line) + e.VerticalChange);
             }
         }
 
-        private Polyline SetTemplate()
+        private Arrow SetTemplate()
         {
-            FrameworkElementFactory fLine = new(typeof(Polyline), "line");
+            FrameworkElementFactory fLine = new(typeof(Arrow), "line");
             this.Template = new() { VisualTree = fLine };
             this.ApplyTemplate();
-            if (Template.FindName("line", this) is Polyline line)
+            if (Template.FindName("line", this) is Arrow line)
             {
                 return line;
             }
             else { throw new Exception(); }
         }
     }
-    
+
+
+    //TemplateがPolyLineのThumb
+    //Points関連のプロパティは3つ
+    //依存プロパティのMyPoints
+    //DataクラスのPointCollection
+    //PolyLineのPoints
+    //この内どれかを変更すると全てが変更される
     public class TTLine2 : Thumb
     {
         public Polyline MyLine { get; set; }
+        public Data MyData { get; set; } = new();
 
         public PointCollection MyPoints
         {
@@ -111,7 +133,6 @@ namespace _20230213_BezierTest
         //            FrameworkPropertyMetadataOptions.AffectsRender |
         //            FrameworkPropertyMetadataOptions.AffectsMeasure |
         //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-        public Data MyData { get; set; } = new();
 
         public TTLine2()
         {
@@ -133,6 +154,18 @@ namespace _20230213_BezierTest
             //    Mode = BindingMode.TwoWay
             //});
 
+            Canvas.SetLeft(this, 0);
+            Canvas.SetTop(this, 0);
+            DragDelta += TTLine2_DragDelta;
+        }
+
+        private void TTLine2_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (sender is TTLine2 line)
+            {
+                Canvas.SetLeft(line, Canvas.GetLeft(line) + e.HorizontalChange);
+                Canvas.SetTop(line, Canvas.GetTop(line) + e.VerticalChange);
+            }
         }
 
         private Polyline SetTemplate()
