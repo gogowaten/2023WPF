@@ -143,7 +143,6 @@ namespace _20230213_BezierTest
             }
             context.LineTo(pContact, true, false);
 
-
         }
         private static double DegreeToRadian(double degree)
         {
