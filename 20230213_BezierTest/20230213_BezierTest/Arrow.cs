@@ -114,18 +114,27 @@ namespace _20230213_BezierTest
             double x2 = MyPoints[^2].X;
             double y1 = MyPoints[^1].Y;
             double y2 = MyPoints[^2].Y;
-            double baseRadian = Math.Atan2(y2 - y1, x2 - x1);
-            double bCos = Math.Cos(baseRadian);
-            double bSin = Math.Sin(baseRadian);
-            double radian = DegreeToRadian(Angle);
-            double rCos = Math.Cos(radian);
-            double headSize = StrokeThickness * 1.0 / Math.Sin(radian);
-            if (StrokeThickness <= 4.0 || Angle > 60)
-            {
-                headSize = StrokeThickness * 2.0 / Math.Sin(radian);
-            }
-            double sideLength = headSize * rCos - 1.5;
-            Point pContact = new(x1 + (bCos * sideLength), y1 + bSin * sideLength);
+
+            double lineRadian = Math.Atan2(y2 - y1, x2 - x1);
+            double wingRadian = lineRadian + DegreeToRadian(Angle);
+            double headSize = StrokeThickness *2.0;
+            double wingLength = headSize / Math.Cos(wingRadian);
+            Point arrowP1 = new(
+                wingLength * Math.Cos(wingRadian) + x1,
+                wingLength * Math.Sin(wingRadian) + y1);
+            wingRadian = lineRadian - DegreeToRadian(Angle);
+            Point arrowP2 = new(
+                wingLength * Math.Cos(wingRadian) + x1,
+                wingLength * Math.Sin(wingRadian) + y1);
+            //アローヘッド描画、Fill(塗りつぶし)で描画
+            context.BeginFigure(MyPoints[^1], true, false);//fill, close
+            context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
+            context.LineTo(arrowP2, false, false);
+
+            Point pContact = new(
+                headSize * Math.Cos(lineRadian) + x1,
+                headSize * Math.Sin(lineRadian) + y1);
+
             //直線部分描画、Stroke(線)で描画
             context.BeginFigure(MyPoints[0], false, false);
             for (int i = 1; i < MyPoints.Count - 1; i++)
@@ -134,21 +143,6 @@ namespace _20230213_BezierTest
             }
             context.LineTo(pContact, true, false);
 
-            double arrowHeadRadian = baseRadian + radian;
-            Point pWing1 = new(
-                x1 + headSize * Math.Cos(arrowHeadRadian),
-                y1 + headSize * Math.Sin(arrowHeadRadian));
-
-            arrowHeadRadian = baseRadian - radian;
-            Point pWing2 = new(
-                x1 + headSize * Math.Cos(arrowHeadRadian),
-                y1 + headSize * Math.Sin(arrowHeadRadian));
-
-            //アローヘッド描画、Fill(塗りつぶし)で描画
-            context.BeginFigure(MyPoints[^1], true, true);
-            context.LineTo(pWing1, false, false);
-            context.LineTo(pWing2, false, false);
-            context.LineTo(MyPoints[^1], false, false);
 
         }
         private static double DegreeToRadian(double degree)
