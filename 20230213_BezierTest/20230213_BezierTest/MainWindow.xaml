@@ -30,9 +30,15 @@
         <local:TTLine3 MyPoints="0,0 100,30 200,100 20,50" HeadType="Arrow"/>
         <!--<Polyline Stroke="Black" Points="0,0 100,30 200,100 180,50"/>-->
       </Canvas>
+      <Canvas Canvas.Top="20" Canvas.Left="220">
+        <local:Arrow2 MyPoints="50,70 100,0" HeadEndType="Arrow" Angle="30"
+                      StrokeThickness="10" Stroke="DarkGreen" Fill="DarkGreen"/>
+      </Canvas>
       <Canvas Canvas.Top="20" Canvas.Left="20">
-        <local:Arrow2 MyPoints="100,0 00,50" HeadEndType="Arrow" Angle="30"
-                      StrokeThickness="20" Stroke="DarkCyan" Fill="DarkGreen"/>
+        <local:Arrow3 MyPoints="50,70 100,0" HeadBeginType="Arrow" HeadEndType="Arrow" Angle="30"
+                      StrokeThickness="10" Stroke="Purple" Fill="Purple"/>
+        <!--<Line X1="50" Y1="70" X2="100" Y2="0" Stroke="DodgerBlue"/>-->
+        <Polyline Points="0,0" Stroke="Red"/>
       </Canvas>
     </Canvas>
   </Grid>
