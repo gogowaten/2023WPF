@@ -8,6 +8,14 @@
         Title="MainWindow" Height="450" Width="600">
   <Grid>
     <Canvas x:Name="MyCanvas">
+      
+      <Line X1="200" Y1="130" X2="125" Y2="90" Stroke="Red"/>
+      <Line X1="125" Y1="90" X2="148" Y2="91" Stroke="Red"/>
+      <Line X1="148" Y1="91" X2="143" Y2="101" Stroke="Red"/>
+      <Line X1="120" Y1="100" X2="120" Y2="120" Stroke="Red"/>
+      <Line X1="100" Y1="120" X2="120" Y2="120" Stroke="Red"/>
+      
+      
       <Button Content="addPointTest" Click="Button_Click" Canvas.Left="200"/>
       <local:TTLine2 x:Name="MyTTLine" MyPoints="0,0 30,50 100,30">
         
