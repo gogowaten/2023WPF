@@ -8,7 +8,11 @@ using System.Windows.Shapes;
 
 //2022WPF/Arrow.cs at master · gogowaten/2022WPF
 //https://github.com/gogowaten/2022WPF/blob/master/20221203_%E7%9F%A2%E5%8D%B0%E5%9B%B3%E5%BD%A2/20221203_%E7%9F%A2%E5%8D%B0%E5%9B%B3%E5%BD%A2/Arrow.cs
+
 //E:\オレ\エクセル\WPFでPixtack紫陽花.xlsm_三角関数_$B$95
+
+//WPFで矢印直線描画、Shapeクラスを継承して作成してみた - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/02/20/162212
 
 namespace _20230220_PolylineZ
 {
