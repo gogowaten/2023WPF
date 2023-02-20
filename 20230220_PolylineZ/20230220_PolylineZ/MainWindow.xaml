@@ -5,8 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230220_PolylineZ"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+        Title="MainWindow" Height="200" Width="400">
+  <Grid>
+    <Canvas x:Name="MyCanvas">
+      <local:PolylineZ MyPoints="20,20 100,20" HeadBeginType="Arrow" HeadEndType="Arrow"
+                       Stroke="Crimson" Fill="Crimson" StrokeThickness="10"/>
+      <local:PolylineZ MyPoints="20,50 100,50" HeadBeginType="Arrow"
+                       Stroke="Orange" Fill="Orange" StrokeThickness="10"/>
+      <local:PolylineZ MyPoints="20,80 100,80" HeadEndType="Arrow"
+                       Stroke="Cyan" Fill="Cyan" StrokeThickness="10"/>
+      <local:PolylineZ MyPoints="20,120 100,120" HeadEndType="Arrow" Angle="50"
+                       Stroke="Teal" Fill="Teal" StrokeThickness="10"/>
+      <local:PolylineZ MyPoints="20,160 100,160" HeadEndType="Arrow" Angle="20"
+                       Stroke="OliveDrab" Fill="OliveDrab" StrokeThickness="10"/>
+      <local:PolylineZ MyPoints="130,40 200,140 280,70" HeadEndType="Arrow"
+                       Stroke="DodgerBlue" Fill="DodgerBlue" StrokeThickness="20"/>
+    </Canvas>
+  </Grid>
 </Window>
