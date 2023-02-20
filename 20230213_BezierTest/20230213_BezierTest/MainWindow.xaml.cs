@@ -45,7 +45,7 @@ namespace _20230213_BezierTest
             //MyTTLine.MyPoints.Add(p1);
             ////MyTTLine.MyLine.Points.Add(p0);
             ////MyTTLine.MyLine.Points.Add(p1);
-            
+            var tta3 = MyTTArrow3.MyData;
         }
     }
     public class ThumbsCanvas : Canvas

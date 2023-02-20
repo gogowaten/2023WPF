@@ -27,6 +27,19 @@ namespace _20230213_BezierTest
 
         public PointCollection PointCollection { get => _pointCollection; set => SetProperty(ref _pointCollection, value); }
         public ObservableCollection<Point> ObPoints { get; set; } = new();
+
+        private double _strokeThickness;
+        public double StrokeThickness { get => _strokeThickness; set => SetProperty(ref _strokeThickness, value); }
+
+        private Brush _stroke = Brushes.Red;
+        public Brush Stroke { get => _stroke; set => SetProperty(ref _stroke, value); }
+
+        private ArrowHeadType _beginHeadType;
+        public ArrowHeadType BeginHeadType { get => _beginHeadType; set => SetProperty(ref _beginHeadType, value); }
+
+        private ArrowHeadType _endHeadType;
+        public ArrowHeadType EndHeadType { get => _endHeadType; set => SetProperty(ref _endHeadType, value); }
+
         public Data()
         {
 

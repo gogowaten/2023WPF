@@ -16,14 +16,149 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Collections.Specialized;
+using System.Windows.Ink;
 
 namespace _20230213_BezierTest
 {
+    public class TTArrow3 : Thumb
+    {
 
+        #region 依存プロパティ
+
+        /// <summary>
+        /// 終点のヘッドタイプ
+        /// </summary>
+        public ArrowHeadType HeadEndType
+        {
+            get { return (ArrowHeadType)GetValue(HeadEndTypeProperty); }
+            set { SetValue(HeadEndTypeProperty, value); }
+        }
+        public static readonly DependencyProperty HeadEndTypeProperty =
+            DependencyProperty.Register(nameof(HeadEndType), typeof(ArrowHeadType), typeof(TTArrow3),
+                new FrameworkPropertyMetadata(ArrowHeadType.None,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        /// <summary>
+        /// 始点のヘッドタイプ
+        /// </summary>
+        public ArrowHeadType HeadBeginType
+        {
+            get { return (ArrowHeadType)GetValue(HeadBeginTypeProperty); }
+            set { SetValue(HeadBeginTypeProperty, value); }
+        }
+        public static readonly DependencyProperty HeadBeginTypeProperty =
+            DependencyProperty.Register(nameof(HeadBeginType), typeof(ArrowHeadType), typeof(TTArrow3),
+                new FrameworkPropertyMetadata(ArrowHeadType.None,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double Angle
+        {
+            get { return (double)GetValue(AngleProperty); }
+            set { SetValue(AngleProperty, value); }
+        }
+        public static readonly DependencyProperty AngleProperty =
+            DependencyProperty.Register(nameof(Angle), typeof(double), typeof(TTArrow3),
+                new FrameworkPropertyMetadata(30.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TTArrow3),
+                new FrameworkPropertyMetadata(new PointCollection() { new Point(0, 0), new Point(100, 100) },
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public Brush Stroke
+        {
+            get { return (Brush)GetValue(StrokeProperty); }
+            set { SetValue(StrokeProperty, value); }
+        }
+        public static readonly DependencyProperty StrokeProperty =
+            DependencyProperty.Register(nameof(Stroke), typeof(Brush), typeof(TTArrow3),
+                new FrameworkPropertyMetadata(Brushes.Red,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public Brush Fill
+        {
+            get { return (Brush)GetValue(FillProperty); }
+            set { SetValue(FillProperty, value); }
+        }
+        public static readonly DependencyProperty FillProperty =
+            DependencyProperty.Register(nameof(Fill), typeof(Brush), typeof(TTArrow3),
+                new FrameworkPropertyMetadata(Brushes.Red,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+        public double StrokeThickness
+        {
+            get { return (double)GetValue(StrokeThicknessProperty); }
+            set { SetValue(StrokeThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty StrokeThicknessProperty =
+            DependencyProperty.Register(nameof(StrokeThickness), typeof(double), typeof(TTArrow3),
+                new FrameworkPropertyMetadata(5.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+
+        #endregion 依存プロパティ
+
+
+
+        public Data MyData { get; set; }
+        public Arrow3 MyArrow3 { get; set; }
+        public TTArrow3()
+        {
+            MyData = new Data();
+            MyArrow3 = SetTemplate();
+            //MyArrow3.DataContext = this;
+            MyArrow3.SetBinding(Arrow3.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
+            MyArrow3.SetBinding(Shape.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(StrokeProperty) });
+            //MyArrow3.SetBinding(Shape.StrokeThicknessProperty, new Binding() { Source = this, Path =new PropertyPath(StrokeThicknessProperty),Mode=BindingMode.TwoWay});
+
+            MyArrow3.SetBinding(Shape.FillProperty, new Binding() { Source = this, Path = new PropertyPath(FillProperty) });
+            MyArrow3.SetBinding(Arrow3.HeadBeginTypeProperty, new Binding() { Source = this, Path = new PropertyPath(HeadBeginTypeProperty) });
+            MyArrow3.SetBinding(Arrow3.HeadEndTypeProperty, new Binding() { Source = this, Path = new PropertyPath(HeadEndTypeProperty) });
+            //SetBinding(MyPointsProperty, new Binding(nameof(MyData.PointCollection)) { Mode = BindingMode.TwoWay });
+            Loaded += (a, b) => { MyData.PointCollection = MyPoints; };
+            //SetBinding(StrokeThicknessProperty, nameof(MyData.StrokeThickness));
+            SetBinding(StrokeThicknessProperty, new Binding(nameof(MyData.StrokeThickness)) { Mode=BindingMode.TwoWay});
+            MyArrow3.SetBinding(Shape.StrokeThicknessProperty, new Binding(nameof(MyData.StrokeThickness)) { Mode = BindingMode.TwoWay });
+            //SetBinding(StrokeProperty, nameof(MyData.Stroke));
+            //SetBinding(HeadBeginTypeProperty, nameof(MyData.BeginHeadType));
+            //SetBinding(HeadEndTypeProperty, nameof(MyData.EndHeadType));
+
+        }
+        private Arrow3 SetTemplate()
+        {
+            FrameworkElementFactory fArrow = new(typeof(Arrow3), "arrow");
+            this.Template = new() { VisualTree = fArrow };
+            this.ApplyTemplate();
+            if (this.Template.FindName("arrow", this) is Arrow3 arrow)
+            {
+                return arrow;
+            }
+            else { throw new Exception(); }
+        }
+    }
     public class TTLine3 : Thumb
     {
         public Arrow MyLine { get; set; }
         public Data MyData { get; set; } = new();
+        #region 依存プロパティ
 
         //public PointCollection MyPoints
         //{
@@ -59,9 +194,9 @@ namespace _20230213_BezierTest
             DependencyProperty.Register(nameof(HeadType), typeof(ArrowHeadType), typeof(TTLine3),
                 new FrameworkPropertyMetadata(ArrowHeadType.None,
                     FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure|
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
+        #endregion 依存プロパティ
         public TTLine3()
         {
             MyLine = SetTemplate();
@@ -92,16 +227,6 @@ namespace _20230213_BezierTest
             Canvas.SetTop(this, 0);
             DragDelta += TTLine_DragDelta;
         }
-
-        private void TTLine_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            if (sender is TTLine3 line)
-            {
-                Canvas.SetLeft(line, Canvas.GetLeft(line) + e.HorizontalChange);
-                Canvas.SetTop(line, Canvas.GetTop(line) + e.VerticalChange);
-            }
-        }
-
         private Arrow SetTemplate()
         {
             FrameworkElementFactory fLine = new(typeof(Arrow), "line");
@@ -113,6 +238,16 @@ namespace _20230213_BezierTest
             }
             else { throw new Exception(); }
         }
+
+        private void TTLine_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (sender is TTLine3 line)
+            {
+                Canvas.SetLeft(line, Canvas.GetLeft(line) + e.HorizontalChange);
+                Canvas.SetTop(line, Canvas.GetTop(line) + e.VerticalChange);
+            }
+        }
+
     }
 
 

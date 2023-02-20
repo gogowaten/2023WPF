@@ -40,6 +40,9 @@
         <!--<Line X1="50" Y1="70" X2="100" Y2="0" Stroke="DodgerBlue"/>-->
         <Polyline Points="0,0" Stroke="Red"/>
       </Canvas>
+      <local:TTArrow3 x:Name="MyTTArrow3"
+                      MyPoints="0,0 100,100" HeadBeginType="Arrow" HeadEndType="Arrow"
+                      Stroke="Red" Fill="Black" StrokeThickness="10.0"/>
     </Canvas>
   </Grid>
 </Window>
