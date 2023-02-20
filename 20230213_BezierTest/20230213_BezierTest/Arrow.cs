@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+//WPF Arrow and Custom Shapes - CodeProject
+//https://www.codeproject.com/Articles/23116/WPF-Arrow-and-Custom-Shapes
 
 //2022WPF/Arrow.cs at master · gogowaten/2022WPF
 //https://github.com/gogowaten/2022WPF/blob/master/20221203_%E7%9F%A2%E5%8D%B0%E5%9B%B3%E5%BD%A2/20221203_%E7%9F%A2%E5%8D%B0%E5%9B%B3%E5%BD%A2/Arrow.cs
@@ -159,11 +161,12 @@ namespace _20230213_BezierTest
             context.LineTo(arrowP2, false, false);
 
             //アローヘッドと直線との接点座標、
-            //HeadSizeぴったりで計算すると僅かな隙間ができるので-0.5している
-            Point pContact = new(
-                (headSize - 0.5) * Math.Cos(lineRadian) + x0,
-                (headSize - 0.5) * Math.Sin(lineRadian) + y0);
-            return pContact;
+            //HeadSizeぴったりで計算すると僅かな隙間ができるので-1.0している、
+            //-0.5でも隙間になる、-0.7で隙間なくなる
+            return new Point(
+                (headSize - 1.0) * Math.Cos(lineRadian) + x0,
+                (headSize - 1.0) * Math.Sin(lineRadian) + y0);
+            
         }
 
         /// <summary>
@@ -212,10 +215,9 @@ namespace _20230213_BezierTest
             context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
             context.LineTo(arrowP2, false, false);
 
-            Point pContact = new(
-                (headSize - 0.5) * Math.Cos(lineRadian) + x0,
-                (headSize - 0.5) * Math.Sin(lineRadian) + y0);
-            return pContact;
+            return new Point(
+                (headSize - 1.0) * Math.Cos(lineRadian) + x0,
+                (headSize - 1.0) * Math.Sin(lineRadian) + y0);
         }
 
         private static double DegreeToRadian(double degree)
