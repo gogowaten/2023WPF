@@ -22,10 +22,9 @@ namespace _20230213_BezierTest
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private PointCollection _pointCollection = new();
-
-
-        public PointCollection PointCollection { get => _pointCollection; set => SetProperty(ref _pointCollection, value); }
+        //private PointCollection _pointCollection = new();
+        //public PointCollection PointCollection { get => _pointCollection; set => SetProperty(ref _pointCollection, value); }
+        public PointCollection PointCollection { get; set; }
         public ObservableCollection<Point> ObPoints { get; set; } = new();
 
         private double _strokeThickness;
@@ -33,6 +32,9 @@ namespace _20230213_BezierTest
 
         private Brush _stroke = Brushes.Red;
         public Brush Stroke { get => _stroke; set => SetProperty(ref _stroke, value); }
+
+        private Brush _fill;
+        public Brush Fill { get => _fill; set => SetProperty(ref _fill, value); }
 
         private ArrowHeadType _beginHeadType;
         public ArrowHeadType BeginHeadType { get => _beginHeadType; set => SetProperty(ref _beginHeadType, value); }
@@ -42,6 +44,7 @@ namespace _20230213_BezierTest
 
         public Data()
         {
+            PointCollection = new();
 
         }
     }

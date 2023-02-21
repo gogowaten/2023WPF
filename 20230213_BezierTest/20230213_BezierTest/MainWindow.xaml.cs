@@ -27,7 +27,7 @@ namespace _20230213_BezierTest
         public MainWindow()
         {
             InitializeComponent();
-            
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -37,15 +37,23 @@ namespace _20230213_BezierTest
             //var points = MyTTLine.MyPoints;
             //var data = MyTTLine.MyData;
             //var linepoint = MyTTLine.MyLine.Points;
-            //Point p0 = new(200, 200);
-            //Point p1 = new(300, 200);
-            ////MyTTLine.MyData.PointCollection.Add(p0);
-            ////MyTTLine.MyData.PointCollection.Add(p1);
-            //MyTTLine.MyPoints.Add(p0);
-            //MyTTLine.MyPoints.Add(p1);
-            ////MyTTLine.MyLine.Points.Add(p0);
-            ////MyTTLine.MyLine.Points.Add(p1);
-            var tta3 = MyTTArrow3.MyData;
+            Point p0 = new(200, 200);
+            Point p1 = new(300, 200);
+            //MyTTLine.MyData.PointCollection[0] = p0;
+
+            var pcolletion = MyTTArrow3.MyData.PointCollection;
+            var arrowP = MyTTArrow3.MyArrow3.MyPoints;
+            var ttPoints = MyTTArrow3.MyPoints;
+            var dataThick = MyTTArrow3.MyData.StrokeThickness;
+            var arrowThick = MyTTArrow3.MyArrow3.StrokeThickness;
+            var ttThick = MyTTArrow3.StrokeThickness;
+
+            //MyTTArrow3.MyData.PointCollection[0] = p0;
+            //MyTTArrow3.MyPoints[0] = p0;
+            //MyTTArrow3.MyArrow3.MyPoints[0] = p0;
+            //MyTTArrow3.MyData.StrokeThickness = 20;
+            //MyTTArrow3.StrokeThickness= 20;
+            MyTTArrow3.MyArrow3.StrokeThickness= 20;
         }
     }
     public class ThumbsCanvas : Canvas

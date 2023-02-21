@@ -125,21 +125,46 @@ namespace _20230213_BezierTest
             MyData = new Data();
             MyArrow3 = SetTemplate();
             //MyArrow3.DataContext = this;
-            MyArrow3.SetBinding(Arrow3.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
-            MyArrow3.SetBinding(Shape.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(StrokeProperty) });
-            //MyArrow3.SetBinding(Shape.StrokeThicknessProperty, new Binding() { Source = this, Path =new PropertyPath(StrokeThicknessProperty),Mode=BindingMode.TwoWay});
 
-            MyArrow3.SetBinding(Shape.FillProperty, new Binding() { Source = this, Path = new PropertyPath(FillProperty) });
-            MyArrow3.SetBinding(Arrow3.HeadBeginTypeProperty, new Binding() { Source = this, Path = new PropertyPath(HeadBeginTypeProperty) });
-            MyArrow3.SetBinding(Arrow3.HeadEndTypeProperty, new Binding() { Source = this, Path = new PropertyPath(HeadEndTypeProperty) });
-            //SetBinding(MyPointsProperty, new Binding(nameof(MyData.PointCollection)) { Mode = BindingMode.TwoWay });
+            //Data.PointCollectionと連携するにはBindingじゃなくて、イコールでする、しかも
+            //そのタイミングはLoadedイベントのとき。
+            //もしBindingした場合は値変更しても無視される
+            //MyArrow3.SetBinding(Arrow3.MyPointsProperty, new Binding(nameof(MyData.PointCollection)) { Source = this.MyData, Mode = BindingMode.TwoWay });//mydata.pointcollection.isfozen = false
+            //MyData.PointCollection = MyArrow3.MyPoints;
+
+            //もしコンストラクションにしてもisFrozenがtrueになって値変更できなくなる。
+            //MyData.PointCollection = MyPoints;//isfrozen = true;
+
+            //正解はLoadedでイコールする
             Loaded += (a, b) => { MyData.PointCollection = MyPoints; };
-            //SetBinding(StrokeThicknessProperty, nameof(MyData.StrokeThickness));
-            SetBinding(StrokeThicknessProperty, new Binding(nameof(MyData.StrokeThickness)) { Mode=BindingMode.TwoWay});
-            MyArrow3.SetBinding(Shape.StrokeThicknessProperty, new Binding(nameof(MyData.StrokeThickness)) { Mode = BindingMode.TwoWay });
-            //SetBinding(StrokeProperty, nameof(MyData.Stroke));
-            //SetBinding(HeadBeginTypeProperty, nameof(MyData.BeginHeadType));
-            //SetBinding(HeadEndTypeProperty, nameof(MyData.EndHeadType));
+            this.SetBinding(MyPointsProperty, new Binding() { Source = MyArrow3, Mode = BindingMode.TwoWay, Path = new PropertyPath(Arrow3.MyPointsProperty) });
+
+            ////tt <- arrow3 <- mydata
+            //MyArrow3.SetBinding(Arrow3.StrokeThicknessProperty, new Binding(nameof(MyData.StrokeThickness)) { Source = this.MyData, Mode = BindingMode.TwoWay });
+            //this.SetBinding(StrokeThicknessProperty, new Binding() { Source = MyArrow3, Mode = BindingMode.TwoWay, Path = new PropertyPath(Arrow3.StrokeThicknessProperty) });
+
+            ////arrow3 <- tt <- mydata
+            //MyArrow3.SetBinding(Arrow3.StrokeThicknessProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay, Path = new PropertyPath(StrokeThicknessProperty) });
+            //this.SetBinding(StrokeThicknessProperty, new Binding(nameof(MyData.StrokeThickness)) { Source = this.MyData, Mode = BindingMode.TwoWay });
+
+            //arrow3 <- mydata
+            //tt <- mydata
+            MyArrow3.SetBinding(Arrow3.StrokeThicknessProperty, new Binding(nameof(MyData.StrokeThickness)) { Source = this.MyData, Mode = BindingMode.TwoWay});
+            this.SetBinding(StrokeThicknessProperty, new Binding(nameof(MyData.StrokeThickness)) { Source = this.MyData, Mode = BindingMode.TwoWay });
+
+            MyArrow3.SetBinding(Arrow3.StrokeProperty, new Binding(nameof(MyData.Stroke)) { Source = this.MyData, Mode = BindingMode.TwoWay });
+            this.SetBinding(StrokeProperty, new Binding() { Source = MyArrow3, Mode = BindingMode.TwoWay, Path = new PropertyPath(Arrow3.StrokeProperty) });
+
+            MyArrow3.SetBinding(Arrow3.FillProperty, new Binding(nameof(MyData.Fill)) { Source = this.MyData, Mode = BindingMode.TwoWay });
+            this.SetBinding(FillProperty, new Binding() { Source = MyArrow3, Mode = BindingMode.TwoWay, Path = new PropertyPath(Arrow3.FillProperty) });
+
+
+            MyArrow3.SetBinding(Arrow3.HeadBeginTypeProperty, new Binding(nameof(MyData.BeginHeadType)) { Source = this.MyData, Mode = BindingMode.TwoWay });
+            this.SetBinding(HeadBeginTypeProperty, new Binding() { Source = MyArrow3, Mode = BindingMode.TwoWay, Path = new PropertyPath(Arrow3.HeadBeginTypeProperty) });
+            MyArrow3.SetBinding(Arrow3.HeadEndTypeProperty, new Binding(nameof(MyData.EndHeadType)) { Source = this.MyData, Mode = BindingMode.TwoWay });
+            this.SetBinding(HeadEndTypeProperty, new Binding() { Source = MyArrow3, Mode = BindingMode.TwoWay, Path = new PropertyPath(Arrow3.HeadEndTypeProperty) });
+
+
 
         }
         private Arrow3 SetTemplate()

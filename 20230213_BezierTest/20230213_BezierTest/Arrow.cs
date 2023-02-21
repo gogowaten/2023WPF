@@ -166,7 +166,7 @@ namespace _20230213_BezierTest
             return new Point(
                 (headSize - 1.0) * Math.Cos(lineRadian) + x0,
                 (headSize - 1.0) * Math.Sin(lineRadian) + y0);
-            
+
         }
 
         /// <summary>
