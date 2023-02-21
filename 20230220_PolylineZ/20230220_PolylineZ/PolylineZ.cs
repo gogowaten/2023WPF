@@ -87,7 +87,6 @@ namespace _20230220_PolylineZ
 
         #endregion 依存プロパティ
 
-
         private static double DegreeToRadian(double degree)
         {
             return degree / 360.0 * (Math.PI * 2.0);
