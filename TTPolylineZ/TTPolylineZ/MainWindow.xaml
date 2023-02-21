@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="600">
     <Grid>
     <Canvas x:Name="MyCanvas">
-      <local:TThumb x:Name="MyThumb"
+      <local:TThumb x:Name="MyThumb" Canvas.Left="10" Canvas.Top="10"
                     MyPoints="0,0 100,100 200,50" HeadBeginType="Arrow" HeadEndType="Arrow" HeadAngle="45"
                     Stroke="Crimson" TTFill="Crimson" StrokeThickness="10"/>
       <Button Content="Check" Click="Button_Click" Canvas.Left="200" Width="200"/>

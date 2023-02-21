@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 
 namespace TTPolylineZ
 {
@@ -23,6 +24,16 @@ namespace TTPolylineZ
         public MainWindow()
         {
             InitializeComponent();
+            MyThumb.DragDelta += MyThumb_DragDelta;
+        }
+
+        private void MyThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (sender is TThumb tt)
+            {
+                Canvas.SetLeft(tt, Canvas.GetLeft(tt) + e.HorizontalChange);
+                Canvas.SetTop(tt, Canvas.GetTop(tt) + e.VerticalChange);
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
