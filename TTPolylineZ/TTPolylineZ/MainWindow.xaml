@@ -1,0 +1,17 @@
+﻿<Window x:Class="TTPolylineZ.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TTPolylineZ"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+    <Grid>
+    <Canvas x:Name="MyCanvas">
+      <local:TThumb x:Name="MyThumb"
+                    MyPoints="0,0 100,100 200,50" HeadBeginType="Arrow" HeadEndType="Arrow" HeadAngle="45"
+                    Stroke="Crimson" TTFill="Crimson" StrokeThickness="10"/>
+      <Button Content="Check" Click="Button_Click" Canvas.Left="200" Width="200"/>
+    </Canvas>
+    </Grid>
+</Window>
