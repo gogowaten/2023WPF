@@ -5,17 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230222_trueRect_Size_Bound"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150" Width="300">
+        Title="MainWindow" Height="150" Width="250">
   <Grid>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition/>
-      <ColumnDefinition Width="150"/>
-    </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas0">
       <Canvas.Resources>
         <Style TargetType="Polyline">
-          <Setter Property="StrokeThickness" Value="40"/>
-          <Setter Property="Points" Value="0,0 100,0"/>
+          <Setter Property="StrokeThickness" Value="50"/>
+          <Setter Property="Points" Value="0,50 100,0 120,80"/>
         </Style>
       </Canvas.Resources>
 
@@ -28,17 +24,16 @@
           <Polyline.RenderTransform>
             <TransformGroup>
               <ScaleTransform ScaleX="1.2"/>
-              <SkewTransform AngleX="20" AngleY="30"/>
-              <RotateTransform Angle="30"/>
+              <SkewTransform AngleX="10" AngleY="40"/>
+              <RotateTransform Angle="10"/>
               <TranslateTransform/>
             </TransformGroup>
           </Polyline.RenderTransform>
         </Polyline>
       </Canvas>
+      <Button Content="test" Width="150" Canvas.Left="50" Canvas.Top="50"
+              Click="Button_Click"/>
     </Canvas>
 
-    <StackPanel Grid.Column="1">
-      <Button Content="test" Margin="0,50" Click="Button_Click"/>
-    </StackPanel>
   </Grid>
 </Window>
