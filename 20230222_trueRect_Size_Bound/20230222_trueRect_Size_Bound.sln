@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "20230222_trueRect_Size_Bound", "20230222_trueRect_Size_Bound\20230222_trueRect_Size_Bound.csproj", "{73BBA7C5-2D80-4FF7-B298-896984E8EC01}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73BBA7C5-2D80-4FF7-B298-896984E8EC01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BBA7C5-2D80-4FF7-B298-896984E8EC01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BBA7C5-2D80-4FF7-B298-896984E8EC01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BBA7C5-2D80-4FF7-B298-896984E8EC01}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {549726A4-F08D-41EB-9EFE-DAF9D2A92D4B}
+	EndGlobalSection
+EndGlobal
