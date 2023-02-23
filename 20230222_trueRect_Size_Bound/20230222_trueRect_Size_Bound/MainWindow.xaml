@@ -5,33 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230222_trueRect_Size_Bound"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150" Width="250">
+        Title="MainWindow" Height="200" Width="450">
   <Grid>
     <Canvas x:Name="MyCanvas0">
       <Canvas.Resources>
         <Style TargetType="Polyline">
-          <Setter Property="StrokeThickness" Value="50"/>
-          <Setter Property="Points" Value="0,50 100,0 120,80"/>
+          <Setter Property="StrokeThickness" Value="80"/>
+          <Setter Property="Points" Value="0,50 100,0 150,100"/>
         </Style>
       </Canvas.Resources>
 
       <Polyline x:Name="MyPolyline0" Points="0,0 0,100" Stroke="Crimson"/>
+      <Polyline x:Name="MyPolyline00" Points="20,0 120,100 250,20 450,0" Stroke="Orange" RenderTransformOrigin="0.0,0.0">
+        <Polyline.RenderTransform>
+          <TransformGroup>
+            <RotateTransform Angle="170"/>
+            <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+          </TransformGroup>
+        </Polyline.RenderTransform>
+      </Polyline>
 
-      <Canvas x:Name="MyCanvas1" Canvas.Top="0" Canvas.Left="100">
-        <Polyline x:Name="MyPolyline1" Stroke="ForestGreen"/>
-        <Polyline x:Name="MyPolyline2" Stroke="MediumOrchid"
-                  RenderTransformOrigin="0.5,0.3">
+      <!--<Canvas x:Name="MyCanvas1" Canvas.Top="0" Canvas.Left="100">
+        <Polyline x:Name="MyPolyline1" Canvas.Left="0" Canvas.Top="0" Stroke="ForestGreen"/>
+        <Polyline x:Name="MyPolyline2" Canvas.Left="0" Canvas.Top="0" Stroke="MediumOrchid"
+                  RenderTransformOrigin="0.0,0.0">
           <Polyline.RenderTransform>
             <TransformGroup>
-              <ScaleTransform ScaleX="1.2"/>
-              <SkewTransform AngleX="10" AngleY="40"/>
-              <RotateTransform Angle="10"/>
+              <ScaleTransform ScaleX="1.0" ScaleY="1.0"/>
+              <RotateTransform Angle="20"/>
               <TranslateTransform/>
             </TransformGroup>
           </Polyline.RenderTransform>
         </Polyline>
-      </Canvas>
-      <Button Content="test" Width="150" Canvas.Left="50" Canvas.Top="50"
+      </Canvas>-->
+      <Button Content="test" Width="150" Canvas.Left="50" Canvas.Top="100"
               Click="Button_Click"/>
     </Canvas>
 
