@@ -5,14 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230224_GeometryAnchorThumbs"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="400">
+        Title="MainWindow" Height="450" Width="600">
   <Grid>
     <StackPanel HorizontalAlignment="Right" Width="200">
       <Button Content="test" Click="Button_Click"/>
+      <Button Content="Visible" Click="Button_Click_1"/>
     </StackPanel>
     <Canvas x:Name="MyCanvas">
+
       <!--<local:TThumb Width="20" Height="20" X="100" Y="80"/>-->
-      <ItemsControl x:Name="MyItemsControl" ItemsSource="{Binding}">
+      <!--<ItemsControl x:Name="MyItemsControl" ItemsSource="{Binding}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
             <Canvas/>
@@ -20,16 +22,22 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate DataType="local:TThumb">
-            <local:TThumb/>
+            --><!--<Canvas>
+              <local:TThumb X="{Binding X}" Y="{Binding Y}" DragDelta="TThumb_DragDelta_1"/>
+            </Canvas>-->
+            <!--<local:TThumb X="{Binding (Canvas.Left)}" Y="{Binding (Canvas.Top)}"/>-->
+            <!--<local:TThumb X="{Binding X}" Y="{Binding Y}"/>--><!--
+            <local:TThumb DragDelta="TThumb_DragDelta_1"/>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemContainerStyle>
-          <Style TargetType="ContentPresenter">
+          <Style>
             <Setter Property="Canvas.Left" Value="{Binding X}"/>
             <Setter Property="Canvas.Top" Value="{Binding Y}"/>
           </Style>
         </ItemsControl.ItemContainerStyle>
-      </ItemsControl>
+      </ItemsControl>-->
     </Canvas>
+    <!--<local:PolyCanvas/>-->
   </Grid>
 </Window>

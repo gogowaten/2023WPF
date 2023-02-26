@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using System.Windows.Shapes;
+using System.Windows.Data;
+using System.Globalization;
 
 namespace _20230224_GeometryAnchorThumbs
 {
@@ -16,6 +18,18 @@ namespace _20230224_GeometryAnchorThumbs
     }
     public class TThumb : Thumb
     {
+
+        //public Point MyPoint
+        //{
+        //    get { return (Point)GetValue(MyPointProperty); }
+        //    set { SetValue(MyPointProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyPointProperty =
+        //    DependencyProperty.Register(nameof(MyPoint), typeof(Point), typeof(TThumb),
+        //        new FrameworkPropertyMetadata(new Point(),
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double X
         {
@@ -26,7 +40,8 @@ namespace _20230224_GeometryAnchorThumbs
             DependencyProperty.Register(nameof(X), typeof(double), typeof(TThumb),
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double Y
         {
@@ -37,12 +52,14 @@ namespace _20230224_GeometryAnchorThumbs
             DependencyProperty.Register(nameof(Y), typeof(double), typeof(TThumb),
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+                    FrameworkPropertyMetadataOptions.AffectsMeasure|
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public TThumb(Point vartex) : this()
         {
             X = vartex.X;
             Y = vartex.Y;
+            //MyPoint = vartex;
         }
         public TThumb()
         {
@@ -50,23 +67,17 @@ namespace _20230224_GeometryAnchorThumbs
             Canvas.SetLeft(this, 0);
             Canvas.SetTop(this, 0);
             this.DataContext = this;
-            this.SetBinding(Canvas.LeftProperty, nameof(X));
-            this.SetBinding(Canvas.TopProperty, nameof(Y));
-            DragDelta += TThumb_DragDelta;
             Width = 20;
             Height = 20;
+            this.SetBinding(Canvas.LeftProperty, nameof(X));
+            this.SetBinding(Canvas.TopProperty, nameof(Y));
+            //MultiBinding mb = new();
+            //mb.Converter = new ConverterPoint();
+            //mb.Bindings.Add(new Binding(nameof(X)));
+            //mb.Bindings.Add(new Binding(nameof(Y)));
+            //this.SetBinding(MyPointProperty, mb);
         }
 
-        private void TThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            if (sender is TThumb tt)
-            {
-                Canvas.SetLeft(tt, Canvas.GetLeft(tt) + e.HorizontalChange);
-                Canvas.SetTop(tt, Canvas.GetTop(tt) + e.VerticalChange);
-                //tt.X += e.HorizontalChange;
-                //tt.Y += e.VerticalChange;
-            }
-        }
 
         private ControlTemplate MakeTemplate()
         {
@@ -76,6 +87,22 @@ namespace _20230224_GeometryAnchorThumbs
             elementF.SetValue(Rectangle.StrokeDashArrayProperty,
                 new DoubleCollection() { 2.0 });
             return new ControlTemplate() { VisualTree = elementF };
+        }
+    }
+    public class ConverterPoint : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new Point((double)values[0], (double)values[1]);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            Point p = (Point)value;
+            object[] os = new object[2];
+            os[0] = p.X;
+            os[1] = p.Y;
+            return os;
         }
     }
 }

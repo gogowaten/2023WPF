@@ -8,10 +8,9 @@
         Title="MainWindow" Height="450" Width="600">
     <Grid>
     <Canvas x:Name="MyCanvas">
-      <Polyline x:Name="MyPolyline" Points="0,0 0,100" StrokeThickness="40" Stroke="Red"/>
-      <Polyline x:Name="MyPolyline2" Points="100,0 0,200" StrokeThickness="40" Stroke="Blue"/>
-      <Polyline x:Name="MyPolyline3" Points="150,0 150,100" StrokeThickness="40" Stroke="Teal"/>
       <Button Content="test" Width="200" Canvas.Left="200" Click="Button_Click"/>
+      <local:BezierZ MyPoints="50,50 150,50 150,120, 120,180 220,220 300,140 270,50"
+                     Stroke="Red" Fill="Red" StrokeThickness="10" HeadBeginType="None"/>
     </Canvas>
     </Grid>
 </Window>
