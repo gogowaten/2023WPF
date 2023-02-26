@@ -9,8 +9,9 @@
     <Grid>
     <Canvas x:Name="MyCanvas">
       <Button Content="test" Width="200" Canvas.Left="200" Click="Button_Click"/>
-      <local:BezierZ MyPoints="50,50 150,50 150,120, 120,180 220,220 300,140 270,50"
-                     Stroke="Red" Fill="Red" StrokeThickness="10" HeadBeginType="None"/>
+      <local:PolyBezierArrowLine2 x:Name="MyLine2" IsBezier="True" HeadEndType="Arrow" HeadBeginType="Arrow"
+                           MyPoints="0,0 0,100 100,100 100,0"
+                     Stroke="Red" Fill="Red" StrokeThickness="10"/>
     </Canvas>
     </Grid>
 </Window>
