@@ -8,11 +8,12 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Shapes;
+//using System.Drawing;
 
 
 namespace _20230222
 {
-    public class AnchorThumb:Thumb
+    public class AnchorThumb : Thumb
     {
 
         public double X
@@ -41,17 +42,23 @@ namespace _20230222
 
         public Rectangle MyTemplateElement { get; private set; }
         //public Point MyPoint;
-        public AnchorThumb(Point point)
+        public AnchorThumb()
         {
             DataContext = this;
             MyTemplateElement = SetTemplate();
+            Canvas.SetLeft(this, 0);
+            Canvas.SetTop(this, 0);
             SetBinding(Canvas.LeftProperty, nameof(X));
             SetBinding(Canvas.TopProperty, nameof(Y));
-            X = point.X;
-            Y = point.Y;
             Width = 20;
             Height = 20;
             //DragDelta += AnchorThumb_DragDelta;
+        }
+        public AnchorThumb(Point point):this()
+        {
+            X = point.X;
+            Y = point.Y;
+            
         }
 
         private void AnchorThumb_DragDelta(object sender, DragDeltaEventArgs e)

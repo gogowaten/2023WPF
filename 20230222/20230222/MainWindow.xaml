@@ -7,11 +7,34 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="600">
     <Grid>
-    <Canvas x:Name="MyCanvas">
+    <Canvas x:Name="MyCanvas">      
       <Button Content="test" Width="200" Canvas.Left="200" Click="Button_Click"/>
-      <local:PolyBezierArrowLine2 x:Name="MyLine2" IsBezier="True" HeadEndType="Arrow" HeadBeginType="Arrow"
+      <!--<local:PolyBezierArrowLine2 x:Name="MyLine2" IsBezier="True" HeadEndType="Arrow" HeadBeginType="Arrow"
                            MyPoints="0,0 0,100 100,100 100,0"
-                     Stroke="Red" Fill="Red" StrokeThickness="10"/>
+                     Stroke="Red" Fill="Red" StrokeThickness="10"/>-->
+      <local:AnchorCanvas x:Name="MyAnchorCanvas" Canvas.Left="50" MyPoints="0,0 100,50">
+        <!--<ItemsControl DataContext="{Binding ElementName=MyAnchorCanvas}" ItemsSource="{Binding MyPoints}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <Canvas/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Canvas>
+                <local:AnchorThumb Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"/>
+                --><!--<local:AnchorThumb Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"/>--><!--
+              </Canvas>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+          <ItemsControl.ItemContainerStyle>
+            <Style>
+              <Setter Property="Canvas.Left" Value="{Binding X}"/>
+              <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+            </Style>
+          </ItemsControl.ItemContainerStyle>
+        </ItemsControl>-->
+      </local:AnchorCanvas>
     </Canvas>
     </Grid>
 </Window>
