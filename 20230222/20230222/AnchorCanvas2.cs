@@ -45,12 +45,15 @@ namespace _20230222
         public ObservableCollection<AnchorThumb> MyAnchorThumbs { get; set; } = new();
 
         public Polyline MyShape { get; set; }
+        public ContextMenu MyAnchorMenu { get; set; } = new();
         public ContextMenu MyMenu { get; set; } = new();
         public AnchorThumb? MyCurrentAnchorThumb { get; set; }
         public int DragPointIndex;
+        public Point MyClickedPoint;
 
         public AnchorCanvas2()
         {
+            this.Background = Brushes.Transparent;
             MyShape = new Polyline();
             Children.Add(MyShape);
             MyShape.Stroke = Brushes.MediumAquamarine;
@@ -63,9 +66,19 @@ namespace _20230222
 
             MenuItem item = new() { Header = "削除" };
             item.Click += (o, e) => { RemovePoint(MyCurrentAnchorThumb); };
+            MyAnchorMenu.Items.Add(item);
+
+            this.ContextMenu = MyMenu;
+            item = new() { Header = "ここに追加" };
+            item.Click += (o, e) => { AddPoint(MyClickedPoint); };
             MyMenu.Items.Add(item);
-            MyMenu.Items.Add(new MenuItem() { Header = "test2" });
         }
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+            MyClickedPoint = Mouse.GetPosition(this);
+        }
+        
 
         private void AnchorCanvas2_Loaded(object sender, RoutedEventArgs e)
         {
@@ -111,7 +124,7 @@ namespace _20230222
             Children.Add(thumb);
             thumb.DragDelta += Thumb_DragDelta;
             thumb.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorVisibleProperty) });
-            thumb.ContextMenu = MyMenu;
+            thumb.ContextMenu = MyAnchorMenu;
             thumb.PreviewMouseDown += Thumb_PreviewMouseDown;
         }
 
