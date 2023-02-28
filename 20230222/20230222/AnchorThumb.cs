@@ -52,23 +52,14 @@ namespace _20230222
             SetBinding(Canvas.TopProperty, nameof(Y));
             Width = 20;
             Height = 20;
-            //DragDelta += AnchorThumb_DragDelta;
         }
-        public AnchorThumb(Point point):this()
+        public AnchorThumb(Point point) : this()
         {
             X = point.X;
             Y = point.Y;
-            
+
         }
 
-        private void AnchorThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            if (sender is AnchorThumb at)
-            {
-                X += e.HorizontalChange;
-                Y += e.VerticalChange;
-            }
-        }
 
         private Rectangle SetTemplate()
         {

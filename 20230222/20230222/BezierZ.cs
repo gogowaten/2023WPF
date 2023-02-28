@@ -75,28 +75,28 @@ namespace _20230222
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
 
-        //[TypeConverter(typeof(MyTypeConverterPoints))]
-        //public ObservableCollection<Point> MyPoints
-        //{
-        //    get { return (ObservableCollection<Point>)GetValue(MyPointsProperty); }
-        //    set { SetValue(MyPointsProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyPointsProperty =
-        //    DependencyProperty.Register(nameof(MyPoints), typeof(ObservableCollection<Point>), typeof(PolyBezierArrowLine2),
-        //        new FrameworkPropertyMetadata(new ObservableCollection<Point>() { new Point(0, 0), new Point(100, 100) },
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure));
-        public PointCollection MyPoints
+        [TypeConverter(typeof(MyTypeConverterPoints))]
+        public ObservableCollection<Point> Points
         {
-            get { return (PointCollection)GetValue(MyPointsProperty); }
-            set { SetValue(MyPointsProperty, value); }
+            get { return (ObservableCollection<Point>)GetValue(PointsProperty); }
+            set { SetValue(PointsProperty, value); }
         }
-
-        public static readonly DependencyProperty MyPointsProperty =
-            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(PolyBezierArrowLine2),
-                new FrameworkPropertyMetadata(new PointCollection() { new Point(0, 0), new Point(100, 100) },
+        public static readonly DependencyProperty PointsProperty =
+            DependencyProperty.Register(nameof(Points), typeof(ObservableCollection<Point>), typeof(PolyBezierArrowLine2),
+                new FrameworkPropertyMetadata(new ObservableCollection<Point>() { new Point(0, 0), new Point(100, 100) },
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
+        //public PointCollection Points
+        //{
+        //    get { return (PointCollection)GetValue(PointsProperty); }
+        //    set { SetValue(PointsProperty, value); }
+        //}
+
+        //public static readonly DependencyProperty PointsProperty =
+        //    DependencyProperty.Register(nameof(Points), typeof(PointCollection), typeof(PolyBezierArrowLine2),
+        //        new FrameworkPropertyMetadata(new PointCollection() { new Point(0, 0), new Point(100, 100) },
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         #endregion 依存プロパティ
         protected override Geometry DefiningGeometry
@@ -105,12 +105,12 @@ namespace _20230222
             get
             {
                 StreamGeometry geometry = new() { FillRule = FillRule.Nonzero };
-                if (MyPoints.Count < 2) { return geometry; }
+                if (Points.Count < 2) { return geometry; }
 
                 using (var context = geometry.Open())
                 {
-                    Point begin = MyPoints[0];//始点
-                    Point end = MyPoints[^1];//終点
+                    Point begin = Points[0];//始点
+                    Point end = Points[^1];//終点
                     //始点図形の描画
                     switch (HeadBeginType)
                     {
@@ -149,7 +149,7 @@ namespace _20230222
         private void DrawBezier(StreamGeometryContext context, Point begin, Point end)
         {
             context.BeginFigure(begin, false, false);
-            List<Point> bezier = MyPoints.Skip(1).Take(MyPoints.Count - 2).ToList();
+            List<Point> bezier = Points.Skip(1).Take(Points.Count - 2).ToList();
             bezier.Add(end);
             context.PolyBezierTo(bezier, true, false);
 
@@ -163,7 +163,7 @@ namespace _20230222
         private void DrawLine(StreamGeometryContext context, Point begin, Point end)
         {
             context.BeginFigure(begin, false, false);
-            context.PolyLineTo(MyPoints.Skip(1).Take(MyPoints.Count - 2).ToList(), true, false);
+            context.PolyLineTo(Points.Skip(1).Take(Points.Count - 2).ToList(), true, false);
             context.LineTo(end, true, false);
         }
 
@@ -174,10 +174,10 @@ namespace _20230222
         /// <returns>アローヘッドと直線との接点座標</returns>
         private Point DrawBeginArrow(StreamGeometryContext context)
         {
-            double x0 = MyPoints[0].X;
-            double y0 = MyPoints[0].Y;
-            double x1 = MyPoints[1].X;
-            double y1 = MyPoints[1].Y;
+            double x0 = Points[0].X;
+            double y0 = Points[0].Y;
+            double x1 = Points[1].X;
+            double y1 = Points[1].Y;
 
             double lineRadian = Math.Atan2(y1 - y0, x1 - x0);
             double arrowRadian = DegreeToRadian(Angle);
@@ -193,7 +193,7 @@ namespace _20230222
                 wingLength * Math.Cos(wingRadian2) + x0,
                 wingLength * Math.Sin(wingRadian2) + y0);
             //アローヘッド描画、Fill(塗りつぶし)で描画
-            context.BeginFigure(MyPoints[0], true, false);//fill, close
+            context.BeginFigure(Points[0], true, false);//fill, close
             context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
             context.LineTo(arrowP2, false, false);
 
@@ -213,10 +213,10 @@ namespace _20230222
         /// <returns>アローヘッドと直線との接点座標</returns>
         private Point DrawEndArrow(StreamGeometryContext context)
         {
-            double x0 = MyPoints[^1].X;
-            double x1 = MyPoints[^2].X;
-            double y0 = MyPoints[^1].Y;
-            double y1 = MyPoints[^2].Y;
+            double x0 = Points[^1].X;
+            double x1 = Points[^2].X;
+            double y0 = Points[^1].Y;
+            double y1 = Points[^2].Y;
 
             double lineRadian = Math.Atan2(y1 - y0, x1 - x0);
             double arrowRadian = DegreeToRadian(Angle);
@@ -232,7 +232,7 @@ namespace _20230222
                 wingLength * Math.Cos(wingRadian2) + x0,
                 wingLength * Math.Sin(wingRadian2) + y0);
             //アローヘッド描画、Fill(塗りつぶし)で描画
-            context.BeginFigure(MyPoints[^1], true, false);//fill, close
+            context.BeginFigure(Points[^1], true, false);//fill, close
             context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
             context.LineTo(arrowP2, false, false);
 
@@ -305,24 +305,24 @@ namespace _20230222
     //                FrameworkPropertyMetadataOptions.AffectsMeasure));
 
     //    //[TypeConverter(typeof(MyTypeConverterPoints))]
-    //    //public ObservableCollection<Point> MyPoints
+    //    //public ObservableCollection<Point> Points
     //    //{
-    //    //    get { return (ObservableCollection<Point>)GetValue(MyPointsProperty); }
-    //    //    set { SetValue(MyPointsProperty, value); }
+    //    //    get { return (ObservableCollection<Point>)GetValue(PointsProperty); }
+    //    //    set { SetValue(PointsProperty, value); }
     //    //}
-    //    //public static readonly DependencyProperty MyPointsProperty =
-    //    //    DependencyProperty.Register(nameof(MyPoints), typeof(ObservableCollection<Point>), typeof(PolyBezierArrowLine2),
+    //    //public static readonly DependencyProperty PointsProperty =
+    //    //    DependencyProperty.Register(nameof(Points), typeof(ObservableCollection<Point>), typeof(PolyBezierArrowLine2),
     //    //        new FrameworkPropertyMetadata(new ObservableCollection<Point>() { new Point(0, 0), new Point(100, 100) },
     //    //            FrameworkPropertyMetadataOptions.AffectsRender |
     //    //            FrameworkPropertyMetadataOptions.AffectsMeasure));
-    //    public PointCollection MyPoints
+    //    public PointCollection Points
     //    {
-    //        get { return (PointCollection)GetValue(MyPointsProperty); }
-    //        set { SetValue(MyPointsProperty, value); }
+    //        get { return (PointCollection)GetValue(PointsProperty); }
+    //        set { SetValue(PointsProperty, value); }
     //    }
 
-    //    public static readonly DependencyProperty MyPointsProperty =
-    //        DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(PolyBezierArrowLine2),
+    //    public static readonly DependencyProperty PointsProperty =
+    //        DependencyProperty.Register(nameof(Points), typeof(PointCollection), typeof(PolyBezierArrowLine2),
     //            new FrameworkPropertyMetadata(new PointCollection() { new Point(0, 0), new Point(100, 100) },
     //                FrameworkPropertyMetadataOptions.AffectsRender |
     //                FrameworkPropertyMetadataOptions.AffectsMeasure));
@@ -354,12 +354,12 @@ namespace _20230222
     //        {
     //            //return base.DefiningGeometry;
     //            StreamGeometry geometry = new() { FillRule = FillRule.Nonzero };
-    //            if (MyPoints.Count < 2) { return geometry; }
+    //            if (Points.Count < 2) { return geometry; }
 
     //            using (var context = geometry.Open())
     //            {
-    //                Point begin = MyPoints[0];
-    //                Point end = MyPoints[^1];
+    //                Point begin = Points[0];
+    //                Point end = Points[^1];
     //                switch (HeadBeginType)
     //                {
     //                    case HeadType.None:
@@ -393,8 +393,8 @@ namespace _20230222
     //    private void DrawLine(StreamGeometryContext context, Point begin, Point end)
     //    {
     //        context.BeginFigure(begin, false, false);
-    //        //context.PolyBezierTo(MyPoints, true, false);
-    //        context.PolyBezierTo(MyPoints.Skip(1).ToList(), true, false);
+    //        //context.PolyBezierTo(Points, true, false);
+    //        context.PolyBezierTo(Points.Skip(1).ToList(), true, false);
 
     //    }
 
@@ -405,10 +405,10 @@ namespace _20230222
     //    /// <returns>アローヘッドと直線との接点座標</returns>
     //    private Point DrawBeginArrow(StreamGeometryContext context)
     //    {
-    //        double x0 = MyPoints[0].X;
-    //        double y0 = MyPoints[0].Y;
-    //        double x1 = MyPoints[1].X;
-    //        double y1 = MyPoints[1].Y;
+    //        double x0 = Points[0].X;
+    //        double y0 = Points[0].Y;
+    //        double x1 = Points[1].X;
+    //        double y1 = Points[1].Y;
 
     //        double lineRadian = Math.Atan2(y1 - y0, x1 - x0);
     //        double arrowRadian = DegreeToRadian(Angle);
@@ -424,7 +424,7 @@ namespace _20230222
     //            wingLength * Math.Cos(wingRadian2) + x0,
     //            wingLength * Math.Sin(wingRadian2) + y0);
     //        //アローヘッド描画、Fill(塗りつぶし)で描画
-    //        context.BeginFigure(MyPoints[0], true, false);//fill, close
+    //        context.BeginFigure(Points[0], true, false);//fill, close
     //        context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
     //        context.LineTo(arrowP2, false, false);
 
@@ -444,10 +444,10 @@ namespace _20230222
     //    /// <returns>アローヘッドと直線との接点座標</returns>
     //    private Point DrawEndArrow(StreamGeometryContext context)
     //    {
-    //        double x0 = MyPoints[^1].X;
-    //        double x1 = MyPoints[^2].X;
-    //        double y0 = MyPoints[^1].Y;
-    //        double y1 = MyPoints[^2].Y;
+    //        double x0 = Points[^1].X;
+    //        double x1 = Points[^2].X;
+    //        double y0 = Points[^1].Y;
+    //        double y1 = Points[^2].Y;
 
     //        double lineRadian = Math.Atan2(y1 - y0, x1 - x0);
     //        double arrowRadian = DegreeToRadian(Angle);
@@ -463,7 +463,7 @@ namespace _20230222
     //            wingLength * Math.Cos(wingRadian2) + x0,
     //            wingLength * Math.Sin(wingRadian2) + y0);
     //        //アローヘッド描画、Fill(塗りつぶし)で描画
-    //        context.BeginFigure(MyPoints[^1], true, false);//fill, close
+    //        context.BeginFigure(Points[^1], true, false);//fill, close
     //        context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
     //        context.LineTo(arrowP2, false, false);
 
@@ -490,12 +490,12 @@ namespace _20230222
     //        {
     //            //return base.DefiningGeometry;
     //            StreamGeometry geometry = new() { FillRule = FillRule.Nonzero };
-    //            if(MyPoints.Count < 2) { return geometry; }
+    //            if(Points.Count < 2) { return geometry; }
 
     //            using (var context = geometry.Open())
     //            {
-    //                Point begin = MyPoints[0];
-    //                Point end = MyPoints[^1];
+    //                Point begin = Points[0];
+    //                Point end = Points[^1];
     //                switch (HeadBeginType)
     //                {
     //                    case HeadType.None:
@@ -529,8 +529,8 @@ namespace _20230222
     //    private void DrawBezier(StreamGeometryContext context, Point begin, Point end)
     //    {
     //        context.BeginFigure(begin, false, false);
-    //        //context.PolyBezierTo(MyPoints, true, false);
-    //        context.PolyBezierTo(MyPoints.Skip(1).ToList(), true, false);
+    //        //context.PolyBezierTo(Points, true, false);
+    //        context.PolyBezierTo(Points.Skip(1).ToList(), true, false);
 
     //    }
 
@@ -541,10 +541,10 @@ namespace _20230222
     //    /// <returns>アローヘッドと直線との接点座標</returns>
     //    private Point DrawBeginArrow(StreamGeometryContext context)
     //    {
-    //        double x0 = MyPoints[0].X;
-    //        double y0 = MyPoints[0].Y;
-    //        double x1 = MyPoints[1].X;
-    //        double y1 = MyPoints[1].Y;
+    //        double x0 = Points[0].X;
+    //        double y0 = Points[0].Y;
+    //        double x1 = Points[1].X;
+    //        double y1 = Points[1].Y;
 
     //        double lineRadian = Math.Atan2(y1 - y0, x1 - x0);
     //        double arrowRadian = DegreeToRadian(Angle);
@@ -560,7 +560,7 @@ namespace _20230222
     //            wingLength * Math.Cos(wingRadian2) + x0,
     //            wingLength * Math.Sin(wingRadian2) + y0);
     //        //アローヘッド描画、Fill(塗りつぶし)で描画
-    //        context.BeginFigure(MyPoints[0], true, false);//fill, close
+    //        context.BeginFigure(Points[0], true, false);//fill, close
     //        context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
     //        context.LineTo(arrowP2, false, false);
 
@@ -580,10 +580,10 @@ namespace _20230222
     //    /// <returns>アローヘッドと直線との接点座標</returns>
     //    private Point DrawEndArrow(StreamGeometryContext context)
     //    {
-    //        double x0 = MyPoints[^1].X;
-    //        double x1 = MyPoints[^2].X;
-    //        double y0 = MyPoints[^1].Y;
-    //        double y1 = MyPoints[^2].Y;
+    //        double x0 = Points[^1].X;
+    //        double x1 = Points[^2].X;
+    //        double y0 = Points[^1].Y;
+    //        double y1 = Points[^2].Y;
 
     //        double lineRadian = Math.Atan2(y1 - y0, x1 - x0);
     //        double arrowRadian = DegreeToRadian(Angle);
@@ -599,7 +599,7 @@ namespace _20230222
     //            wingLength * Math.Cos(wingRadian2) + x0,
     //            wingLength * Math.Sin(wingRadian2) + y0);
     //        //アローヘッド描画、Fill(塗りつぶし)で描画
-    //        context.BeginFigure(MyPoints[^1], true, false);//fill, close
+    //        context.BeginFigure(Points[^1], true, false);//fill, close
     //        context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
     //        context.LineTo(arrowP2, false, false);
 
@@ -629,12 +629,12 @@ namespace _20230222
     //        {
     //            //return base.DefiningGeometry;
     //            StreamGeometry geometry = new() { FillRule = FillRule.Nonzero };
-    //            if(MyPoints.Count < 2) { return geometry; }
+    //            if(Points.Count < 2) { return geometry; }
 
     //            using (var context = geometry.Open())
     //            {
-    //                Point begin = MyPoints[0];
-    //                Point end = MyPoints[^1];
+    //                Point begin = Points[0];
+    //                Point end = Points[^1];
     //                switch (HeadBeginType)
     //                {
     //                    case HeadType.None:
@@ -668,9 +668,9 @@ namespace _20230222
     //    private void DrawBezier(StreamGeometryContext context, Point begin, Point end)
     //    {
     //        context.BeginFigure(begin, false, false);
-    //        for (int i = 1; i < MyPoints.Count - 1; i++)
+    //        for (int i = 1; i < Points.Count - 1; i++)
     //        {
-    //            context.LineTo(MyPoints[i], true, false);
+    //            context.LineTo(Points[i], true, false);
     //        }
     //        context.LineTo(end, true, false);
     //    }
@@ -682,10 +682,10 @@ namespace _20230222
     //    /// <returns>アローヘッドと直線との接点座標</returns>
     //    private Point DrawBeginArrow(StreamGeometryContext context)
     //    {
-    //        double x0 = MyPoints[0].X;
-    //        double y0 = MyPoints[0].Y;
-    //        double x1 = MyPoints[1].X;
-    //        double y1 = MyPoints[1].Y;
+    //        double x0 = Points[0].X;
+    //        double y0 = Points[0].Y;
+    //        double x1 = Points[1].X;
+    //        double y1 = Points[1].Y;
 
     //        double lineRadian = Math.Atan2(y1 - y0, x1 - x0);
     //        double arrowRadian = DegreeToRadian(Angle);
@@ -701,7 +701,7 @@ namespace _20230222
     //            wingLength * Math.Cos(wingRadian2) + x0,
     //            wingLength * Math.Sin(wingRadian2) + y0);
     //        //アローヘッド描画、Fill(塗りつぶし)で描画
-    //        context.BeginFigure(MyPoints[0], true, false);//fill, close
+    //        context.BeginFigure(Points[0], true, false);//fill, close
     //        context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
     //        context.LineTo(arrowP2, false, false);
 
@@ -721,10 +721,10 @@ namespace _20230222
     //    /// <returns>アローヘッドと直線との接点座標</returns>
     //    private Point DrawEndArrow(StreamGeometryContext context)
     //    {
-    //        double x0 = MyPoints[^1].X;
-    //        double x1 = MyPoints[^2].X;
-    //        double y0 = MyPoints[^1].Y;
-    //        double y1 = MyPoints[^2].Y;
+    //        double x0 = Points[^1].X;
+    //        double x1 = Points[^2].X;
+    //        double y0 = Points[^1].Y;
+    //        double y1 = Points[^2].Y;
 
     //        double lineRadian = Math.Atan2(y1 - y0, x1 - x0);
     //        double arrowRadian = DegreeToRadian(Angle);
@@ -740,7 +740,7 @@ namespace _20230222
     //            wingLength * Math.Cos(wingRadian2) + x0,
     //            wingLength * Math.Sin(wingRadian2) + y0);
     //        //アローヘッド描画、Fill(塗りつぶし)で描画
-    //        context.BeginFigure(MyPoints[^1], true, false);//fill, close
+    //        context.BeginFigure(Points[^1], true, false);//fill, close
     //        context.LineTo(arrowP1, false, false);//isStroke, isSmoothJoin
     //        context.LineTo(arrowP2, false, false);
 
