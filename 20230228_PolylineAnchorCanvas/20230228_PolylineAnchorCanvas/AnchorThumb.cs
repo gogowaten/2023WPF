@@ -50,7 +50,6 @@ namespace _20230228_PolylineAnchorCanvas
         {
             X = point.X;
             Y = point.Y;
-
         }
 
 

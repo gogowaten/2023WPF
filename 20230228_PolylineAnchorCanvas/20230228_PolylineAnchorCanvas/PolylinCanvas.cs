@@ -41,31 +41,40 @@ namespace _20230228_PolylineAnchorCanvas
         public ContextMenu MyAnchorMenu { get; set; } = new();
         public ContextMenu MyMenu { get; set; } = new();
         public AnchorThumb? MyCurrentAnchorThumb { get; set; }
-        public int MyDragPointIndex;
-        public Point MyClickedPoint;
+        public int MyCurrentAnchorIndex;//操作中のアンカー点(Thumb)のインデックス、マウス移動で使う
+        public Point MyClickedPoint;//クリックした座標、アンカー点追加時に使う
 
         public PolylinCanvas()
         {
+            //背景色は透明色、色を指定しないとクリックが無視される
             this.Background = Brushes.Transparent;
+
+            //表示するPolyline、色と太さは決め打ちしてる、したくないときは依存プロパティをつける
             MyShape = new Polyline();
             Children.Add(MyShape);
             MyShape.Stroke = Brushes.MediumAquamarine;
             MyShape.StrokeThickness = 20;
 
+            //Loaded時にXAMLで指定されているPointsを使ってアンカーThumb作成追加と関連付けする
             Loaded += PolylinCanvas_Loaded;
 
+            //CanvasのサイズはPolylineのActualに追従
             SetBinding(WidthProperty, new Binding() { Source = MyShape, Path = new PropertyPath(ActualWidthProperty) });
             SetBinding(HeightProperty, new Binding() { Source = MyShape, Path = new PropertyPath(ActualHeightProperty) });
 
+            //アンカーThumbの右クリックメニュー
             MenuItem item = new() { Header = "削除" };
             item.Click += (o, e) => { RemovePoint(MyCurrentAnchorThumb); };
             MyAnchorMenu.Items.Add(item);
 
+            //Canvasの右クリックメニュー
             this.ContextMenu = MyMenu;
             item = new() { Header = "ここに追加" };
             item.Click += (o, e) => { AddPoint(MyClickedPoint); };
             MyMenu.Items.Add(item);
         }
+
+        //マウスクリック時にクリックされたPoint記録
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
@@ -82,25 +91,12 @@ namespace _20230228_PolylineAnchorCanvas
             }
         }
 
+        //アンカー点追加時には同時にアンカーThumbも追加する
         public void AddPoint(Point point)
         {
             InsertPoint(point, MyPoints.Count);
         }
-        public void RemovePoint(int pointIndex)
-        {
-            if (pointIndex < 0) { return; }
-            MyPoints.RemoveAt(pointIndex);
-            AnchorThumb thumb = MyAnchorThumbs[pointIndex];
-            MyAnchorThumbs.Remove(thumb);
-            Children.Remove(thumb);
-            MyCurrentAnchorThumb = null;
-        }
-        public void RemovePoint(AnchorThumb? thumb)
-        {
-            if (thumb == null) { return; }
-            RemovePoint(MyDragPointIndex);
-        }
-
+        
         public void InsertPoint(Point point, int i)
         {
             MyPoints.Insert(i, point);
@@ -116,23 +112,40 @@ namespace _20230228_PolylineAnchorCanvas
             MyAnchorThumbs.Insert(i, thumb);
             Children.Add(thumb);
             thumb.DragDelta += Thumb_DragDelta;
+            thumb.PreviewMouseDown += Thumb_PreviewMouseDown;
             thumb.SetBinding(VisibilityProperty, new Binding()
             {
                 Source = this,
                 Path = new PropertyPath(MyAnchorVisibleProperty)
             });
             thumb.ContextMenu = MyAnchorMenu;
-            thumb.PreviewMouseDown += Thumb_PreviewMouseDown;
         }
 
+        //アンカー点削除、関連するアンカーThumbも削除する
+        public void RemovePoint(int pointIndex)
+        {
+            if (pointIndex < 0) { return; }
+            MyPoints.RemoveAt(pointIndex);
+            AnchorThumb thumb = MyAnchorThumbs[pointIndex];
+            MyAnchorThumbs.Remove(thumb);
+            Children.Remove(thumb);
+            MyCurrentAnchorThumb = null;
+        }
+        public void RemovePoint(AnchorThumb? thumb)
+        {
+            if (thumb == null) { return; }
+            RemovePoint(MyCurrentAnchorIndex);
+        }
+
+        //アンカーThumbをクリックしたときIndexの更新
         private void Thumb_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is AnchorThumb thumb)
             {
                 MyCurrentAnchorThumb = thumb;
-                MyDragPointIndex = MyAnchorThumbs.IndexOf(thumb);
+                MyCurrentAnchorIndex = MyAnchorThumbs.IndexOf(thumb);
             }
-            else { MyDragPointIndex = -1; }
+            else { MyCurrentAnchorIndex = -1; }
         }
 
 
@@ -142,7 +155,7 @@ namespace _20230228_PolylineAnchorCanvas
             {
                 thumb.X += e.HorizontalChange;
                 thumb.Y += e.VerticalChange;
-                MyPoints[MyDragPointIndex] = new Point(thumb.X, thumb.Y);
+                MyPoints[MyCurrentAnchorIndex] = new Point(thumb.X, thumb.Y);
             }
         }
     }
