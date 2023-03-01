@@ -110,25 +110,17 @@ namespace _20230222
             //Ob1.Add(new());
             //DpOb2.Add(new Point());
             #endregion
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //MyAnchorCanvas.MyPoints.Add(new Point(200, 20));//アンカーThumbは追加されない
-            MyAnchorCanvas.AddPoint(new Point(300, 50));
+           
 
-            //MyAnchorCanvas.MyDataObPoints.Add(new Point(300, 333));
-            //MyAnchorCanvas.MyShapePoly.Points.Add(new Point(400, 100));
-
-            var inu = MyAnchorCanvas.MyPoints;
-            var neko = MyAnchorCanvas.MyShape.Points;
-            //MyAnchorCanvas.MyShapePoly.InvalidateVisual();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if(MyAnchorCanvas.MyAnchorVisible == Visibility.Visible)
+            if (MyAnchorCanvas.MyAnchorVisible == Visibility.Visible)
             {
                 MyAnchorCanvas.MyAnchorVisible = Visibility.Collapsed;
             }
