@@ -13,7 +13,7 @@
       <!--<local:PolyBezierArrowLine2 x:Name="MyLine2" IsBezier="True" HeadEndType="Arrow" HeadBeginType="Arrow"
                            MyPoints="0,0 0,100 100,100 100,0"
                      Stroke="Red" Fill="Red" StrokeThickness="10"/>-->
-      <local:AnchorCanvas3 x:Name="MyAnchorCanvas" Canvas.Left="150" Canvas.Top="50"
+      <local:AnchorCanvas3 x:Name="MyAnchorCanvas" X="150" Y="50"
                            MyPoints="0,0 0,30 120,50" Background="Orange">
         <!--<ItemsControl DataContext="{Binding ElementName=MyAnchorCanvas}" ItemsSource="{Binding MyPoints}">
           <ItemsControl.ItemsPanel>

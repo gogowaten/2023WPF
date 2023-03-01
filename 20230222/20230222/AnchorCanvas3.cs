@@ -86,6 +86,8 @@ namespace _20230222
             SetBinding(WidthProperty, new Binding() { Source = MyShape, Path = new PropertyPath(ActualWidthProperty) });
             SetBinding(HeightProperty, new Binding() { Source = MyShape, Path = new PropertyPath(ActualHeightProperty) });
             SetBinding(MyPointsProperty, new Binding() { Source = MyShape, Path = new PropertyPath(Polyline.PointsProperty) });
+            SetBinding(LeftProperty, new Binding() { Source = this, Path = new PropertyPath(XProperty) });
+            SetBinding(TopProperty, new Binding() { Source = this, Path = new PropertyPath(YProperty) });
 
             MenuItem item = new() { Header = "削除" };
             item.Click += (o, e) => { RemovePoint(MyCurrentAnchorThumb); };
@@ -191,8 +193,10 @@ namespace _20230222
                 }
                 else
                 {
-                    SetLeft(this, GetLeft(this) + minX);
-                    SetTop(this, GetTop(this) + minY);
+                    //SetLeft(this, GetLeft(this) + minX);
+                    //SetTop(this, GetTop(this) + minY);
+
+                    X += minX; Y += minY;
 
                     for (int i = 0; i < MyPoints.Count; i++)
                     {
@@ -205,7 +209,7 @@ namespace _20230222
         }
         private void Offset(double xOffset, double yOffset)
         {
-            
+
         }
         //private void Thumb_DragDelta2(object sender, DragDeltaEventArgs e)
         //{
