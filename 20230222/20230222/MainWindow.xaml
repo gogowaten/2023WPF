@@ -10,9 +10,9 @@
     <Canvas x:Name="MyCanvas">      
       <Button Content="test" Width="200" Canvas.Left="200" Click="Button_Click"/>
       <Button Content="visible" Width="200" Canvas.Left="200" Canvas.Top="40" Click="Button_Click_1"/>
-      <!--<local:PolyBezierArrowLine2 x:Name="MyLine2" IsBezier="True" HeadEndType="Arrow" HeadBeginType="Arrow"
-                           MyPoints="0,0 0,100 100,100 100,0"
-                     Stroke="Red" Fill="Red" StrokeThickness="10"/>-->
+      <local:PolyBezierArrowLine2 x:Name="MyLine2" IsBezier="True" HeadEndType="Arrow" HeadBeginType="Arrow"
+                           Points="0,0 0,100 100,100 100,0"
+                     Stroke="Red" Fill="Red" StrokeThickness="10"/>
       <local:AnchorCanvas3 x:Name="MyAnchorCanvas" X="150" Y="50"
                            MyPoints="0,0 0,30 120,50" Background="Orange">
         <!--<ItemsControl DataContext="{Binding ElementName=MyAnchorCanvas}" ItemsSource="{Binding MyPoints}">
