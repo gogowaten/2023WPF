@@ -5,17 +5,29 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230302_PolyBezierArrowline"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="500" Width="600">
   <Grid>
     <Canvas>
-      <local:PolyBezierArrowline Points="0,0 0,150 100,50 100,200" StrokeThickness="60"
+      <local:PolyBezierArrowline Points="0,0 0,150 100,50 100,200" StrokeThickness="20"
                                  IsBezier="True"
-                                 HeadBeginType="Arrow" HeadEndType="Arrow" Stroke="SeaGreen"/>
+                                 EdgeBeginType="Arrow" EdgeEndType="Arrow" Stroke="SeaGreen"
+                                 Canvas.Left="50"/>
 
       <local:PolyBezierArrowline Points="0,0 0,150 100,50 100,200" StrokeThickness="20"
                                  IsBezier="False"
-                                 HeadBeginType="Arrow" HeadEndType="Arrow" Stroke="DarkMagenta"
-                                 Canvas.Left="200"/>
+                                 EdgeBeginType="Arrow" EdgeEndType="Arrow" Stroke="DarkMagenta"
+                                 Canvas.Left="250"/>
+      
+      <local:PolyBezierArrowline Points="50,70 250,150 50,250 50,200 50,150 150,100 250,250" StrokeThickness="20"
+                                 IsBezier="True"
+                                 EdgeBeginType="Arrow" EdgeEndType="Arrow" Stroke="SeaGreen"
+                                 Canvas.Top="150"/>
+      
+      <local:PolyBezierArrowline Points="50,70 250,150 50,250 50,200 50,150 150,100 250,250" StrokeThickness="20"
+                                 IsBezier="False"
+                                 EdgeBeginType="Arrow" EdgeEndType="Arrow" Stroke="DarkMagenta"
+                                 Canvas.Top="150" Canvas.Left="220"/>
+      
     </Canvas>
   </Grid>
 </Window>

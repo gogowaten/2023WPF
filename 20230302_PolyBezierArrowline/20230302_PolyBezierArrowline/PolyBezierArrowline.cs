@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.Collections.Specialized;
-using System.Windows.Data;
+
+//WPFで矢印ベジェ曲線できた - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/03/03/131036
 
 namespace _20230302_PolyBezierArrowline
 {
-    public enum HeadType { None = 0, Arrow, }
+    //端点の形状
+    public enum EdgeType { None = 0, Arrow, }
+
+
     public class PolyBezierArrowline : Shape
     {
         #region 依存プロパティ
@@ -32,30 +34,30 @@ namespace _20230302_PolyBezierArrowline
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         /// <summary>
-        /// 終点のヘッドタイプ
+        /// 終点の図形形状(エッジタイプ)
         /// </summary>
-        public HeadType HeadEndType
+        public EdgeType EdgeEndType
         {
-            get { return (HeadType)GetValue(HeadEndTypeProperty); }
-            set { SetValue(HeadEndTypeProperty, value); }
+            get { return (EdgeType)GetValue(EdgeEndTypeProperty); }
+            set { SetValue(EdgeEndTypeProperty, value); }
         }
-        public static readonly DependencyProperty HeadEndTypeProperty =
-            DependencyProperty.Register(nameof(HeadEndType), typeof(HeadType), typeof(PolyBezierArrowline),
-                new FrameworkPropertyMetadata(HeadType.None,
+        public static readonly DependencyProperty EdgeEndTypeProperty =
+            DependencyProperty.Register(nameof(EdgeEndType), typeof(EdgeType), typeof(PolyBezierArrowline),
+                new FrameworkPropertyMetadata(EdgeType.None,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         /// <summary>
-        /// 始点のヘッドタイプ
+        /// 始点の図形形状(エッジタイプ)
         /// </summary>
-        public HeadType HeadBeginType
+        public EdgeType EdgeBeginType
         {
-            get { return (HeadType)GetValue(HeadBeginTypeProperty); }
-            set { SetValue(HeadBeginTypeProperty, value); }
+            get { return (EdgeType)GetValue(EdgeBeginTypeProperty); }
+            set { SetValue(EdgeBeginTypeProperty, value); }
         }
-        public static readonly DependencyProperty HeadBeginTypeProperty =
-            DependencyProperty.Register(nameof(HeadBeginType), typeof(HeadType), typeof(PolyBezierArrowline),
-                new FrameworkPropertyMetadata(HeadType.None,
+        public static readonly DependencyProperty EdgeBeginTypeProperty =
+            DependencyProperty.Register(nameof(EdgeBeginType), typeof(EdgeType), typeof(PolyBezierArrowline),
+                new FrameworkPropertyMetadata(EdgeType.None,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
@@ -102,33 +104,34 @@ namespace _20230302_PolyBezierArrowline
         #endregion 依存プロパティ
         protected override Geometry DefiningGeometry
         {
-
             get
             {
                 StreamGeometry geometry = new() { FillRule = FillRule.Nonzero };
                 if (Points.Count < 2) { return geometry; }
                 if (Points.Count < 4 && IsBezier) { return geometry; }
+                //図形はFillで描画して、中間線部分はStrokeで描画している
+                //両方同じ色にするのでStrokeで統一
                 Fill = Stroke;
                 using (var context = geometry.Open())
                 {
                     Point begin = Points[0];//始点
                     Point end = Points[^1];//終点
                     //始点図形の描画
-                    switch (HeadBeginType)
+                    switch (EdgeBeginType)
                     {
-                        case HeadType.None:
+                        case EdgeType.None:
                             break;
-                        case HeadType.Arrow:
-                            begin = DrawBeginArrow(context);
+                        case EdgeType.Arrow:
+                            begin = DrawArrow(context, Points[0], Points[1]);
                             break;
                     }
                     //終点図形の描画
-                    switch (HeadEndType)
+                    switch (EdgeEndType)
                     {
-                        case HeadType.None:
+                        case EdgeType.None:
                             break;
-                        case HeadType.Arrow:
-                            end = DrawEndArrow(context);
+                        case EdgeType.Arrow:
+                            end = DrawArrow(context, Points[^1], Points[^2]);
                             break;
                     }
                     //中間線の描画
@@ -154,8 +157,8 @@ namespace _20230302_PolyBezierArrowline
             List<Point> bezier = Points.Skip(1).Take(Points.Count - 2).ToList();
             bezier.Add(end);
             context.PolyBezierTo(bezier, true, false);
-
         }
+
         /// <summary>
         /// 直線部分の描画
         /// </summary>
@@ -169,6 +172,48 @@ namespace _20230302_PolyBezierArrowline
             context.LineTo(end, true, false);
         }
 
+        /// <summary>
+        /// アローヘッド(三角形)描画
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="edge">端のPoint、始点ならPoints[0]、終点ならPoints[^1]</param>
+        /// <param name="next">端から2番めのPoint、始点ならPoints[1]、終点ならPoints[^2]</param>
+        /// <returns></returns>
+        private Point DrawArrow(StreamGeometryContext context, Point edge, Point next)
+        {
+            //斜辺 hypotenuse ここでは二等辺三角形の底辺じゃない方の2辺
+            //頂角 apex angle 先端の角
+            //アローヘッドの斜辺(hypotenuse)の角度(ラジアン)を計算
+            double lineRadian = Math.Atan2(next.Y - edge.Y, next.X - edge.X);
+            double apexRadian = DegreeToRadian(Angle);
+            double edgeSize = StrokeThickness * 2.0;
+            double hypotenuseLength = edgeSize / Math.Cos(apexRadian);
+            double hypotenuseRadian1 = lineRadian + apexRadian;
+
+            //底角座標
+            Point p1 = new(
+                hypotenuseLength * Math.Cos(hypotenuseRadian1) + edge.X,
+                hypotenuseLength * Math.Sin(hypotenuseRadian1) + edge.Y);
+
+            double hypotenuseRadian2 = lineRadian - DegreeToRadian(Angle);
+            Point p2 = new(
+                hypotenuseLength * Math.Cos(hypotenuseRadian2) + edge.X,
+                hypotenuseLength * Math.Sin(hypotenuseRadian2) + edge.Y);
+
+            //アローヘッド描画、Fill(塗りつぶし)で描画
+            context.BeginFigure(edge, true, false);//isFilled, isClose
+            context.LineTo(p1, false, false);//isStroke, isSmoothJoin
+            context.LineTo(p2, false, false);
+
+            //アローヘッドと中間線の接点座標計算、
+            //HeadSizeぴったりで計算すると僅かな隙間ができるので-1.0している、
+            //-0.5でも隙間になる、-0.7で隙間なくなる
+            return new Point(
+                (edgeSize - 1.0) * Math.Cos(lineRadian) + edge.X,
+                (edgeSize - 1.0) * Math.Sin(lineRadian) + edge.Y);
+        }
+
+        //DrawArrowLineに統合したので未使用
         /// <summary>
         /// 始点にアローヘッド描画
         /// </summary>
@@ -205,9 +250,9 @@ namespace _20230302_PolyBezierArrowline
             return new Point(
                 (headSize - 1.0) * Math.Cos(lineRadian) + x0,
                 (headSize - 1.0) * Math.Sin(lineRadian) + y0);
-
         }
 
+        //DrawArrowLineに統合したので未使用
         /// <summary>
         /// 終点にアローヘッド描画
         /// </summary>
@@ -242,7 +287,7 @@ namespace _20230302_PolyBezierArrowline
                 (headSize - 1.0) * Math.Cos(lineRadian) + x0,
                 (headSize - 1.0) * Math.Sin(lineRadian) + y0);
         }
-        private static double DegreeToRadian(double degree)
+        public static double DegreeToRadian(double degree)
         {
             return degree / 360.0 * (Math.PI * 2.0);
         }
