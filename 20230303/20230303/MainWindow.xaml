@@ -1,0 +1,16 @@
+﻿<Window x:Class="_20230303.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230303"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+    <Grid>
+    <Canvas x:Name="MyCanvas">
+      <TextBox x:Name="MyTextBox" Text="ador" Canvas.Left="100" Canvas.Top="20" FontSize="30"/>
+      <Border x:Name="MyBorder" Background="Cyan" BorderBrush="Blue" BorderThickness="1" Width="120" Height="50" Canvas.Left="20" Canvas.Top="80"/>
+      <Button x:Name="MyButton" Content="Adorner" Width="100" Canvas.Left="200" Canvas.Top="20" Click="MyButton_Click"/>
+    </Canvas>
+    </Grid>
+</Window>
