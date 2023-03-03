@@ -23,7 +23,7 @@ using System.Windows.Media;
 
 
 //Adornerを対象に装着するタイミングはLoadedイベントのとき
-//もしInisializeで装着しようとしても、必要なAdornerLayerが取得できない
+//もしInitializeで装着しようとしても、必要なAdornerLayerが取得できない
 namespace _20230303_Adorner
 {
     /// <summary>
