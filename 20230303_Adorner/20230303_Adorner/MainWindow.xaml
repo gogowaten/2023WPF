@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230303_Adorner"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="600">
     <Grid>
-
+    <Canvas>
+      <TextBox x:Name="MyTextBox" Text="アドル寝る" FontSize="30" Canvas.Left="20" Canvas.Top="20"/>
+      <Border x:Name="MyBorder" Width="100" Height="100" Background="Crimson" Canvas.Left="200" Canvas.Top="50"/>
+    </Canvas>
     </Grid>
 </Window>
