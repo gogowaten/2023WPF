@@ -67,6 +67,7 @@ namespace _20230303
             MyVisuals = new VisualCollection(this);
             MyVisuals.Add(MyGrip);
         }
+        string str = "mo文字列ziretu";
 
         private void MyGrip_DragDelta(object sender, DragDeltaEventArgs e)
         {
@@ -135,10 +136,8 @@ namespace _20230303
         }
     }
 
-
-
     //Mitesh Sureja's Blog: Adorners in WPF
-//    http://miteshsureja.blogspot.com/2016/08/adorners-in-wpf.html
+    //    http://miteshsureja.blogspot.com/2016/08/adorners-in-wpf.html
 
     //期待どおりにサイズ変更できる
     //
