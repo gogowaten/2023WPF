@@ -28,15 +28,16 @@ namespace _20230303
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            AdornerLayer.GetAdornerLayer(MyTextBox).Add(new Ador(MyTextBox));
-            AdornerLayer.GetAdornerLayer(MyBorder).Add(new Ador(MyBorder));
-            AdornerLayer.GetAdornerLayer(MyButton).Add(new Ador(MyButton));
+            AdornerLayer.GetAdornerLayer(MyTextBox).Add(new BBAdor(MyTextBox));
+            //AdornerLayer.GetAdornerLayer(MyBorder).Add(new Ador(MyBorder));
+            //AdornerLayer.GetAdornerLayer(MyButton).Add(new Ador(MyButton));
         }
 
         private void MyButton_Click(object sender, RoutedEventArgs e)
         {
-            var rect = MyBorder.RenderSize;
-            var conrect = VisualTreeHelper.GetContentBounds(MyBorder);
+            var size = MyTextBox.RenderSize;
+            var conrect = VisualTreeHelper.GetContentBounds(MyTextBox);//empty
+            var desenbound = VisualTreeHelper.GetDescendantBounds(MyTextBox);
         }
     }
 }
