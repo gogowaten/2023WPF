@@ -67,7 +67,7 @@ namespace _20230303
             MyVisuals = new VisualCollection(this);
             MyVisuals.Add(MyGrip);
         }
-        string str = "mo文字列ziretu";
+
 
         private void MyGrip_DragDelta(object sender, DragDeltaEventArgs e)
         {
@@ -136,17 +136,28 @@ namespace _20230303
         }
     }
 
+
+
+
+
+
+
+
+
+
     //Mitesh Sureja's Blog: Adorners in WPF
     //    http://miteshsureja.blogspot.com/2016/08/adorners-in-wpf.html
 
     //期待どおりにサイズ変更できる
-    //
+    //簡略化した
     public class BBAdor : Adorner
     {
-        Thumb MyThumb;
-        VisualCollection MyVisuals;
-        public BBAdor(UIElement adornedElement) : base(adornedElement)
+        readonly Thumb MyThumb;
+        readonly VisualCollection MyVisuals;
+        readonly FrameworkElement MyTarget;
+        public BBAdor(FrameworkElement adornedElement) : base(adornedElement)
         {
+            MyTarget = adornedElement;
             MyVisuals = new VisualCollection(this);
             MyThumb = new Thumb()
             {
@@ -156,67 +167,41 @@ namespace _20230303
                 Opacity = 0.5,
                 Background = Brushes.Red,
             };
-            MyVisuals.Add(MyThumb);
             MyThumb.DragDelta += MyThumb_DragDelta;
+            MyVisuals.Add(MyThumb);
+
+            //TextBoxなどWidthの既定値がNaNなのを解除する
+            MyTarget.Width = MyTarget.DesiredSize.Width;
+            MyTarget.Height = MyTarget.DesiredSize.Height;
+
         }
 
         private void MyThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            if (AdornedElement is FrameworkElement adorElem)
-            {
-                EnforceSize(adorElem);
-                double newWidth = Math.Max(adorElem.Width + e.HorizontalChange, MyThumb.DesiredSize.Width);
-                double newHeight = Math.Max(adorElem.Height + e.VerticalChange, MyThumb.DesiredSize.Height);
-                adorElem.Width = newWidth;
-                adorElem.Height = newHeight;
-            }
+            MyTarget.Width = Math.Max(MyTarget.Width + e.HorizontalChange, MyThumb.Width);
+            MyTarget.Height = Math.Max(MyTarget.Height + e.VerticalChange, MyThumb.Height);
         }
 
-        //サイズがNANなのを解除する？
-        private void EnforceSize(FrameworkElement elem)
-        {
-            if (elem.Width.Equals(double.NaN)) { elem.Width = elem.DesiredSize.Width; }
-            if (elem.Height.Equals(double.NaN)) { elem.Height = elem.DesiredSize.Height; }
-            if (elem.Parent is FrameworkElement parent)
-            {
-                elem.MaxHeight = parent.ActualHeight;
-                elem.MaxWidth = parent.ActualWidth;
-            }
-        }
 
-        
         protected override Size ArrangeOverride(Size finalSize)
         {
             //return base.ArrangeOverride(finalSize);
 
             base.ArrangeOverride(finalSize);//いらない？なくても動く
-            double targetW = AdornedElement.DesiredSize.Width;
-            double targetH = AdornedElement.DesiredSize.Height;
             double thisWidth = this.DesiredSize.Width;
             double thisHeight = this.DesiredSize.Height;
             //ThumbのRect変更？ここがわからん、/2しないと対象の中央に表示される、/2で右下に表示される
-            MyThumb.Arrange(new Rect(targetW - thisWidth / 2, targetH - thisHeight / 2, thisWidth, thisHeight));
-
+            MyThumb.Arrange(new Rect(
+                MyTarget.Width - thisWidth / 2,
+                MyTarget.Height - thisHeight / 2,
+                thisWidth, thisHeight));
             return finalSize;
         }
 
-        protected override int VisualChildrenCount
-        {
-            get
-            {
-                //return base.VisualChildrenCount;
-                return MyVisuals.Count;
-            }
-        }
+        protected override int VisualChildrenCount => MyVisuals.Count;
 
-        protected override Visual GetVisualChild(int index)
-        {
-            //return base.GetVisualChild(index);
-            return MyVisuals[index];
-        }
-        //protected override void OnRender(DrawingContext drawingContext)
-        //{
-        //    base.OnRender(drawingContext);
-        //}
+        protected override Visual GetVisualChild(int index) => MyVisuals[index];
     }
+
+
 }
