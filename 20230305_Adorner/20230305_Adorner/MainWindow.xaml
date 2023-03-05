@@ -1,0 +1,21 @@
+﻿<Window x:Class="_20230305_Adorner.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230305_Adorner"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="400">
+  <Grid>
+    <Canvas>
+      <Ellipse x:Name="MyEllipse" Fill="Lavender" Stroke="DarkMagenta"                 
+                 Canvas.Left="20" Canvas.Top="100" Width="50" Height="50"/>
+      <TextBox x:Name="MyTextBox" Text="TextBox" FontSize="30"
+               Canvas.Left="100" Canvas.Top="20">
+        <TextBox.RenderTransform>
+          <RotateTransform Angle="20"/>
+        </TextBox.RenderTransform>
+      </TextBox>
+    </Canvas>
+  </Grid>
+</Window>
