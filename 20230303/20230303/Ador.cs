@@ -9,6 +9,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 //embellishとadornとdecorateの語感の違い... - Yahoo!知恵袋
 //https://detail.chiebukuro.yahoo.co.jp/qa/question_detail/q1023045950
@@ -195,6 +196,87 @@ namespace _20230303
                 MyTarget.Width - thisWidth / 2,
                 MyTarget.Height - thisHeight / 2,
                 thisWidth, thisHeight));
+            return finalSize;
+        }
+
+        protected override int VisualChildrenCount => MyVisuals.Count;
+
+        protected override Visual GetVisualChild(int index) => MyVisuals[index];
+    }
+
+
+
+
+
+
+    public class CCAdor : Adorner
+    {
+        public Thumb? MyCurrentThumb;
+        int MyCurrentIndex;
+        public VisualCollection MyVisuals { get; private set; }
+        readonly Polyline MyPolyline;
+        public Canvas MyCanvas = new();
+        public CCAdor(Polyline adornedElement) : base(adornedElement)
+        {
+            MyPolyline = adornedElement;
+            MyVisuals = new VisualCollection(this);
+            MyVisuals.Add(MyCanvas);
+            foreach (var item in MyPolyline.Points)
+            {
+
+                Thumb tt = new Thumb()
+                {
+                    Cursor = Cursors.Hand,
+                    Height = 20,
+                    Width = 20,
+                    Opacity = 0.5,
+                    Background = Brushes.Red,
+                };
+                MyCanvas.Children.Add(tt);
+                                
+                Canvas.SetLeft(tt, item.X);
+                Canvas.SetTop(tt, item.Y);
+                tt.DragDelta += MyThumb_DragDelta;
+                tt.PreviewMouseLeftButtonDown += MyCurrentThumb_PreviewMouseLeftButtonDown;
+            }
+
+        }
+
+        private void MyCurrentThumb_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Thumb thumb)
+            {
+                MyCurrentThumb = thumb;
+                MyCurrentIndex = MyCanvas.Children.IndexOf(MyCurrentThumb);
+            }
+        }
+
+        private void MyThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            Point pp = MyPolyline.Points[MyCurrentIndex];
+            Canvas.SetLeft(MyCurrentThumb, pp.X + e.HorizontalChange);
+            Canvas.SetTop(MyCurrentThumb, pp.Y + e.VerticalChange);
+            MyPolyline.Points[MyCurrentIndex] = Point.Add(pp, new Vector(e.HorizontalChange, e.VerticalChange));
+            //MyPolyline.Width = Math.Max(MyPolyline.Width + e.HorizontalChange, MyCurrentThumb.Width);
+            //MyPolyline.Height = Math.Max(MyPolyline.Height + e.VerticalChange, MyCurrentThumb.Height);
+
+        }
+
+
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            //return base.ArrangeOverride(finalSize);
+            base.ArrangeOverride(finalSize);//いらない？なくても動く
+            MyCanvas.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+
+            //double thisWidth = this.DesiredSize.Width;
+            //double thisHeight = this.DesiredSize.Height;
+            ////ThumbのRect変更？ここがわからん、/2しないと対象の中央に表示される、/2で右下に表示される
+            ////MyCurrentThumb.Arrange(new Rect(
+            ////    MyPolyline.Width / 2, MyPolyline.Height / 2, thisWidth, thisHeight));
+            //MyCurrentThumb.Arrange(new Rect(
+            //    MyPolyline.Width / 2, MyPolyline.Height / 2, finalSize.Width, finalSize.Height));
+
             return finalSize;
         }
 

@@ -24,12 +24,13 @@ namespace _20230303
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
-            
+
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             AdornerLayer.GetAdornerLayer(MyTextBox).Add(new BBAdor(MyTextBox));
+            AdornerLayer.GetAdornerLayer(MyPolyline).Add(new CCAdor(MyPolyline));
             //AdornerLayer.GetAdornerLayer(MyBorder).Add(new Ador(MyBorder));
             //AdornerLayer.GetAdornerLayer(MyButton).Add(new Ador(MyButton));
         }
@@ -40,7 +41,7 @@ namespace _20230303
             var size = MyTextBox.RenderSize;
             var conrect = VisualTreeHelper.GetContentBounds(MyTextBox);//empty
             var desenbound = VisualTreeHelper.GetDescendantBounds(MyTextBox);
-           var tbound= MyTextBox.RenderTransform.TransformBounds(new Rect(MyTextBox.RenderSize));
+            var tbound = MyTextBox.RenderTransform.TransformBounds(new Rect(MyTextBox.RenderSize));
             VisualBrush vb = new(MyTextBox);
             DrawingVisual dv = new();
             using (var context = dv.RenderOpen())

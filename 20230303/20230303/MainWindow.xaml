@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230303"
         mc:Ignorable="d"
-        Title="MainWindow" Height="250" Width="400">
+        Title="MainWindow" Height="350" Width="500">
   <Grid>
     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
       <Canvas x:Name="MyCanvas">
@@ -14,8 +14,11 @@
             <RotateTransform Angle="20"/>
           </TextBox.RenderTransform>
         </TextBox>
-        <Border x:Name="MyBorder" Background="Cyan" BorderBrush="Blue" BorderThickness="1" Width="120" Height="50" Canvas.Left="20" Canvas.Top="80"/>
+        <!--<Border x:Name="MyBorder" Background="Cyan" BorderBrush="Blue" BorderThickness="1" Width="120" Height="50" Canvas.Left="20" Canvas.Top="80"/>-->
         <Button x:Name="MyButton" Content="Adorner" Width="100" Canvas.Left="200" Canvas.Top="20" Click="MyButton_Click"/>
+        <Grid Canvas.Left="20" Canvas.Top="50" Background="MediumAquamarine">
+          <Polyline x:Name="MyPolyline" Points="0,0 0,100 100,50" Stroke="LightPink" StrokeThickness="20"/>
+        </Grid>
       </Canvas>
     </ScrollViewer>
   </Grid>
