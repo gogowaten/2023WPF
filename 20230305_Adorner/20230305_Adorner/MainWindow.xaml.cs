@@ -1,6 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Documents;
 
+//WPF、マウスでTextBoxのサイズ変更するのにAdorner(装飾者)を使ってみた - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/03/05/142526
+
 namespace _20230305_Adorner
 {
     public partial class MainWindow : Window
