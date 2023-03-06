@@ -211,16 +211,40 @@ namespace _20230303
 
     public class CCAdor : Adorner
     {
-        public Thumb? MyCurrentThumb;
-        int MyCurrentIndex;
+        public Thumb? MyThumb;
+        int MyIndex;
         public VisualCollection MyVisuals { get; private set; }
-        readonly Polyline MyPolyline;
+        readonly PolyBezier MyPolyline;
         public Canvas MyCanvas = new();
-        public CCAdor(Polyline adornedElement) : base(adornedElement)
+        public List<Thumb> MyThumbs { get; private set; } = new();
+        public Rect MyBounds { get; private set; }
+        public Rectangle MyRectangle { get; private set; }
+        public Rectangle MyRectangleT { get; private set; }
+        public Rectangle MyRectangleP { get; private set; }
+        public CCAdor(PolyBezier adornedElement) : base(adornedElement)
         {
             MyPolyline = adornedElement;
             MyVisuals = new VisualCollection(this);
             MyVisuals.Add(MyCanvas);
+            MyRectangle = new Rectangle()
+            {
+                Stroke = Brushes.Blue,
+                StrokeThickness = 1,
+            }; ;
+            MyVisuals.Add(MyRectangle);
+            MyRectangleT = new Rectangle()
+            {
+                Stroke = Brushes.Cyan,
+                StrokeThickness = 1,
+            };
+            MyVisuals.Add(MyRectangleT);
+            MyRectangleP = new Rectangle()
+            {
+                Stroke = Brushes.Orange,
+                StrokeThickness = 1,
+            };
+            MyVisuals.Add(MyRectangleP);
+
             foreach (var item in MyPolyline.Points)
             {
 
@@ -233,7 +257,8 @@ namespace _20230303
                     Background = Brushes.Red,
                 };
                 MyCanvas.Children.Add(tt);
-                                
+
+                MyThumbs.Add(tt);
                 Canvas.SetLeft(tt, item.X);
                 Canvas.SetTop(tt, item.Y);
                 tt.DragDelta += MyThumb_DragDelta;
@@ -246,38 +271,71 @@ namespace _20230303
         {
             if (sender is Thumb thumb)
             {
-                MyCurrentThumb = thumb;
-                MyCurrentIndex = MyCanvas.Children.IndexOf(MyCurrentThumb);
+                MyThumb = thumb;
+                MyIndex = MyCanvas.Children.IndexOf(MyThumb);
             }
         }
 
         private void MyThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            Point pp = MyPolyline.Points[MyCurrentIndex];
-            Canvas.SetLeft(MyCurrentThumb, pp.X + e.HorizontalChange);
-            Canvas.SetTop(MyCurrentThumb, pp.Y + e.VerticalChange);
-            MyPolyline.Points[MyCurrentIndex] = Point.Add(pp, new Vector(e.HorizontalChange, e.VerticalChange));
-            //MyPolyline.Width = Math.Max(MyPolyline.Width + e.HorizontalChange, MyCurrentThumb.Width);
-            //MyPolyline.Height = Math.Max(MyPolyline.Height + e.VerticalChange, MyCurrentThumb.Height);
+            if (sender is Thumb thumb)
+            {
+                double x = Canvas.GetLeft(thumb) + e.HorizontalChange;
+                double y = Canvas.GetTop(thumb) + e.VerticalChange;
+
+                SetLocate(thumb, x, y);
+
+
+                MyPolyline.Points[MyIndex] = new Point(x, y);
+            }
 
         }
-
+        private void SetLocate(Thumb thumb, double x, double y)
+        {
+            Canvas.SetLeft(thumb, x);
+            Canvas.SetTop(thumb, y);
+        }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
             //return base.ArrangeOverride(finalSize);
             base.ArrangeOverride(finalSize);//いらない？なくても動く
-            MyCanvas.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 
-            //double thisWidth = this.DesiredSize.Width;
-            //double thisHeight = this.DesiredSize.Height;
-            ////ThumbのRect変更？ここがわからん、/2しないと対象の中央に表示される、/2で右下に表示される
-            ////MyCurrentThumb.Arrange(new Rect(
-            ////    MyPolyline.Width / 2, MyPolyline.Height / 2, thisWidth, thisHeight));
-            //MyCurrentThumb.Arrange(new Rect(
-            //    MyPolyline.Width / 2, MyPolyline.Height / 2, finalSize.Width, finalSize.Height));
+            //var deBound = VisualTreeHelper.GetDescendantBounds(MyPolyline);
+            var bound = VisualTreeHelper.GetContentBounds(MyPolyline);
+            var tBound = VisualTreeHelper.GetDescendantBounds(MyCanvas);
+            var drawBound = VisualTreeHelper.GetDrawing(MyPolyline).Bounds;
+            if (tBound == Rect.Empty)
+            {
+
+                MyCanvas.Arrange(new Rect(0, 0, bound.Width, bound.Height));
+                MyRectangleT.Arrange(bound);
+            }
+            else
+            {
+
+                MyCanvas.Arrange(new Rect(0, 0, tBound.Width, tBound.Height));
+                MyRectangleT.Arrange(tBound);
+            }
+            MyRectangle.Arrange(bound);
+            MyRectangleP.Arrange(GetPointsBound(MyPolyline.Points));
 
             return finalSize;
+        }
+        private Rect GetPointsBound(PointCollection points)
+        {
+            double left = double.MaxValue;
+            double top = double.MaxValue;
+            double right = double.MinValue;
+            double bottom = double.MinValue;
+            foreach (var item in points)
+            {
+                if (item.X < left) left = item.X;
+                if (item.Y < top) top = item.Y;
+                if (item.X > right) right = item.X;
+                if (item.Y > bottom) bottom = item.Y;
+            }
+            return new Rect(left, top, right - left, bottom - top);
         }
 
         protected override int VisualChildrenCount => MyVisuals.Count;
