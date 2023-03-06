@@ -2,6 +2,11 @@
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
+//ブログ記事
+//WPF、Polylineとかの要素をBitmapで取得、ピッタリ収まるサイズで取得、でもまだ不完全 - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/03/06/233732
+
+
 //PolylineのBitmapを作成
 //VisualTreeHelper.GetDescendantBoundsを使うと見た目通りのサイズが取得できる
 //サイズ関連のプロパティはいくつかあるけど見た目通りではないものが多い
@@ -15,6 +20,7 @@ namespace _20230306_GetShapeBounds
         public MainWindow()
         {
             InitializeComponent();
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
