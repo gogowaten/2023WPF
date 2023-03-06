@@ -26,11 +26,21 @@ namespace _20230303
             InitializeComponent();
             Loaded += MainWindow_Loaded;
 
-            
+           
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            var geo = MyPolyBezierCanvas.MyPolyBezier.MyGeometry;
+            var widen = geo.GetWidenedPathGeometry(new Pen(Brushes.Red, MyPolyBezierCanvas.MyPolyBezier.StrokeThickness));
+            widen.Transform = MyPolyBezierCanvas.RenderTransform;
+            Path myPath = new()
+            {
+                Fill = Brushes.Cyan,
+                Data = widen
+            };
+            MyCanvas.Children.Add(myPath);
+
             //AdornerLayer.GetAdornerLayer(MyPolyline).Add(new BBAdor(MyPolyline));
             AdornerLayer.GetAdornerLayer(MyPolyline).Add(new CCAdor(MyPolyline));
             //AdornerLayer.GetAdornerLayer(MyPolyBezierCanvas).Add(new CCAdor(MyPolyBezierCanvas));

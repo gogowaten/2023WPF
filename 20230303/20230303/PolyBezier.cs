@@ -24,6 +24,11 @@ namespace _20230303
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
 
+        public Geometry MyGeometry { get; set; }
+        public PolyBezier()
+        {
+            
+        }
         protected override Geometry DefiningGeometry
         {
             get
@@ -40,6 +45,7 @@ namespace _20230303
                     context.PolyBezierTo(neko, true, false);
                 }
                 geometry.Freeze();
+                MyGeometry = geometry;
                 return geometry;
             }
         }
