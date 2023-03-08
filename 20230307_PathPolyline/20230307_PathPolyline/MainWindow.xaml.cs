@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Ribbon.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+
+
+//WPF、PolylineをぴったりサイズのBitmapSourceとして取得できた！PolylineよりPath使った方がいい - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/03/08/144258
+
+
 
 namespace _20230307_PathPolyline
 {
@@ -52,9 +48,9 @@ namespace _20230307_PathPolyline
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //Test();
-            //Test2();
-            //Test3(MyPolyline);
-            Test4(MyPolyline);
+            BitmapSource bmp2 = Test2(MyPolyline);
+            BitmapSource bmp3 = Test3(MyPolyline);
+            BitmapSource bmp4 = Test4(MyPolyline);
             BitmapSource bmp = MakeBitmapFromPathGeometry(MyPathPolyline);
 
 
@@ -62,30 +58,33 @@ namespace _20230307_PathPolyline
 
 
         /// <summary>
-        /// PolylineのStrokeをBitmapにする
+        /// PolylineをBitmapにする
         /// </summary>
         private BitmapSource Test4(Polyline polyline)
         {
             PathFigure fig = new() { StartPoint = polyline.Points[0] };
             fig.Segments.Add(new PolyLineSegment(polyline.Points.Skip(1), true));
-            PathGeometry pg = new();
-            pg.Figures.Add(fig);
+            PathGeometry fillPG = new();
+            fillPG.Figures.Add(fig);
 
             Pen pen = new(polyline.Stroke, polyline.StrokeThickness);
-            PathGeometry rpg = pg.GetWidenedPathGeometry(pen);
-            rpg.Transform = polyline.RenderTransform;
-            Rect strokeRect = rpg.Bounds;
+            PathGeometry strokePG = fillPG.GetWidenedPathGeometry(pen);
+            strokePG.Transform = polyline.RenderTransform;
+            Rect rect = strokePG.Bounds;
 
-            pg.Transform = polyline.RenderTransform;
+            fillPG.Transform = polyline.RenderTransform;
 
-            DrawingVisual dv = new();
-            dv.Offset = new Vector(-strokeRect.X, -strokeRect.Y);
+            DrawingVisual dv = new() { Offset = new Vector(-rect.X, -rect.Y) };
             using (var context = dv.RenderOpen())
             {
-                context.DrawGeometry(polyline.Fill, null, pg);
-                context.DrawGeometry(pen.Brush, null, rpg);
+                context.DrawGeometry(polyline.Fill, null, fillPG);
+                context.DrawGeometry(pen.Brush, null, strokePG);
             }
-            RenderTargetBitmap bitmap = new((int)(strokeRect.Width + 1), (int)(strokeRect.Height + 1), 96, 96, PixelFormats.Pbgra32);
+            RenderTargetBitmap bitmap = new((int)(rect.Width + 1),
+                                            (int)(rect.Height + 1),
+                                            96,
+                                            96,
+                                            PixelFormats.Pbgra32);
             bitmap.Render(dv);
             return bitmap;
         }

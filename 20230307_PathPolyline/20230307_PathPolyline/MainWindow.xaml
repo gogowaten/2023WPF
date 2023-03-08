@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230307_PathPolyline"
         mc:Ignorable="d"
-        Title="MainWindow" Height="250" Width="300">
+        Title="MainWindow" Height="250" Width="400">
   <Grid>    
     <Canvas x:Name="MyCanvas">
       
@@ -26,9 +26,14 @@
         </Path.RenderTransform>
       </Path>
 
-      <Polyline x:Name="MyPolyline" Fill="Red" Stroke="Blue" StrokeThickness="1" Points="0,0 100,30 150,0">
+      <Polyline x:Name="MyPolyline" Stroke="Orange" Fill="Cyan"
+                StrokeThickness="20" Points="40,0 0,100 100,0"
+                Canvas.Left="300" Canvas.Top="50">
         <Polyline.RenderTransform>
-          <RotateTransform Angle="20"/>
+          <TransformGroup>
+            <RotateTransform Angle="30"/>
+            <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+          </TransformGroup>
         </Polyline.RenderTransform>
       </Polyline>
       
