@@ -12,7 +12,7 @@ using System.Windows.Shapes;
 
 namespace _20230303
 {
-    public class PolyBezierCanvas:Canvas
+    public class PolyBezierCanvas : Canvas
     {
 
         public PointCollection MyPoints
@@ -25,7 +25,8 @@ namespace _20230303
                 new FrameworkPropertyMetadata(new PointCollection(),
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
-        public PolyBezier MyPolyBezier { get; private set; } 
+
+        public PolyBezier MyPolyBezier { get; private set; }
         public Rect ExBound { get; private set; }
         public Rectangle ExRectangle { get; private set; }
 
@@ -44,12 +45,12 @@ namespace _20230303
                 StrokeThickness = 0,
             };
             Children.Add(ExRectangle);
-            MyPolyBezier.SetBinding(PolyBezier.PointsProperty,new Binding() { Source=this,Path= new PropertyPath(MyPointsProperty) });
+            MyPolyBezier.SetBinding(PolyBezier.PointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
 
 
             Loaded += PolyBezierCanvas_Loaded;
             MyPolyBezier.SizeChanged += MyPolyBezier_SizeChanged;
-           
+
         }
 
         private void MyPolyBezier_SizeChanged(object sender, SizeChangedEventArgs e)
