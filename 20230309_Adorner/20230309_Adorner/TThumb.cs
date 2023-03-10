@@ -58,18 +58,12 @@ namespace _20230309_Adorner
         #endregion 依存関係プロパティ
 
         public PolyGeoLine MyPolyGeoLine { get; set; }
-        //public Rect RenderSizeEx { get; private set; }
-        //public Rect RenderSizeExEx { get; private set; }
-        //public Rect GeoBounds { get; private set; }
-        //public Rect GeoWideBounds { get; private set; }
-        //public Rect GeoWideTFBounds { get; private set; }
-        //public Rect GeoTF_WideBounds { get; private set; }
-        public GeometryAdorner MyTTAdorner { get; private set; }
+        public GeometryThumbAdorner MyTTAdorner { get; private set; }
 
 
         public GeometryThumb()
         {
-            MyTTAdorner = new GeometryAdorner(this);
+            MyTTAdorner = new GeometryThumbAdorner(this);
             MyPolyGeoLine = MySetTemplate();
             MySetBindings();
             Loaded += TThumb_Loaded;
@@ -88,30 +82,14 @@ namespace _20230309_Adorner
         {
             MyTTAdorner.MyExternalBounds.Arrange(MyPolyGeoLine.MyTransformedExternalBounds);
             MyTTAdorner.MyInternalBounds.Arrange(MyPolyGeoLine.MyTransformedInternalBounds);
+            
             return base.GetLayoutClip(layoutSlotSize);
         }
 
-        //protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-        //{
-        //    base.OnRenderSizeChanged(sizeInfo);
-        //    Transform RTF = MyPolyGeoLine.RenderTransform;
-        //    Pen pen = new(MyPolyGeoLine.Stroke, MyPolyGeoLine.StrokeThickness);
-
-        //    RenderSizeEx = VisualTreeHelper.GetDescendantBounds(MyPolyGeoLine);
-        //    RenderSizeExEx = RTF.TransformBounds(RenderSizeEx);
-
-        //    var geo = MyPolyGeoLine.MyGeometry.Clone();
-        //    GeoBounds = geo.Bounds;
-        //    var wide = geo.GetWidenedPathGeometry(pen);
-        //    GeoWideBounds = wide.Bounds;
-        //    var wideTF = RTF.TransformBounds(wide.Bounds);
-        //    GeoWideTFBounds = wideTF;
-
-        //    geo.Transform = RTF;
-        //    var TFWide = geo.GetWidenedPathGeometry(pen);
-        //    GeoTF_WideBounds = TFWide.Bounds;
-
-        //}
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+        }
 
         private PolyGeoLine MySetTemplate()
         {
@@ -139,7 +117,7 @@ namespace _20230309_Adorner
 
 
 
-    public class GeometryAdorner : Adorner
+    public class GeometryThumbAdorner : Adorner
     {
         public VisualCollection MyVisuals { get; private set; }
         protected override int VisualChildrenCount => MyVisuals.Count;
@@ -147,16 +125,16 @@ namespace _20230309_Adorner
 
         public Rectangle MyExternalBounds { get; private set; } = new() { Stroke = Brushes.Lime, StrokeThickness = 1.0 };
         public Rectangle MyInternalBounds { get; private set; } = new() { Stroke = Brushes.Magenta, StrokeThickness = 1.0 };
-        public Canvas MyCanvas { get; private set; } = new();
-        public GeometryThumb MyGeoThumb { get; private set; }
+        //public Canvas MyCanvas { get; private set; } = new();
+        public GeometryThumb MyTargetGeoThumb { get; private set; }
 
 
-        public GeometryAdorner(GeometryThumb adornedElement) : base(adornedElement)
+        public GeometryThumbAdorner(GeometryThumb adornedElement) : base(adornedElement)
         {
-            MyGeoThumb = adornedElement;
+            MyTargetGeoThumb = adornedElement;
             MyVisuals = new(this)
             {
-                MyCanvas,
+                //MyCanvas,
                 MyExternalBounds,
                 MyInternalBounds,
             };
@@ -168,8 +146,8 @@ namespace _20230309_Adorner
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            MyExternalBounds.Arrange(MyGeoThumb.MyPolyGeoLine.MyTransformedExternalBounds);
-            MyInternalBounds.Arrange(MyGeoThumb.MyPolyGeoLine.MyTransformedInternalBounds);
+            MyExternalBounds.Arrange(MyTargetGeoThumb.MyPolyGeoLine.MyTransformedExternalBounds);
+            MyInternalBounds.Arrange(MyTargetGeoThumb.MyPolyGeoLine.MyTransformedInternalBounds);
             return base.ArrangeOverride(finalSize);
         }
     }

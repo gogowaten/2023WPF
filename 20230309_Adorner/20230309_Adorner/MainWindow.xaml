@@ -45,8 +45,9 @@
     </ScrollViewer>
     <StackPanel Grid.Column="1">
       <Slider Value="{Binding ElementName=MyPolyBezier, Path=(Canvas.Left)}" Minimum="0" Maximum="360"/>
-      <Slider x:Name="MySliderAngle" Value="3" Minimum="0" Maximum="180" SmallChange="0.2"/>
+      <Slider x:Name="MySliderAngle" Value="0" Minimum="0" Maximum="180" SmallChange="0.2"/>
       <Button Content="test" Click="Button_Click"/>
+      <Button Content="testPoint" Click="Button_Click_1"/>
     </StackPanel>
   </Grid>
 </Window>

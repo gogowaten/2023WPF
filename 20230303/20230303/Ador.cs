@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -218,43 +219,30 @@ namespace _20230303
         public Canvas MyCanvas = new();
         public List<Thumb> MyThumbs { get; private set; } = new();
         public Rect MyBounds { get; private set; }
-        public Rectangle MyRectangle { get; private set; }
-        public Rectangle MyRectangleT { get; private set; }
-        public Rectangle MyRectangleP { get; private set; }
+        public Rectangle MyRectangleBlue { get; private set; } = new () { Stroke = Brushes.Blue, StrokeThickness = 1, };
+        public Rectangle MyRectangleCyan { get; private set; } = new() { Stroke = Brushes.Cyan, StrokeThickness = 1, };
+        public Rectangle MyRectangleOrange { get; private set; } = new() { Stroke = Brushes.Orange, StrokeThickness = 1, };
         public CCAdor(PolyBezier adornedElement) : base(adornedElement)
         {
             MyPolyline = adornedElement;
-            MyVisuals = new VisualCollection(this);
-            MyVisuals.Add(MyCanvas);
-            MyRectangle = new Rectangle()
+            MyVisuals = new VisualCollection(this)
             {
-                Stroke = Brushes.Blue,
-                StrokeThickness = 1,
-            }; ;
-            MyVisuals.Add(MyRectangle);
-            MyRectangleT = new Rectangle()
-            {
-                Stroke = Brushes.Cyan,
-                StrokeThickness = 1,
+                MyCanvas,
+                MyRectangleBlue,
+                MyRectangleCyan,
+                MyRectangleOrange
             };
-            MyVisuals.Add(MyRectangleT);
-            MyRectangleP = new Rectangle()
-            {
-                Stroke = Brushes.Orange,
-                StrokeThickness = 1,
-            };
-            MyVisuals.Add(MyRectangleP);
 
             foreach (var item in MyPolyline.Points)
             {
 
-                Thumb tt = new Thumb()
+                Thumb tt = new()
                 {
                     Cursor = Cursors.Hand,
                     Height = 20,
                     Width = 20,
                     Opacity = 0.5,
-                    Background = Brushes.Red,
+                    Background = Brushes.Blue,
                 };
                 MyCanvas.Children.Add(tt);
 
@@ -309,16 +297,16 @@ namespace _20230303
             {
 
                 MyCanvas.Arrange(new Rect(0, 0, bound.Width, bound.Height));
-                MyRectangleT.Arrange(bound);
+                MyRectangleCyan.Arrange(bound);
             }
             else
             {
 
                 MyCanvas.Arrange(new Rect(0, 0, tBound.Width, tBound.Height));
-                MyRectangleT.Arrange(tBound);
+                MyRectangleCyan.Arrange(tBound);
             }
-            MyRectangle.Arrange(bound);
-            MyRectangleP.Arrange(GetPointsBound(MyPolyline.Points));
+            MyRectangleBlue.Arrange(bound);
+            MyRectangleOrange.Arrange(GetPointsBound(MyPolyline.Points));
 
             return finalSize;
         }

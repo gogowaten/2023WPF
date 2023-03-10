@@ -13,7 +13,7 @@ using System.Windows.Media.Media3D;
 
 namespace _20230309_Adorner
 {
-    public class PolyGeoBase : Shape
+    public abstract class PolyGeoBase : Shape
     {
 
         public PointCollection Points
@@ -34,6 +34,21 @@ namespace _20230309_Adorner
 
         protected override Geometry DefiningGeometry => Geometry.Empty;
 
+        public GeometryAdorner MyExAdorner { get; protected set; }
+        public PolyGeoBase()
+        {
+            MyExAdorner = new GeometryAdorner(this);
+            Loaded += PolyGeoBase_Loaded;
+        }
+
+        private void PolyGeoBase_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (AdornerLayer.GetAdornerLayer(this) is AdornerLayer layer)
+            {
+                layer.Add(MyExAdorner);
+            }
+        }
+
         //Transform変更時、MyBounds更新
         protected override Geometry GetLayoutClip(Size layoutSlotSize)
         {
@@ -50,22 +65,14 @@ namespace _20230309_Adorner
 
     public class PolyGeoLine : PolyGeoBase
     {
-        public ExAdorner ExAdorner { get; private set; }
+
 
 
         public PolyGeoLine()
         {
-            ExAdorner = new ExAdorner(this);
-            Loaded += PolyGeoLine_Loaded;
+
         }
 
-        private void PolyGeoLine_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (AdornerLayer.GetAdornerLayer(this) is AdornerLayer layer)
-            {
-                layer.Add(ExAdorner);
-            }
-        }
 
         protected override Geometry DefiningGeometry
         {
@@ -91,19 +98,10 @@ namespace _20230309_Adorner
     }
     public class PolyBezier : PolyGeoBase
     {
-        public ExAdorner ExAdorner { get; private set; }
+
         public PolyBezier()
         {
-            ExAdorner = new ExAdorner(this);
-            Loaded += PolyBezier_Loaded;
-        }
 
-        private void PolyBezier_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (AdornerLayer.GetAdornerLayer(this) is AdornerLayer layer)
-            {
-                layer.Add(ExAdorner);
-            }
         }
 
         protected override Geometry DefiningGeometry
@@ -127,27 +125,31 @@ namespace _20230309_Adorner
         }
     }
 
-    public class ExAdorner : Adorner
+    public class GeometryAdorner : Adorner
     {
-        #region お約束
+
 
         public VisualCollection MyVisuals { get; private set; }
         protected override int VisualChildrenCount => MyVisuals.Count;
         protected override Visual GetVisualChild(int index) => MyVisuals[index];
-        #endregion お約束
 
-        public List<Thumb> MyThumbs { get; private set; } = new();
+
         public Canvas MyCanvas { get; private set; } = new();
+        public List<Thumb> MyThumbs { get; private set; } = new();
         public PolyGeoBase MyTarget { get; private set; }
 
-        public ExAdorner(PolyGeoBase adornedElement) : base(adornedElement)
+        public GeometryAdorner(PolyGeoBase adornedElement) : base(adornedElement)
         {
             MyVisuals = new VisualCollection(this);
             MyTarget = adornedElement;
 
             MyVisuals.Add(MyCanvas);
 
+            //MyCanvas.HorizontalAlignment = HorizontalAlignment.Left;
+            //MyCanvas.VerticalAlignment = VerticalAlignment.Top;
+
             Loaded += ExAdorner_Loaded;
+
 
         }
 
@@ -169,7 +171,7 @@ namespace _20230309_Adorner
                 Canvas.SetTop(t, item.Y);
                 t.DragDelta += Thumb_DragDelta;
             }
-
+            
         }
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -180,9 +182,56 @@ namespace _20230309_Adorner
                 PointCollection pc = MyTarget.Points;
                 double x = pc[ii].X + e.HorizontalChange;
                 double y = pc[ii].Y + e.VerticalChange;
+                double px = pc[ii].X;
+                double py = pc[ii].Y;
+                double tx = Canvas.GetLeft(t);
+                double ty = Canvas.GetTop(t);
+                double x0 = Canvas.GetLeft(MyThumbs[0]);
+                double x1 = Canvas.GetLeft(MyThumbs[1]);
+                double x2 = Canvas.GetLeft(MyThumbs[2]);
+                double y0 = Canvas.GetTop(MyThumbs[0]);
+                double y1 = Canvas.GetTop(MyThumbs[1]);
+                double y2 = Canvas.GetTop(MyThumbs[2]);
+                pc[ii] = new Point(x, y);
+
                 Canvas.SetLeft(t, x);
                 Canvas.SetTop(t, y);
-                pc[ii] = new Point(x, y);
+
+
+                //if (x > 0 && y > 0)
+                //{
+                //    Canvas.SetLeft(t, x);
+                //    Canvas.SetTop(t, y);
+                //    pc[ii] = new Point(x, y);
+                //}
+                //else
+                //{
+                //    if (x < 0)
+                //    {
+                //        for (int i = 0; i < pc.Count; i++)
+                //        {
+                //            double xx = pc[i].X - x;
+                //            double yy = pc[i].Y;
+                //            pc[i] = new Point(xx, yy);
+                //            Canvas.SetLeft(MyThumbs[i], xx);
+                //        }
+                //        pc[ii] = new Point(0, y);
+                //        Canvas.SetLeft(t, 0);
+                //    }
+                //    if (y < 0)
+                //    {
+                //        for (int i = 0; i < pc.Count; i++)
+                //        {
+                //            double xx = pc[i].X;
+                //            double yy = pc[i].Y - y;
+                //            pc[i] = new Point(xx, yy);
+                //            Canvas.SetTop(MyThumbs[i], yy);
+                //        }
+                //        pc[ii] = new Point(x, y);
+                //        Canvas.SetTop(t, 0);
+                //    }
+                //}
+
             }
         }
 

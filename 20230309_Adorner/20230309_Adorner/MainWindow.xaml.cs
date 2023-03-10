@@ -26,24 +26,33 @@ namespace _20230309_Adorner
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(MyTThumb.MyTTAdorner.Visibility == Visibility.Visible)
+            if (MyTThumb.MyTTAdorner.Visibility == Visibility.Visible)
             {
-                MyTThumb.MyTTAdorner.Visibility=Visibility.Collapsed;
+                MyTThumb.MyTTAdorner.Visibility = Visibility.Collapsed;
             }
             else
             {
                 MyTThumb.MyTTAdorner.Visibility = Visibility.Visible;
             }
             var vvv = VisualTreeHelper.GetDescendantBounds(MyCanvas);
-            MyCanvas.Width=vvv.Width;
+            MyCanvas.Width = vvv.Width;
             MyCanvas.Height = vvv.Height;
 
         }
-        
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MyTThumb.MyPoints[1] = new Point(-100, 100);
+            var t = MyTThumb.MyPolyGeoLine.MyExAdorner.MyThumbs[1];
+            Canvas.SetLeft(t, -50);
+           var exbounds= MyTThumb.MyPolyGeoLine.MyTransformedExternalBounds;
+           var inbounds= MyTThumb.MyPolyGeoLine.MyTransformedInternalBounds;
+
+        }
     }
 }
