@@ -15,7 +15,7 @@ using System.Windows.Controls;
 
 namespace _20230309_Adorner
 {
-    public class TThumb : Thumb
+    public class GeometryThumb : Thumb
     {
         #region 依存関係プロパティ
 
@@ -25,7 +25,7 @@ namespace _20230309_Adorner
             set { SetValue(MyPointsProperty, value); }
         }
         public static readonly DependencyProperty MyPointsProperty =
-            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TThumb),
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(GeometryThumb),
                 new FrameworkPropertyMetadata(new PointCollection(),
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -37,7 +37,7 @@ namespace _20230309_Adorner
             set { SetValue(MyShapeAngleProperty, value); }
         }
         public static readonly DependencyProperty MyShapeAngleProperty =
-            DependencyProperty.Register(nameof(MyShapeAngle), typeof(double), typeof(TThumb),
+            DependencyProperty.Register(nameof(MyShapeAngle), typeof(double), typeof(GeometryThumb),
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
@@ -49,7 +49,7 @@ namespace _20230309_Adorner
             set { SetValue(MyShapeScaleProperty, value); }
         }
         public static readonly DependencyProperty MyShapeScaleProperty =
-            DependencyProperty.Register(nameof(MyShapeScale), typeof(double), typeof(TThumb),
+            DependencyProperty.Register(nameof(MyShapeScale), typeof(double), typeof(GeometryThumb),
                 new FrameworkPropertyMetadata(1.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
@@ -58,26 +58,27 @@ namespace _20230309_Adorner
         #endregion 依存関係プロパティ
 
         public PolyGeoLine MyPolyGeoLine { get; set; }
-        public Rect RenderSizeEx { get; private set; }
-        public Rect RenderSizeExEx { get; private set; }
-        public Rect GeoBounds { get; private set; }
-        public Rect GeoWideBounds { get; private set; }
-        public Rect GeoWideTFBounds { get; private set; }
-        public Rect GeoTF_WideBounds { get; private set; }
-        public TTAdorner MyTTAdorner { get; private set; }
+        //public Rect RenderSizeEx { get; private set; }
+        //public Rect RenderSizeExEx { get; private set; }
+        //public Rect GeoBounds { get; private set; }
+        //public Rect GeoWideBounds { get; private set; }
+        //public Rect GeoWideTFBounds { get; private set; }
+        //public Rect GeoTF_WideBounds { get; private set; }
+        public GeometryAdorner MyTTAdorner { get; private set; }
 
 
-        public TThumb()
+        public GeometryThumb()
         {
-            MyTTAdorner = new TTAdorner(this);
+            MyTTAdorner = new GeometryAdorner(this);
             MyPolyGeoLine = MySetTemplate();
             MySetBindings();
             Loaded += TThumb_Loaded;
         }
 
+
         private void TThumb_Loaded(object sender, RoutedEventArgs e)
         {
-            if(AdornerLayer.GetAdornerLayer(this) is AdornerLayer layer)
+            if (AdornerLayer.GetAdornerLayer(this) is AdornerLayer layer)
             {
                 layer.Add(MyTTAdorner);
             }
@@ -85,31 +86,32 @@ namespace _20230309_Adorner
 
         protected override Geometry GetLayoutClip(Size layoutSlotSize)
         {
-            MyTTAdorner.MyRectangle.Arrange(MyPolyGeoLine.MyBounds);
+            MyTTAdorner.MyExternalBounds.Arrange(MyPolyGeoLine.MyTransformedExternalBounds);
+            MyTTAdorner.MyInternalBounds.Arrange(MyPolyGeoLine.MyTransformedInternalBounds);
             return base.GetLayoutClip(layoutSlotSize);
         }
 
-        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-        {
-            base.OnRenderSizeChanged(sizeInfo);
-            Transform RTF = MyPolyGeoLine.RenderTransform;
-            Pen pen = new(MyPolyGeoLine.Stroke, MyPolyGeoLine.StrokeThickness);
+        //protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        //{
+        //    base.OnRenderSizeChanged(sizeInfo);
+        //    Transform RTF = MyPolyGeoLine.RenderTransform;
+        //    Pen pen = new(MyPolyGeoLine.Stroke, MyPolyGeoLine.StrokeThickness);
 
-            RenderSizeEx = VisualTreeHelper.GetDescendantBounds(MyPolyGeoLine);
-            RenderSizeExEx = RTF.TransformBounds(RenderSizeEx);
+        //    RenderSizeEx = VisualTreeHelper.GetDescendantBounds(MyPolyGeoLine);
+        //    RenderSizeExEx = RTF.TransformBounds(RenderSizeEx);
 
-            var geo = MyPolyGeoLine.MyGeometry.Clone();
-            GeoBounds = geo.Bounds;
-            var wide = geo.GetWidenedPathGeometry(pen);
-            GeoWideBounds = wide.Bounds;
-            var wideTF = RTF.TransformBounds(wide.Bounds);
-            GeoWideTFBounds = wideTF;
+        //    var geo = MyPolyGeoLine.MyGeometry.Clone();
+        //    GeoBounds = geo.Bounds;
+        //    var wide = geo.GetWidenedPathGeometry(pen);
+        //    GeoWideBounds = wide.Bounds;
+        //    var wideTF = RTF.TransformBounds(wide.Bounds);
+        //    GeoWideTFBounds = wideTF;
 
-            geo.Transform = RTF;
-            var TFWide = geo.GetWidenedPathGeometry(pen);
-            GeoTF_WideBounds = TFWide.Bounds;
+        //    geo.Transform = RTF;
+        //    var TFWide = geo.GetWidenedPathGeometry(pen);
+        //    GeoTF_WideBounds = TFWide.Bounds;
 
-        }
+        //}
 
         private PolyGeoLine MySetTemplate()
         {
@@ -137,31 +139,37 @@ namespace _20230309_Adorner
 
 
 
-    public class TTAdorner : Adorner
+    public class GeometryAdorner : Adorner
     {
         public VisualCollection MyVisuals { get; private set; }
         protected override int VisualChildrenCount => MyVisuals.Count;
         protected override Visual GetVisualChild(int index) => MyVisuals[index];
-        public Rectangle MyRectangle { get; private set; }
-        public Canvas MyCanvas { get; private set; }
-        public TThumb MyTThumb { get; private set; }
+
+        public Rectangle MyExternalBounds { get; private set; } = new() { Stroke = Brushes.Lime, StrokeThickness = 1.0 };
+        public Rectangle MyInternalBounds { get; private set; } = new() { Stroke = Brushes.Magenta, StrokeThickness = 1.0 };
+        public Canvas MyCanvas { get; private set; } = new();
+        public GeometryThumb MyGeoThumb { get; private set; }
 
 
-        public TTAdorner(TThumb adornedElement) : base(adornedElement)
+        public GeometryAdorner(GeometryThumb adornedElement) : base(adornedElement)
         {
-            MyTThumb = adornedElement;
-            MyVisuals = new(this);
-            MyCanvas = new();
-            MyVisuals.Add(MyCanvas);
-            MyRectangle = new() { Stroke = Brushes.Lime, StrokeThickness = 1.0 };
-            MyCanvas.Children.Add(MyRectangle);
+            MyGeoThumb = adornedElement;
+            MyVisuals = new(this)
+            {
+                MyCanvas,
+                MyExternalBounds,
+                MyInternalBounds,
+            };
+            //MyCanvas.Children.Add(MyExternalBounds);
+            //MyCanvas.Children.Add(MyInternalBounds);
 
         }
 
-     
+
         protected override Size ArrangeOverride(Size finalSize)
         {
-            MyRectangle.Arrange(MyTThumb.MyPolyGeoLine.MyBounds);
+            MyExternalBounds.Arrange(MyGeoThumb.MyPolyGeoLine.MyTransformedExternalBounds);
+            MyInternalBounds.Arrange(MyGeoThumb.MyPolyGeoLine.MyTransformedInternalBounds);
             return base.ArrangeOverride(finalSize);
         }
     }

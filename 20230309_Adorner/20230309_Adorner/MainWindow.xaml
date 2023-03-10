@@ -11,37 +11,38 @@
       <ColumnDefinition/>
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
-    <Canvas x:Name="MyCanvas">
-      <local:PolyBezier x:Name="MyPolyBezier" Points="40,0 0,150 250,0 150,150" Canvas.Left="250" Canvas.Top="220">
-        <local:PolyBezier.RenderTransform>
-          <TransformGroup>
-            <RotateTransform Angle="20"/>
-          </TransformGroup>
-        </local:PolyBezier.RenderTransform>
-      </local:PolyBezier>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+      <Canvas x:Name="MyCanvas" HorizontalAlignment="Left" VerticalAlignment="Top">
+        <local:PolyBezier x:Name="MyPolyBezier" Points="40,0 0,150 250,0 150,150" Canvas.Left="250" Canvas.Top="220">
+          <local:PolyBezier.RenderTransform>
+            <TransformGroup>
+              <RotateTransform Angle="20"/>
+            </TransformGroup>
+          </local:PolyBezier.RenderTransform>
+        </local:PolyBezier>
 
-      <local:PolyGeoLine x:Name="MyPolyGeoLine" Points="40,0 0,100 100,0" Canvas.Left="100" Canvas.Top="100">
-        <local:PolyGeoLine.RenderTransform>
-          <TransformGroup>
-            <RotateTransform Angle="30"/>
-          </TransformGroup>
-        </local:PolyGeoLine.RenderTransform>
-      </local:PolyGeoLine>
+        <local:PolyGeoLine x:Name="MyPolyGeoLine" Points="40,0 0,100 100,0" Canvas.Left="100" Canvas.Top="100">
+          <local:PolyGeoLine.RenderTransform>
+            <TransformGroup>
+              <RotateTransform Angle="30"/>
+            </TransformGroup>
+          </local:PolyGeoLine.RenderTransform>
+        </local:PolyGeoLine>
 
-      <local:TThumb x:Name="MyTThumb" MyPoints="40,0 0,100 100,0" MyShapeAngle="{Binding ElementName=MySliderAngle, Path=Value}"
+        <local:GeometryThumb x:Name="MyTThumb" MyPoints="40,0 0,100 100,0" MyShapeAngle="{Binding ElementName=MySliderAngle, Path=Value}"
                     Canvas.Left="300" Canvas.Top="50"/>
 
 
-      <Rectangle x:Name="MyRectangle" Stroke="Cyan" StrokeThickness="1"/>
+        <Rectangle x:Name="MyRectangle" Stroke="Cyan" StrokeThickness="1"/>
 
-      <Rectangle Width="100" Height="40" Fill="Blue" Canvas.Left="50" Canvas.Top="50"/>
-      <Rectangle Width="100" Height="40" Fill="Blue" Canvas.Left="50" Canvas.Top="50" Opacity="0.5" RenderTransformOrigin="0.5 0.5">
-        <Rectangle.RenderTransform>
-          <RotateTransform Angle="20" CenterX="0" CenterY="0"/>
-        </Rectangle.RenderTransform>
-      </Rectangle>
-    </Canvas>
-
+        <Rectangle Width="100" Height="40" Fill="Blue" Canvas.Left="50" Canvas.Top="50"/>
+        <Rectangle Width="100" Height="40" Fill="Blue" Canvas.Left="50" Canvas.Top="50" Opacity="0.5" RenderTransformOrigin="0.5 0.5">
+          <Rectangle.RenderTransform>
+            <RotateTransform Angle="20" CenterX="0" CenterY="0"/>
+          </Rectangle.RenderTransform>
+        </Rectangle>
+      </Canvas>
+    </ScrollViewer>
     <StackPanel Grid.Column="1">
       <Slider Value="{Binding ElementName=MyPolyBezier, Path=(Canvas.Left)}" Minimum="0" Maximum="360"/>
       <Slider x:Name="MySliderAngle" Value="3" Minimum="0" Maximum="180" SmallChange="0.2"/>

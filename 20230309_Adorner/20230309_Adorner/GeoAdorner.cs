@@ -50,7 +50,7 @@ namespace _20230309_Adorner
 
             //if(AdornedElement is PolyGeoBase poly)
             //{
-            //    MyRectangleGold.Arrange(poly.MyBounds);
+            //    MyRectangleGold.Arrange(poly.MyTransformedExternalBounds);
             //}
 
             return base.ArrangeOverride(finalSize);

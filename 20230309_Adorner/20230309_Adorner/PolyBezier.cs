@@ -29,7 +29,8 @@ namespace _20230309_Adorner
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public Geometry MyGeometry { get; protected set; } = new PathGeometry();
-        public Rect MyBounds { get; protected set; }
+        public Rect MyTransformedExternalBounds { get; protected set; }//変形＋太さ
+        public Rect MyTransformedInternalBounds { get; protected set; }//変形
 
         protected override Geometry DefiningGeometry => Geometry.Empty;
 
@@ -38,20 +39,19 @@ namespace _20230309_Adorner
         {
             var geo = MyGeometry.Clone();
             geo.Transform = RenderTransform;
+            MyTransformedInternalBounds = geo.Bounds;
             var TFWide = geo.GetWidenedPathGeometry(new Pen(Stroke, StrokeThickness));
-            MyBounds = TFWide.Bounds;
-
-            Rect rr = VisualTreeHelper.GetDescendantBounds(this);
+            MyTransformedExternalBounds = TFWide.Bounds;
 
             return base.GetLayoutClip(layoutSlotSize);
         }
-        
+
     }
 
     public class PolyGeoLine : PolyGeoBase
     {
         public ExAdorner ExAdorner { get; private set; }
-        
+
 
         public PolyGeoLine()
         {
@@ -83,9 +83,9 @@ namespace _20230309_Adorner
                 }
                 geometry.Freeze();
                 MyGeometry = geometry;
-                
+
                 return geometry;
-            }            
+            }
         }
 
     }
@@ -136,13 +136,8 @@ namespace _20230309_Adorner
         protected override Visual GetVisualChild(int index) => MyVisuals[index];
         #endregion お約束
 
-        public Rectangle MyRectangleRed { get; private set; }
-        public Rectangle MyRectangleBlue { get; private set; }
-        public Rectangle MyRectangleCyan { get; private set; }
-        public Rectangle MyRectangleGreen { get; private set; }
-        public Rectangle MyRectanglePurple { get; private set; }
-        public List<Thumb> MyThumbs { get; private set; }
-        public Canvas MyCanvas { get; private set; }
+        public List<Thumb> MyThumbs { get; private set; } = new();
+        public Canvas MyCanvas { get; private set; } = new();
         public PolyGeoBase MyTarget { get; private set; }
 
         public ExAdorner(PolyGeoBase adornedElement) : base(adornedElement)
@@ -150,24 +145,7 @@ namespace _20230309_Adorner
             MyVisuals = new VisualCollection(this);
             MyTarget = adornedElement;
 
-            MyRectangleRed = new() { Stroke = Brushes.Red, StrokeThickness = 1.0, };
-            MyVisuals.Add(MyRectangleRed);
-
-            MyRectangleBlue = new() { Stroke = Brushes.Blue, StrokeThickness = 1.0 };
-            MyVisuals.Add(MyRectangleBlue);
-
-            MyRectangleCyan = new() { Stroke = Brushes.Cyan, StrokeThickness = 1.0 };
-            MyVisuals.Add(MyRectangleCyan);
-
-            MyRectangleGreen = new() { Stroke = Brushes.Green, StrokeThickness = 1.0 };
-            MyVisuals.Add(MyRectangleGreen);
-
-            MyRectanglePurple = new() { Stroke = Brushes.Purple, StrokeThickness = 1.0 };
-            MyVisuals.Add(MyRectanglePurple);
-
-
-            MyCanvas = new();
-            MyThumbs = new();
+            MyVisuals.Add(MyCanvas);
 
             Loaded += ExAdorner_Loaded;
 
@@ -192,7 +170,6 @@ namespace _20230309_Adorner
                 t.DragDelta += Thumb_DragDelta;
             }
 
-            MyVisuals.Add(MyCanvas);
         }
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -213,23 +190,6 @@ namespace _20230309_Adorner
         {
             //return base.ArrangeOverride(finalSize);
             base.ArrangeOverride(finalSize);
-            Pen pen = new(MyTarget.Stroke, MyTarget.StrokeThickness);
-
-            Geometry geo = MyTarget.MyGeometry.Clone();
-            Rect geoBounds = geo.Bounds;//StrokeThickness なし のBounds
-            PathGeometry widenGeo = geo.GetWidenedPathGeometry(pen);
-            Rect geoWideBounds = widenGeo.Bounds;//StrokeThickness あり のBounds
-            widenGeo.Transform = MyTarget.RenderTransform;
-            Rect geoWideTFBounds = widenGeo.Bounds;//変形後のRectが収まるRect？
-
-
-            Rect desB = VisualTreeHelper.GetDescendantBounds(MyTarget);
-
-            //MyRectangleRed.Arrange(desB);
-            //MyRectangleBlue.Arrange(geoBounds);
-            //MyRectangleCyan.Arrange(geoWideBounds);//desBと同じ
-            //MyRectangleGreen.Arrange(geoWideTFBounds);
-            MyRectanglePurple.Arrange(MyTarget.MyBounds);
 
             Rect canvasRect = VisualTreeHelper.GetDescendantBounds(MyCanvas);
             if (canvasRect.IsEmpty)
@@ -240,11 +200,6 @@ namespace _20230309_Adorner
             {
                 MyCanvas.Arrange(canvasRect);
             }
-
-
-
-
-
 
             return finalSize;
         }
