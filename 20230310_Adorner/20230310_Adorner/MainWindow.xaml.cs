@@ -23,11 +23,18 @@ namespace _20230310_Adorner
         public MainWindow()
         {
             InitializeComponent();
+            Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
+            MyGeoLine.MyPoints[0] = new Point(-100, 0);
         }
     }
 }

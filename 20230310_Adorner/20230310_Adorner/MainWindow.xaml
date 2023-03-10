@@ -12,10 +12,14 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-
+      <local:GeometryLine x:Name="MyGeoLine" MyPoints="40,0 0,120 100,0" Canvas.Left="100" Canvas.Top="100"
+                          >
+        
+      </local:GeometryLine>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>
+      <Slider x:Name="MySliderAngle" Minimum="0" Maximum="180" Value="30"/>
     </StackPanel>
   </Grid>
 </Window>
