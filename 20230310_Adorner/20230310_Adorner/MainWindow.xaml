@@ -12,13 +12,16 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      <local:GeometryLine x:Name="MyGeoLine" MyPoints="40,0 0,120 100,0" Canvas.Left="100" Canvas.Top="100"
-                          >
-        
-      </local:GeometryLine>
+      <!--<local:GeometryLine x:Name="MyGeoLine" MyPoints="40,0 0,120 100,0" Canvas.Left="100" Canvas.Top="100"/>-->
+      <!--<local:GeoCanvas x:Name="MyGeoCanvas" MyPoints="40,0 0,120 100,0 120,100" MyGeoAngle="90" Canvas.Left="200" Canvas.Top="100"/>-->
+      <local:GeoGrid x:Name="MyGeoGrid" MyPoints="40,0 0,120 100,0 120,100"
+                     MyGeoAngle="{Binding ElementName=MySliderAngle, Path=Value}" Canvas.Left="200" Canvas.Top="100"/>
+
     </Canvas>
     <StackPanel Grid.Column="1">
-      <Button Content="test" Click="Button_Click"/>
+      <Button Content="test0" Click="Button_Click"/>
+      <Button Content="test1" Click="Button_Click_1"/>
+      <Button Content="test2" Click="Button_Click_2"/>
       <Slider x:Name="MySliderAngle" Minimum="0" Maximum="180" Value="30"/>
     </StackPanel>
   </Grid>

@@ -34,7 +34,19 @@ namespace _20230310_Adorner
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyGeoLine.MyPoints[0] = new Point(-100, 0);
+            MyGeoGrid.RectCheck();
+            //MyGeoCanvas.MyPoints[1] = new Point(50, 100);
+            //MyGeoCanvas.RectCheck();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            //MyGeoCanvas.MyGeometryShape.UpdateAdorner();
         }
     }
 }

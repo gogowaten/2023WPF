@@ -11,12 +11,13 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Globalization;
+using System.ComponentModel;
 
 namespace _20230310_Adorner
 {
-    public class GeometryShape : Shape
+    public abstract class GeometryShape : Shape, INotifyPropertyChanged
     {
-        #region 依存関係プロパティ
+        #region 依存関係プロパティと通知プロパティ
 
         public PointCollection MyPoints
         {
@@ -30,45 +31,40 @@ namespace _20230310_Adorner
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        //public double MyGeoAngle
-        //{
-        //    get { return (double)GetValue(MyGeoAngleProperty); }
-        //    set { SetValue(MyGeoAngleProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyGeoAngleProperty =
-        //    DependencyProperty.Register(nameof(MyGeoAngle), typeof(double), typeof(GeometryShape),
-        //        new FrameworkPropertyMetadata(0.0,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        //public double MyGeoScale
-        //{
-        //    get { return (double)GetValue(MyGeoScaleProperty); }
-        //    set { SetValue(MyGeoScaleProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyGeoScaleProperty =
-        //    DependencyProperty.Register(nameof(MyGeoScale), typeof(double), typeof(GeometryShape),
-        //        new FrameworkPropertyMetadata(1.0,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+            field = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
-        //public Transform MyGeoTransform
-        //{
-        //    get { return (Transform)GetValue(MyGeoTransformProperty); }
-        //    set { SetValue(MyGeoTransformProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyGeoTransformProperty =
-        //    DependencyProperty.Register(nameof(MyGeoTransform), typeof(Transform), typeof(GeometryShape),
-        //        new FrameworkPropertyMetadata(null,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure));
+        //以下必要？
+        private Rect _myBounds;
+        public Rect MyBounds { get => _myBounds; set => SetProperty(ref _myBounds, value); }
 
-        #endregion 依存関係プロパティ
+        private Rect _myTFBounds;
+        public Rect MyTFBounds { get => _myTFBounds; set => SetProperty(ref _myTFBounds, value); }
+
+        private double _myTFWidth;
+        public double MyTFWidth { get => _myTFWidth; set => SetProperty(ref _myTFWidth, value); }
+
+        private double _myTFHeight;
+        public double MyTFHeight { get => _myTFHeight; set => SetProperty(ref _myTFHeight, value); }
+
+
+        #endregion 依存関係プロパティと通知プロパティ
+
+
+
+
         public Geometry MyGeometry { get; protected set; } = new PathGeometry();
-        public Rect MyExternalBounds { get; protected set; }//外観のRect
-        public Rect MyInternalBounds { get; protected set; }//PointsだけのRect
+        public Rect MyExternalBounds { get; protected set; }//外観のRect、変形なし時
+        public Rect MyExternalTFBounds { get; protected set; }//外観のRect、変形加味
+        public Rect MyInternalBounds { get; protected set; }//PointsだけのRect、変形なし時
+
+
         public List<Thumb> MyThumbs { get; protected set; } = new();
         public GeometryAdorner MyAdorner { get; protected set; }
         //いる？
@@ -78,36 +74,62 @@ namespace _20230310_Adorner
         {
             MyAdorner = new GeometryAdorner(this);
             Loaded += GeometryShapeBase_Loaded;
-
-            //MultiBinding mb = new();
-            //mb.Converter = new MyConverterTransform();
-            //Binding b0 = new() { Source = this, Path = new PropertyPath(MyGeoAngleProperty) };
-            //Binding b1 = new() { Source = this, Path = new PropertyPath(MyGeoScaleProperty) };
-            //mb.Bindings.Add(b0);
-            //mb.Bindings.Add(b1);
-            //SetBinding(MyGeoTransformProperty, mb);
         }
 
+        public void ChangeAdornerVisible()
+        {
+            if (MyAdorner.Visibility != Visibility.Visible)
+            {
+                MyAdorner.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MyAdorner.Visibility = Visibility.Collapsed;
+            }
+        }
+        public void UpdateAdorner()
+        {
+            if (MyAdornerLayer != null)
+            {
+
+                var adols = MyAdornerLayer.GetAdorners(this);
+                foreach (var adol in adols)
+                {
+                    MyAdornerLayer.Remove(adol);
+                }
+                MyAdornerLayer.Add(new GeometryAdorner(this));
+            }
+        }
         private void GeometryShapeBase_Loaded(object sender, RoutedEventArgs e)
         {
             MyAdornerLayer = AdornerLayer.GetAdornerLayer(this);
             MyAdornerLayer.Add(MyAdorner);
-            MyAdornerLayer.Add(new BoundsAdorner(this));
+            //MyAdornerLayer.Add(new BoundsAdorner(this));
         }
 
         protected override Geometry DefiningGeometry => Geometry.Empty;
 
-        //変形時にBoundsを更新、これは変形してもArrangeは無反応だから
-        protected override Geometry GetLayoutClip(Size layoutSlotSize)
+        ////変形時にBoundsを更新、これは変形してもArrangeは無反応だから→
+        ////Arrangeでも反応していた
+        //protected override Geometry GetLayoutClip(Size layoutSlotSize)
+        //{
+        //    return base.GetLayoutClip(layoutSlotSize);
+        //}
+
+        //各種Bounds更新
+        protected override Size ArrangeOverride(Size finalSize)
         {
-            //MyGeometry.Transform = MyGeoTransform;//読み取り専用エラーになる
             Geometry geo = MyGeometry.Clone();
             geo.Transform = RenderTransform;
             MyInternalBounds = geo.Bounds;
             MyExternalBounds = geo.GetWidenedPathGeometry(new Pen(Stroke, StrokeThickness)).Bounds;
-            return base.GetLayoutClip(layoutSlotSize);
+            MyExternalTFBounds = this.RenderTransform.TransformBounds(MyExternalBounds);
+            MyBounds = MyExternalBounds;
+            MyTFBounds = MyExternalTFBounds;
+            MyTFWidth = MyExternalTFBounds.Width;
+            MyTFHeight = MyExternalTFBounds.Height;
+            return base.ArrangeOverride(finalSize);
         }
-        
     }
 
     public class GeometryLine : GeometryShape
@@ -170,15 +192,17 @@ namespace _20230310_Adorner
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-
-            MyBoundsRed.Arrange(MyTargetGeoShape.MyInternalBounds);
-            MyBoundsBlue.Arrange(MyTargetGeoShape.MyExternalBounds);
+            if (MyTargetGeoShape.ActualHeight != 0)
+            {
+                MyBoundsRed.Arrange(MyTargetGeoShape.MyInternalBounds);
+                MyBoundsBlue.Arrange(MyTargetGeoShape.MyExternalBounds);
+            }
             return base.ArrangeOverride(finalSize);
         }
         //protected override Geometry GetLayoutClip(Size layoutSlotSize)
         //{
         //    MyBoundsRed.Arrange(MyTargetGeoShape.MyInternalBounds);
-        //    MyBoundsBlue.Arrange(MyTargetGeoShape.MyExternalBounds);
+        //    MyRectangleBlue.Arrange(MyTargetGeoShape.MyExternalBounds);
         //    return base.GetLayoutClip(layoutSlotSize);
         //}
     }
