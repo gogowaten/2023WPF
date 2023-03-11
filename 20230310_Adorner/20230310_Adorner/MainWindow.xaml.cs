@@ -28,20 +28,21 @@ namespace _20230310_Adorner
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            
+
 
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyGeoGrid.RectCheck();
+            BitmapSource bmp = MyGeoThumb.GetBitmap();
+            //MyGeoGrid.RectCheck();
             //MyGeoCanvas.MyPoints[1] = new Point(50, 100);
             //MyGeoCanvas.RectCheck();
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
