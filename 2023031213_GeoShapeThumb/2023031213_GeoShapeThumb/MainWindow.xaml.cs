@@ -24,5 +24,13 @@ namespace _2023031213_GeoShapeThumb
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+           var pc= MyGeoThumb.MyPoints;
+           var inu= MyGeoThumb.MyGeometryShape.MyPoints;
+            //MyGeoThumb.MyShapeType = ShapeType.Fill;
+            //BitmapSource bmp = MyGeoThumb.GetBitmap();
+        }
     }
 }

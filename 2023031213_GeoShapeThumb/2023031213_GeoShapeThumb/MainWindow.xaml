@@ -5,8 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_2023031213_GeoShapeThumb"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="450" Width="600">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="150"/>
+    </Grid.ColumnDefinitions>
+    <Canvas x:Name="MyCanvas">
+      <local:GeoShapeThumb x:Name="MyGeoThumb" MyShapeType="Fill" MyPoints="40,0 0,100 100,0 100,100"
+                          MyStroke="Aqua" MySTrokeThickness="20" MyFill="Gold" MyLineSmoothJoin="True"
+                            MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
+                            Canvas.Left="200" Canvas.Top="100"/>
 
-    </Grid>
+      <!--<local:GeometryShape MyPoints="40,0 0,100 100,0 100,100" MyShapeType="Fill" Fill="Red"/>-->
+
+      <Border Width="80" Height="50" Background="Red" Canvas.Left="100" Canvas.Top="50"/>
+      <Border Width="80" Height="50" Background="Red" Canvas.Left="100" Canvas.Top="50" Opacity="0.5">
+        <Border.RenderTransform>
+          <RotateTransform Angle="45" CenterX="40" CenterY="25"/>
+        </Border.RenderTransform>
+      </Border>
+    </Canvas>
+    <StackPanel Grid.Column="1">
+      <Button Content="test" Click="Button_Click"/>
+      <Slider x:Name="MyAngle" Minimum="-180" Maximum="180"/>
+    </StackPanel>
+  </Grid>
 </Window>
