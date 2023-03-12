@@ -12,6 +12,10 @@ using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Imaging;
 
+
+
+//移動、画像として取得できた
+//できてないのが変形時の枠表示の追従
 namespace _20230310_Adorner
 {
     public class GeoThumb : Thumb
@@ -55,6 +59,8 @@ namespace _20230310_Adorner
         #endregion 依存関係プロパティ
 
         public GeometryShape MyGeometryShape { get; protected set; }
+        public ContextMenu MyMenu { get; protected set; } = new();
+
         public GeoThumb()
         {
             MyGeometryShape = SetTemplate();
@@ -63,6 +69,12 @@ namespace _20230310_Adorner
             MySetBinding();
             Loaded += GeoThumb_Loaded;
             DragDelta += GeoThumb_DragDelta;
+
+            this.ContextMenu = MyMenu;
+            MenuItem menuItem = new() { Header = "test" };
+            MyMenu.Items.Add(menuItem);
+            this.Background = Brushes.AliceBlue;
+
         }
 
         public BitmapSource GetBitmap()

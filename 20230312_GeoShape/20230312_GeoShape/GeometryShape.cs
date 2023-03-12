@@ -12,11 +12,14 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Globalization;
 using System.ComponentModel;
+using System.Windows.Media.Imaging;
 
-
-
-namespace _20230310_Adorner
+namespace _20230312_GeoShape
 {
+    /// <summary>
+    /// Geometryでの図形のベースクラス、Pointsで図形指定、頂点座標には移動用のThumbs表示、ThumbsはAdornerを使って表示
+    /// Bitmapの取得できる
+    /// </summary>
     public abstract class GeometryShape : Shape, INotifyPropertyChanged
     {
         #region 依存関係プロパティと通知プロパティ
@@ -33,6 +36,20 @@ namespace _20230310_Adorner
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        /// <summary>
+        /// 頂点座標のThumbsの表示設定
+        /// </summary>
+        public Visibility MyAnchorVisible
+        {
+            get { return (Visibility)GetValue(MyAnchorVisibleProperty); }
+            set { SetValue(MyAnchorVisibleProperty, value); }
+        }
+        public static readonly DependencyProperty MyAnchorVisibleProperty =
+            DependencyProperty.Register(nameof(MyAnchorVisible), typeof(Visibility), typeof(GeometryShape),
+                new FrameworkPropertyMetadata(Visibility.Visible,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
@@ -43,8 +60,8 @@ namespace _20230310_Adorner
         }
 
         //以下必要？
-        private Rect _myBounds;
-        public Rect MyBounds { get => _myBounds; set => SetProperty(ref _myBounds, value); }
+        //private Rect _myBounds;
+        //public Rect MyBounds { get => _myBounds; set => SetProperty(ref _myBounds, value); }
 
         private Rect _myTFBounds;
         public Rect MyTFBounds { get => _myTFBounds; set => SetProperty(ref _myTFBounds, value); }
@@ -59,12 +76,11 @@ namespace _20230310_Adorner
         #endregion 依存関係プロパティと通知プロパティ
 
 
-
-
-        public Geometry MyGeometry { get; protected set; } = new PathGeometry();
-        public Rect MyExternalBounds { get; protected set; }//外観のRect、変形なし時
-        public Rect MyExternalTFBounds { get; protected set; }//外観のRect、変形加味
-        public Rect MyInternalBounds { get; protected set; }//Pointsだけ(内部)のRect、変形なし時
+        public Geometry MyGeometry { get; protected set; }
+        public Rect MyExternalBoundsNotTF { get; protected set; }//外観のRect、変形なし時
+        public Rect MyExternalBounds { get; protected set; }//外観のRect、変形加味
+        public Rect MyInternalBoundsNotTF { get; protected set; }//PointsだけのRect、変形なし時
+        public Rect MyInternalBounds { get; protected set; }//PointsだけのRect、変形なし時
 
 
         public List<Thumb> MyThumbs { get; protected set; } = new();
@@ -75,21 +91,14 @@ namespace _20230310_Adorner
         public GeometryShape()
         {
             MyAdorner = new GeometryAdorner(this);
+            MyGeometry = this.DefiningGeometry.Clone();
             Loaded += GeometryShapeBase_Loaded;
+
+            MyAdorner.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorVisibleProperty) });
         }
 
-        public void ChangeAdornerVisible()
-        {
-            if (MyAdorner.Visibility != Visibility.Visible)
-            {
-                MyAdorner.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                MyAdorner.Visibility = Visibility.Collapsed;
-            }
-        }
-
+        //未使用
+        //一旦Thumbを削除して、表示し直す
         public void UpdateAdorner()
         {
             if (MyAdornerLayer != null)
@@ -111,20 +120,51 @@ namespace _20230310_Adorner
 
         protected override Geometry DefiningGeometry => Geometry.Empty;
 
+        ////変形時にBoundsを更新、これは変形してもArrangeは無反応だから→
+        ////Arrangeでも反応していた
+        //protected override Geometry GetLayoutClip(Size layoutSlotSize)
+        //{
+        //    return base.GetLayoutClip(layoutSlotSize);
+        //}
 
         //各種Bounds更新
         protected override Size ArrangeOverride(Size finalSize)
         {
+            Pen pen = new(Stroke, StrokeThickness);
+            Geometry geo = this.DefiningGeometry.Clone();
+            MyInternalBoundsNotTF = geo.Bounds;//内部Rect
+            MyExternalBoundsNotTF = geo.GetRenderBounds(pen);//外部Rect
+
+            Geometry exGeo = geo.Clone();
+            exGeo.Transform = RenderTransform;//変形
+            MyInternalBounds = exGeo.Bounds;//変形内部Rect
+            //MyInternalBounds = this.RenderTransform.TransformBounds(MyInternalBoundsNotTF);//変形内部Rect
+            MyExternalBounds = exGeo.GetRenderBounds(pen);//変形外部Rect
+
+            MyTFBounds = MyExternalBounds;
+            MyTFWidth = MyExternalBounds.Width;
+            MyTFHeight = MyExternalBounds.Height;
+            return base.ArrangeOverride(finalSize);
+        }
+
+        /// <summary>
+        /// ピッタリのサイズのBitmap取得
+        /// </summary>
+        /// <returns></returns>
+        public BitmapSource GetBitmap()
+        {
             Geometry geo = MyGeometry.Clone();
             geo.Transform = RenderTransform;
-            MyInternalBounds = geo.Bounds;
-            MyExternalBounds = geo.GetWidenedPathGeometry(new Pen(Stroke, StrokeThickness)).Bounds;
-            MyExternalTFBounds = this.RenderTransform.TransformBounds(MyExternalBounds);
-            MyBounds = MyExternalBounds;
-            MyTFBounds = MyExternalTFBounds;
-            MyTFWidth = MyExternalTFBounds.Width;
-            MyTFHeight = MyExternalTFBounds.Height;
-            return base.ArrangeOverride(finalSize);
+            PathGeometry pg = geo.GetWidenedPathGeometry(new Pen(Stroke, StrokeThickness));
+            Rect rect = pg.Bounds;
+            DrawingVisual dv = new() { Offset = new Vector(-rect.X, -rect.Y) };
+            using (var context = dv.RenderOpen())
+            {
+                context.DrawGeometry(Stroke, null, pg);
+            }
+            RenderTargetBitmap bitmap = new((int)(rect.Width + 1), (int)(rect.Height + 1), 96, 96, PixelFormats.Pbgra32);
+            bitmap.Render(dv);
+            return bitmap;
         }
     }
 
@@ -145,62 +185,13 @@ namespace _20230310_Adorner
                 {
                     context.BeginFigure(MyPoints[0], false, false);
                     context.PolyLineTo(MyPoints.Skip(1).ToArray(), true, false);
-
                 }
                 geometry.Freeze();
-                MyGeometry = geometry;
-
+                MyGeometry = geometry.Clone();
                 return geometry;
                 //return base.DefiningGeometry;
             }
         }
-    }
-
-
-    public class GeometryPolygon : GeometryShape { }
-    public class GeometryBezier : GeometryShape { }
-
-
-
-    public class BoundsAdorner : Adorner
-    {
-        public VisualCollection MyVisuals { get; private set; }
-        protected override int VisualChildrenCount => MyVisuals.Count;
-        protected override Visual GetVisualChild(int index) => MyVisuals[index];
-
-
-        public Rectangle MyBoundsRed { get; private set; } = new() { Stroke = Brushes.Red, StrokeThickness = 1.0 };
-        public Rectangle MyBoundsBlue { get; private set; } = new() { Stroke = Brushes.Blue, StrokeThickness = 1.0 };
-        public Rectangle MyBoundsGreen { get; private set; } = new() { Stroke = Brushes.Green, StrokeThickness = 1.0 };
-        public GeometryShape MyTargetGeoShape { get; private set; }
-
-
-        public BoundsAdorner(GeometryShape adornedElement) : base(adornedElement)
-        {
-            MyVisuals = new VisualCollection(this)
-            {
-                MyBoundsRed,
-                MyBoundsBlue,
-                MyBoundsGreen,
-            };
-            MyTargetGeoShape = adornedElement;
-        }
-
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            if (MyTargetGeoShape.ActualHeight != 0)
-            {
-                MyBoundsRed.Arrange(MyTargetGeoShape.MyInternalBounds);
-                MyBoundsBlue.Arrange(MyTargetGeoShape.MyExternalBounds);
-            }
-            return base.ArrangeOverride(finalSize);
-        }
-        //protected override Geometry GetLayoutClip(Size layoutSlotSize)
-        //{
-        //    MyBoundsRed.Arrange(MyTargetGeoShape.MyInternalBounds);
-        //    MyRectangleBlue.Arrange(MyTargetGeoShape.MyExternalBounds);
-        //    return base.GetLayoutClip(layoutSlotSize);
-        //}
     }
 
 
@@ -276,21 +267,5 @@ namespace _20230310_Adorner
 
     }
 
-    public class MyConverterTransform : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            double angle = (double)values[0];
-            double scale = (double)values[1];
-            TransformGroup group = new();
-            group.Children.Add(new RotateTransform(angle));
-            group.Children.Add(new ScaleTransform(scale, scale));
-            return group;
-        }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
