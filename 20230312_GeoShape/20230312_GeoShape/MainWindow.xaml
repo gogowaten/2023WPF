@@ -12,7 +12,15 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      <local:GeometryLine MyPoints="0,0 100,100" Stroke="Red"/>
+      <local:GeometryLine x:Name="MyGeo" MyLineClose="False" MyLineSmoothJoin="True"
+                            Fill="Red" MyPoints="50,0 0,100 200,0 100,100" Canvas.Left="200" Canvas.Top="50"/>
+
+
+      <local:GeometryBezier x:Name="MyGeo1" MyLineClose="False" MyLineSmoothJoin="True"
+                            Fill="Red" MyPoints="50,0 0,100 200,0 100,100" Canvas.Left="10" Canvas.Top="10"/>
+      <local:GeometryFill x:Name="MyGeo2" MyLineClose="False" MyLineSmoothJoin="True"
+                            Fill="Red" MyPoints="50,0 0,100 200,0 100,100" Canvas.Left="10" Canvas.Top="200"/>
+      
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>

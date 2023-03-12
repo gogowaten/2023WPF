@@ -50,6 +50,36 @@ namespace _20230312_GeoShape
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
 
+        /// <summary>
+        /// ラインのつなぎ目をtrueで丸める、falseで鋭角にする
+        /// </summary>
+        public bool MyLineSmoothJoin
+        {
+            get { return (bool)GetValue(MyLineSmoothJoinProperty); }
+            set { SetValue(MyLineSmoothJoinProperty, value); }
+        }
+        public static readonly DependencyProperty MyLineSmoothJoinProperty =
+            DependencyProperty.Register(nameof(MyLineSmoothJoin), typeof(bool), typeof(GeometryShape),
+                new FrameworkPropertyMetadata(false,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+
+        /// <summary>
+        /// ラインの始点と終点を繋ぐかどうか
+        /// </summary>
+        public bool MyLineClose
+        {
+            get { return (bool)GetValue(MyLineCloseProperty); }
+            set { SetValue(MyLineCloseProperty, value); }
+        }
+        public static readonly DependencyProperty MyLineCloseProperty =
+            DependencyProperty.Register(nameof(MyLineClose), typeof(bool), typeof(GeometryShape),
+                new FrameworkPropertyMetadata(false,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
@@ -88,8 +118,11 @@ namespace _20230312_GeoShape
         //いる？
         public AdornerLayer? MyAdornerLayer { get; protected set; }
 
+
         public GeometryShape()
         {
+            Stroke = Brushes.Orange;
+            StrokeThickness = 20;
             MyAdorner = new GeometryAdorner(this);
             MyGeometry = this.DefiningGeometry.Clone();
             Loaded += GeometryShapeBase_Loaded;
@@ -168,12 +201,16 @@ namespace _20230312_GeoShape
         }
     }
 
-    public class GeometryLine : GeometryShape
+    
+    
+    /// <summary>
+    /// 直線塗りつぶし図形
+    /// </summary>
+    public class GeometryFill : GeometryShape
     {
-        public GeometryLine()
+        public GeometryFill()
         {
-            Stroke = Brushes.Orange;
-            StrokeThickness = 20;
+
         }
         protected override Geometry DefiningGeometry
         {
@@ -183,8 +220,66 @@ namespace _20230312_GeoShape
                 StreamGeometry geometry = new();
                 using (var context = geometry.Open())
                 {
-                    context.BeginFigure(MyPoints[0], false, false);
-                    context.PolyLineTo(MyPoints.Skip(1).ToArray(), true, false);
+                    context.BeginFigure(MyPoints[0], true, MyLineClose);
+                    context.PolyLineTo(MyPoints.Skip(1).ToArray(), false, MyLineSmoothJoin);
+                }
+                geometry.Freeze();
+                MyGeometry = geometry.Clone();
+                return geometry;
+                //return base.DefiningGeometry;
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// ベジェ曲線図形
+    /// </summary>
+    public class GeometryBezier : GeometryShape
+    {
+        public GeometryBezier()
+        {
+            
+        }
+        protected override Geometry DefiningGeometry
+        {
+            get
+            {
+                if (MyPoints.Count == 0) return Geometry.Empty;
+                StreamGeometry geometry = new();
+                using (var context = geometry.Open())
+                {
+                    context.BeginFigure(MyPoints[0], false, MyLineClose);
+                    context.PolyBezierTo(MyPoints.Skip(1).ToArray(), true, MyLineSmoothJoin);
+                }
+                geometry.Freeze();
+                MyGeometry = geometry.Clone();
+                return geometry;
+                //return base.DefiningGeometry;
+            }
+        }
+    }
+    
+    
+    /// <summary>
+    /// 直線図形
+    /// </summary>
+    public class GeometryLine : GeometryShape
+    {
+        public GeometryLine()
+        {
+
+        }
+        protected override Geometry DefiningGeometry
+        {
+            get
+            {
+                if (MyPoints.Count == 0) return Geometry.Empty;
+                StreamGeometry geometry = new();
+                using (var context = geometry.Open())
+                {
+                    context.BeginFigure(MyPoints[0], false, MyLineClose);
+                    context.PolyLineTo(MyPoints.Skip(1).ToArray(), true, MyLineSmoothJoin);
                 }
                 geometry.Freeze();
                 MyGeometry = geometry.Clone();
@@ -197,6 +292,8 @@ namespace _20230312_GeoShape
 
     /// <summary>
     /// 頂点座標にThumb表示するアドーナー。GeometryShape専用
+    /// VisualCollectionにはCanvasだけを追加
+    /// ThumbはCanvasに追加
     /// </summary>
     public class GeometryAdorner : Adorner
     {
@@ -251,6 +348,7 @@ namespace _20230312_GeoShape
 
         protected override Size ArrangeOverride(Size finalSize)
         {
+            //Thumbが収まるRectをCanvasのArrangeに指定する
             Rect canvasRect = VisualTreeHelper.GetDescendantBounds(MyCanvas);
             if (canvasRect.IsEmpty)
             {

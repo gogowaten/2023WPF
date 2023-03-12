@@ -44,7 +44,7 @@ namespace _20230312_GeoShape
         }
         private void Test1()
         {
-            BitmapSource bmp = MyLine.GetBitmap();
+            BitmapSource bmp = MyGeo.GetBitmap();
         }
         private void Text0()
         {
