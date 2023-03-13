@@ -180,11 +180,15 @@ namespace _2023031213_GeoShapeThumb
                         case ShapeType.Line:
                             context.BeginFigure(MyPoints[0], false, MyLineClose);
                             context.PolyLineTo(MyPoints.Skip(1).ToArray(), true, MyLineSmoothJoin);
+                            context.BeginFigure(MyPoints[0], true, MyLineClose);
+                            context.PolyLineTo(MyPoints.Skip(1).ToArray(), false, MyLineSmoothJoin);
+
                             break;
                         case ShapeType.Bezier:
                             context.BeginFigure(MyPoints[0], false, MyLineClose);
                             context.PolyBezierTo(MyPoints.Skip(1).ToArray(), true, MyLineSmoothJoin);
                             break;
+                            //FillはLineで代用できるからいらないかも
                         case ShapeType.Fill:
                             context.BeginFigure(MyPoints[0], true, MyLineClose);
                             context.PolyLineTo(MyPoints.Skip(1).ToArray(), false, MyLineSmoothJoin);

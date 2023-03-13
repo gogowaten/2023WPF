@@ -13,18 +13,23 @@
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
       <local:GeoShapeThumb x:Name="MyGeoThumb" MyShapeType="Fill" MyPoints="40,0 0,100 100,0 100,100"
-                          MyStroke="Aqua" MySTrokeThickness="20" MyFill="Gold" MyLineSmoothJoin="True"
+                           MyFill="Gold" MyLineSmoothJoin="True"
                             MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
-                            Canvas.Left="200" Canvas.Top="100"/>
+                            Canvas.Left="200" Canvas.Top="150"/>
 
-      <!--<local:GeometryShape MyPoints="40,0 0,100 100,0 100,100" MyShapeType="Fill" Fill="Red"/>-->
+      <local:GeoShapeThumb x:Name="MyGeoThumb1" MyShapeType="Bezier" MyPoints="40,0 0,100 100,0 100,100"
+                          MyStroke="DodgerBlue" MySTrokeThickness="20" MyFill="Gold" MyLineSmoothJoin="True"
+                            MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
+                            Canvas.Left="10" Canvas.Top="150"/>
+      
+      <local:GeoShapeThumb x:Name="MyGeoThumb2" MyShapeType="Line" MyPoints="40,0 0,100 100,0 100,100"
+                           MySTrokeThickness="20" MyFill="Gold" MyLineSmoothJoin="True"
+                            MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
+                            Canvas.Left="200" Canvas.Top="10"/>
 
-      <Border Width="80" Height="50" Background="Red" Canvas.Left="100" Canvas.Top="50"/>
-      <Border Width="80" Height="50" Background="Red" Canvas.Left="100" Canvas.Top="50" Opacity="0.5">
-        <Border.RenderTransform>
-          <RotateTransform Angle="45" CenterX="40" CenterY="25"/>
-        </Border.RenderTransform>
-      </Border>
+      <local:GeometryShape MyPoints="40,0 0,100 100,0 100,100" MyShapeType="Fill" Fill="Red"/>
+
+      
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>
