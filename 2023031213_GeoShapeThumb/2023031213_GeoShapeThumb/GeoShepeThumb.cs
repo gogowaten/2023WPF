@@ -12,7 +12,6 @@ using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Globalization;
-using System.CodeDom;
 
 
 //2023WPF/GeoThumb.cs at main · gogowaten/2023WPF
@@ -212,6 +211,7 @@ namespace _2023031213_GeoShapeThumb
             //中心回転…にはなるけど、位置がずれまくる
             //MyGeometryShape.RenderTransformOrigin = new Point(0.5, 0.5);
 
+            AdornerLayer.GetAdornerLayer(this).Add(new ThumbAdorner(this));
         }
 
 
@@ -277,14 +277,14 @@ namespace _2023031213_GeoShapeThumb
         protected override int VisualChildrenCount => MyVisuals.Count;
         protected override Visual GetVisualChild(int index) => MyVisuals[index];
 
-        public Rectangle MyRectangleBlue { get; private set; } = new() { Stroke = Brushes.Blue, StrokeThickness = 1.0 };
-
+        public Rectangle MyRectangleBlue { get; private set; } = new() { Stroke = new SolidColorBrush(Color.FromArgb(100,0,0,255)), StrokeThickness = 1.0 };
+        
         public GeometryShape MyTargetGeoShape { get; private set; }
 
 
         public GeoThumbBoundsAdorner(GeoShapeThumb adornedElement) : base(adornedElement)
         {
-            MyVisuals = new VisualCollection(this) { MyRectangleBlue, };
+            MyVisuals = new VisualCollection(this) { MyRectangleBlue};
             MyTargetGeoShape = adornedElement.MyGeometryShape;
 
             MyTargetGeoShape.LayoutUpdated += MyTargetGeoShape_LayoutUpdated;
@@ -350,6 +350,28 @@ namespace _2023031213_GeoShapeThumb
     //        throw new NotImplementedException();
     //    }
     //}
+
+
+    public class ThumbAdorner : Adorner
+    {
+        public VisualCollection MyVisuals { get; private set; }
+        protected override int VisualChildrenCount => MyVisuals.Count;
+        protected override Visual GetVisualChild(int index) => MyVisuals[index];
+
+
+        public Rectangle MyRectangle {  get; private set; } = new() { Stroke=new SolidColorBrush(Color.FromArgb(100,255,0,0)), StrokeThickness = 1.0 };
+        public ThumbAdorner(UIElement adornedElement) : base(adornedElement)
+        {
+            MyVisuals = new VisualCollection(this) { MyRectangle };
+        }
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            Rect r = new(this.RenderSize);
+            MyRectangle.Arrange(r);
+            return base.ArrangeOverride(finalSize);
+        }
+    }
+
 
     public class MyConverterTransform : IMultiValueConverter
     {

@@ -15,7 +15,7 @@
       <local:GeoShapeThumb x:Name="MyGeoThumb" MyShapeType="Fill" MyPoints="40,0 0,100 100,0 100,100"
                            MyFill="Gold" MyLineSmoothJoin="True"
                             MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
-                            Canvas.Left="200" Canvas.Top="150"/>
+                            Canvas.Left="150" Canvas.Top="150"/>
 
       <local:GeoShapeThumb x:Name="MyGeoThumb1" MyShapeType="Bezier" MyPoints="40,0 0,100 100,0 100,100"
                           MyStroke="DodgerBlue" MySTrokeThickness="20" MyFill="Gold" MyLineSmoothJoin="True"
@@ -25,15 +25,25 @@
       <local:GeoShapeThumb x:Name="MyGeoThumb2" MyShapeType="Line" MyPoints="40,0 0,100 100,0 100,100"
                            MySTrokeThickness="20" MyFill="Gold" MyLineSmoothJoin="True"
                             MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
-                            Canvas.Left="200" Canvas.Top="10"/>
+                            Canvas.Left="150" Canvas.Top="10"/>
 
-      <local:GeometryShape MyPoints="40,0 0,100 100,0 100,100" MyShapeType="Fill" Fill="Red"/>
+      <local:GeometryShape x:Name="MyGeoShape" MyPoints="40,0 0,100 100,0 100,100" MyShapeType="Fill" Fill="Red"/>
 
+      <local:GeoShapeThumb2 x:Name="MyGeoShapeThumb2" MyShapeType="Line" MyPoints="40,0 -10,100 100,0 100,100"
+                            MyStroke="Cyan" MySTrokeThickness="20" MyFill="Transparent" MyLineSmoothJoin="True"
+                            MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
+                            Canvas.Left="300" Canvas.Top="20"/>
       
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>
       <Slider x:Name="MyAngle" Minimum="-180" Maximum="180"/>
+      <TextBlock Text="{Binding ElementName=MyGeoThumb, Path=ActualWidth, StringFormat=width \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb2, Path=MyGeometryShape.MyTFLeft, StringFormat=left \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb2, Path=MyGeometryShape.MyTFTop, StringFormat=top \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb2, Path=MyGeometryShape.MyTFWidth, StringFormat=tfwidth \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb2, Path=MyGeometryShape.ActualWidth, StringFormat=acwidth \= {0}}"/>
+      
     </StackPanel>
   </Grid>
 </Window>

@@ -118,6 +118,12 @@ namespace _2023031213_GeoShapeThumb
         private double _myTFHeight;
         public double MyTFHeight { get => _myTFHeight; set => SetProperty(ref _myTFHeight, value); }
 
+        private double _myTFTop;
+        public double MyTFTop { get => _myTFTop; set => SetProperty(ref _myTFTop, value); }
+
+        private double _myTFLeft;
+        public double MyTFLeft { get => _myTFLeft; set => SetProperty(ref _myTFLeft, value); }
+
 
         #endregion 依存関係プロパティと通知プロパティ
 
@@ -140,7 +146,7 @@ namespace _2023031213_GeoShapeThumb
             StrokeThickness = 20;
             MyAdorner = new GeometryAdorner(this);
             MyGeometry = this.DefiningGeometry.Clone();
-            Loaded += this_Loaded;
+            Loaded += This_Loaded;
 
             MyAdorner.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorVisibleProperty) });
         }
@@ -159,7 +165,7 @@ namespace _2023031213_GeoShapeThumb
                 MyAdornerLayer.Add(new GeometryAdorner(this));
             }
         }
-        private void this_Loaded(object sender, RoutedEventArgs e)
+        private void This_Loaded(object sender, RoutedEventArgs e)
         {
             MyAdornerLayer = AdornerLayer.GetAdornerLayer(this);
             MyAdornerLayer.Add(MyAdorner);
@@ -168,7 +174,7 @@ namespace _2023031213_GeoShapeThumb
 
         //protected override Geometry DefiningGeometry => Geometry.Empty;
         protected override Geometry DefiningGeometry
-        {            
+        {
             get
             {
                 if (MyPoints.Count == 0) return Geometry.Empty;
@@ -188,7 +194,7 @@ namespace _2023031213_GeoShapeThumb
                             context.BeginFigure(MyPoints[0], false, MyLineClose);
                             context.PolyBezierTo(MyPoints.Skip(1).ToArray(), true, MyLineSmoothJoin);
                             break;
-                            //FillはLineで代用できるからいらないかも
+                        //FillはLineで代用できるからいらないかも
                         case ShapeType.Fill:
                             context.BeginFigure(MyPoints[0], true, MyLineClose);
                             context.PolyLineTo(MyPoints.Skip(1).ToArray(), false, MyLineSmoothJoin);
@@ -226,7 +232,8 @@ namespace _2023031213_GeoShapeThumb
             MyTFBounds = MyExternalBounds;
             MyTFWidth = MyExternalBounds.Width;
             MyTFHeight = MyExternalBounds.Height;
-
+            MyTFLeft = MyExternalBounds.Left;
+            MyTFTop = MyExternalBounds.Top;
 
 
             return base.ArrangeOverride(finalSize);
