@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
+
+//ボタンクリックで値変更、値変更時にイベント発生
 namespace _20230314_Event
 {
     /// <summary>
@@ -20,22 +9,23 @@ namespace _20230314_Event
     /// </summary>
     public partial class MainWindow : Window
     {
-        
+        public Sample2 MySample2;        
         public MainWindow()
         {
             InitializeComponent();
+            MySample2= new Sample2();
+            MySample2.TestEvent += MySample2_TestEvent;
+        }
+
+        private void MySample2_TestEvent(object arg1, int arg2)
+        {
+            var neko = arg2;   
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Sample sample = new Sample();
-            sample.Time += new EventHandler(this.Sample_Time);
-            sample.Start();
+            MySample2.X = 20;
         }
 
-        private void Sample_Time(object sender, EventArgs e)
-        {
-            MessageBox.Show("ok");
-        }
     }
 }
