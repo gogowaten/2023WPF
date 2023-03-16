@@ -23,7 +23,34 @@ namespace _2023031213_GeoShapeThumb
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
+            //Test1();
+            Test2();
+            var rsize = RenderSize;
+        }
 
+        /// <summary>
+        /// ShapeThumbの座標を0,0する＋Pointsにもとの座標を足すことで
+        /// ShapeThumbのRenderSizeを頂点Thumbを含むサイズに広げる
+        /// </summary>
+        private void Test2()
+        {
+            Canvas.SetLeft(this, 0);
+            Canvas.SetTop(this, 0);
+
+            var left = Canvas.GetLeft(this);
+            var top = Canvas.GetTop(this);
+            for (int i = 0; i < MyPoints.Count; i++)
+            {
+                Point pp = MyPoints[i];
+                MyPoints[i] = new Point(pp.X + left, pp.Y + top);
+            }
+            
+            //頂点Thumbの位置ずれを修正
+            MyGeometryShape.UpdateAdorner();
+
+        }
+        private void Test1()
+        {
             //頂点Thumbすべてを含むRect取得はどれ？
             var ccsize = MyGeometryShape.MyAdorner.RenderSize;//違う
             var canw = MyGeometryShape.MyAdorner.MyCanvas.RenderSize;//サイズだけならこれ

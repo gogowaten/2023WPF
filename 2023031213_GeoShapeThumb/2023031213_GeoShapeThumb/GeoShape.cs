@@ -379,11 +379,53 @@ namespace _2023031213_GeoShapeThumb
                 Thumb thumb = new() { Width = 20, Height = 20, Background = Brushes.Red, Opacity = 0.5 };
                 MyThumbs.Add(thumb);
                 MyCanvas.Children.Add(thumb);
-                SetLocate(thumb, item);
+                
+                SetThumbsLocate(thumb, item);
                 thumb.DragDelta += Thumb_DragDelta;
+                thumb.DragCompleted += Thumb_DragCompleted;
             }
         }
 
+        private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            if (sender is Thumb t)
+            {
+                int i = MyThumbs.IndexOf(t);
+                PointCollection points = MyTargetGeoShape.MyPoints;
+                double x = points[i].X + e.HorizontalChange;
+                double y = points[i].Y + e.VerticalChange;
+
+                //FixZero();
+            }
+        }
+        private void FixZero()
+        {
+            double minX = double.MaxValue;
+            double minY = double.MaxValue;
+            for (int i = 0; i < MyTargetGeoShape.MyPoints.Count; i++)
+            {
+                Point pp = MyTargetGeoShape.MyPoints[i];
+                if (minX > pp.X) { minX = pp.X; }
+                if (minY > pp.Y) { minY = pp.Y; }
+            }
+            if(minX < 0)
+            {
+                for (int i = 0; i < MyTargetGeoShape.MyPoints.Count; i++)
+                {
+                    Point pp = MyTargetGeoShape.MyPoints[i];
+                    MyTargetGeoShape.MyPoints[i] = new Point(pp.X - minX, pp.Y);
+                }
+            }
+            if (minY < 0)
+            {
+                for (int i = 0; i < MyTargetGeoShape.MyPoints.Count; i++)
+                {
+                    Point pp = MyTargetGeoShape.MyPoints[i];
+                    MyTargetGeoShape.MyPoints[i] = new Point(pp.X, pp.Y - minY);
+                }
+            }
+            
+        }
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
@@ -393,13 +435,18 @@ namespace _2023031213_GeoShapeThumb
                 PointCollection points = MyTargetGeoShape.MyPoints;
                 double x = points[i].X + e.HorizontalChange;
                 double y = points[i].Y + e.VerticalChange;
-                points[i] = new Point(x, y);
-                SetLocate(t, points[i]);
+                SetPointAndThumbLocate(i, new Point(x, y), t);
             }
         }
 
-        private static void SetLocate(Thumb thumb, Point point)
+        private static void SetThumbsLocate(Thumb thumb, Point point)
         {
+            Canvas.SetLeft(thumb, point.X);
+            Canvas.SetTop(thumb, point.Y);
+        }
+        private void SetPointAndThumbLocate(int index, Point point,Thumb thumb)
+        {
+            MyTargetGeoShape.MyPoints[index] = point;
             Canvas.SetLeft(thumb, point.X);
             Canvas.SetTop(thumb, point.Y);
         }
