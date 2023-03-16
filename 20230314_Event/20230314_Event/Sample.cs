@@ -3,16 +3,16 @@ using System.Threading;
 
 namespace _20230314_Event
 {
-    public class Sample
-    {
-        public event EventHandler? Time;
-        public void Start()
-        {
-            Thread.Sleep(1000);
-            Time?.Invoke(this, EventArgs.Empty);
-        }
+    //public class Sample
+    //{
+    //    public event EventHandler? Time;
+    //    public void Start()
+    //    {
+    //        Thread.Sleep(1000);
+    //        Time?.Invoke(this, EventArgs.Empty);
+    //    }
 
-    }
+    //}
 
 
     //[C#]イベントの使い方 -デリゲートと何が違う？-

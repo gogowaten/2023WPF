@@ -32,7 +32,11 @@
       <local:GeoShapeThumb2 x:Name="MyGeoShapeThumb2" MyShapeType="Line" MyPoints="40,0 -10,100 100,0 100,100"
                             MyStroke="Cyan" MySTrokeThickness="20" MyFill="Transparent" MyLineSmoothJoin="True"
                             MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
-                            Canvas.Left="300" Canvas.Top="20"/>
+                            Canvas.Left="320" Canvas.Top="20"/>
+      <local:GeoShapeThumb3 x:Name="MyGeoShapeThumb3" MyShapeType="Bezier" MyPoints="40,0 -10,100 100,0 100,100"
+                            MyStroke="Cyan" MySTrokeThickness="20" MyFill="Transparent" MyLineSmoothJoin="False"
+                            MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
+                            Canvas.Left="300" Canvas.Top="180"/>
       
     </Canvas>
     <StackPanel Grid.Column="1">

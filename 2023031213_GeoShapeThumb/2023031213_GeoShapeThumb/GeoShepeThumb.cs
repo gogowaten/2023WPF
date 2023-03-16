@@ -240,7 +240,7 @@ namespace _2023031213_GeoShapeThumb
             MyGeometryShape.SetBinding(GeometryShape.MyLineCloseProperty, new Binding() { Source = this, Path = new PropertyPath(MyLineCloseProperty) });
             MyGeometryShape.SetBinding(GeometryShape.MyAnchorVisibleProperty, new Binding() { Source = this, Path = new PropertyPath(MyThumbVisibleProperty) });
             MyGeometryShape.SetBinding(GeometryShape.MyShapeTypeProperty, new Binding() { Source = this, Path = new PropertyPath(MyShapeTypeProperty) });
-            
+
         }
 
     }
@@ -270,21 +270,27 @@ namespace _2023031213_GeoShapeThumb
     //}
 
 
-
+    /// <summary>
+    /// GeoShapeThumb専用、外観のRectを青で表示
+    /// </summary>
     public class GeoThumbBoundsAdorner : Adorner
     {
         public VisualCollection MyVisuals { get; private set; }
         protected override int VisualChildrenCount => MyVisuals.Count;
         protected override Visual GetVisualChild(int index) => MyVisuals[index];
 
-        public Rectangle MyRectangleBlue { get; private set; } = new() { Stroke = new SolidColorBrush(Color.FromArgb(100,0,0,255)), StrokeThickness = 1.0 };
-        
+        public Rectangle MyRectangleBlue { get; private set; } = new()
+        {
+            Stroke = new SolidColorBrush(Color.FromArgb(100, 0, 0, 255)),
+            StrokeThickness = 1.0
+        };
+
         public GeometryShape MyTargetGeoShape { get; private set; }
 
 
         public GeoThumbBoundsAdorner(GeoShapeThumb adornedElement) : base(adornedElement)
         {
-            MyVisuals = new VisualCollection(this) { MyRectangleBlue};
+            MyVisuals = new VisualCollection(this) { MyRectangleBlue };
             MyTargetGeoShape = adornedElement.MyGeometryShape;
 
             MyTargetGeoShape.LayoutUpdated += MyTargetGeoShape_LayoutUpdated;
@@ -359,15 +365,20 @@ namespace _2023031213_GeoShapeThumb
         protected override Visual GetVisualChild(int index) => MyVisuals[index];
 
 
-        public Rectangle MyRectangle {  get; private set; } = new() { Stroke=new SolidColorBrush(Color.FromArgb(100,255,0,0)), StrokeThickness = 1.0 };
+        public Rectangle MyRectangleRenderSizeRed { get; private set; } = new()
+        {
+            Stroke = new SolidColorBrush(Color.FromArgb(100, 255, 0, 0)),
+            StrokeThickness = 1.0
+        };
+
         public ThumbAdorner(UIElement adornedElement) : base(adornedElement)
         {
-            MyVisuals = new VisualCollection(this) { MyRectangle };
+            MyVisuals = new VisualCollection(this) { MyRectangleRenderSizeRed };
         }
         protected override Size ArrangeOverride(Size finalSize)
         {
             Rect r = new(this.RenderSize);
-            MyRectangle.Arrange(r);
+            MyRectangleRenderSizeRed.Arrange(r);
             return base.ArrangeOverride(finalSize);
         }
     }
