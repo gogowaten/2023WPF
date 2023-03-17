@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace _2023031213_GeoShapeThumb
+namespace _202303171255_DashLine
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,20 +23,6 @@ namespace _2023031213_GeoShapeThumb
         public MainWindow()
         {
             InitializeComponent();
-            Left = 100;
-            Top= 100;
-                
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-            MyGeoShapeThumb2.FixLocate();
-           var pc= MyGeoShapeCanvas.MyPoints;
-           
-            //MyGeoThumb.MyShapeType = ShapeType.Fill;
-            //BitmapSource bmp = MyGeoThumb.GetBitmap();
-
         }
     }
 }

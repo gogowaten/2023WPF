@@ -436,6 +436,8 @@ namespace _2023031213_GeoShapeThumb
                 double x = points[i].X + e.HorizontalChange;
                 double y = points[i].Y + e.VerticalChange;
                 SetPointAndThumbLocate(i, new Point(x, y), t);
+                //FixZero();
+
             }
         }
 

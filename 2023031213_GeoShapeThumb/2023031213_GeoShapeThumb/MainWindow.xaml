@@ -12,22 +12,23 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      <local:GeoShapeThumb x:Name="MyGeoThumb" MyShapeType="Fill" MyPoints="40,0 0,100 100,0 100,100"
+      <!--<local:GeoShapeThumb x:Name="MyGeoThumb" MyShapeType="Fill" MyPoints="40,0 0,100 100,0 100,100"
                            MyFill="Gold" MyLineSmoothJoin="True"
                             MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
-                            Canvas.Left="150" Canvas.Top="150"/>
+                            Canvas.Left="150" Canvas.Top="150"/>-->
 
-      <local:GeoShapeThumb x:Name="MyGeoThumb1" MyShapeType="Bezier" MyPoints="40,0 0,100 100,0 100,100"
+      <!--<local:GeoShapeThumb x:Name="MyGeoThumb1" MyShapeType="Bezier" MyPoints="40,0 0,100 100,0 100,100"
                           MyStroke="DodgerBlue" MySTrokeThickness="20" MyFill="Gold" MyLineSmoothJoin="True"
                             MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
-                            Canvas.Left="10" Canvas.Top="150"/>
+                            Canvas.Left="10" Canvas.Top="150"/>-->
       
-      <local:GeoShapeThumb x:Name="MyGeoThumb2" MyShapeType="Line" MyPoints="40,0 0,100 100,0 100,100"
+      <!--<local:GeoShapeThumb x:Name="MyGeoThumb2" MyShapeType="Line" MyPoints="40,0 0,100 100,0 100,100"
                            MySTrokeThickness="20" MyFill="Gold" MyLineSmoothJoin="True"
                             MyGeoAngle="{Binding ElementName=MyAngle, Path=Value}"
-                            Canvas.Left="150" Canvas.Top="10"/>
+                            Canvas.Left="150" Canvas.Top="10"/>-->
 
-      <local:GeometryShape x:Name="MyGeoShape" MyPoints="40,0 0,100 100,0 100,100" MyShapeType="Fill" Fill="Red"/>
+      <local:GeoShapeCanvas x:Name="MyGeoShapeCanvas" MyPoints="40,0 0,100 100,0 100,100" MyShapeType="Line" MyStroke="Lime"
+                            MySTrokeThickness="20" Canvas.Left="60" Canvas.Top="40"/>
 
       <local:GeoShapeThumb2 x:Name="MyGeoShapeThumb2" MyShapeType="Line" MyPoints="40,0 -10,100 100,0 100,100"
                             MyStroke="Cyan" MySTrokeThickness="20" MyFill="Transparent" MyLineSmoothJoin="True"
