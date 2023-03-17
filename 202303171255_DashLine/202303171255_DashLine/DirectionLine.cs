@@ -56,7 +56,7 @@ namespace _202303171255_DashLine
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            for (int i = 0; i < MyPoints.Count; i++)
+            for (int i = 0; i < MyPoints.Count - 1; i++)
             {
                 if ((i - 1) % 3 != 0)
                 {
@@ -73,7 +73,7 @@ namespace _202303171255_DashLine
                 StreamGeometry geometry = new();
                 using (var context = geometry.Open())
                 {
-                    for (int i = 0; i < MyPoints.Count; i++)
+                    for (int i = 0; i < MyPoints.Count - 1; i++)
                     {
                         if ((i - 1) % 3 != 0)
                         {
@@ -184,7 +184,7 @@ namespace _202303171255_DashLine
             var rsize = RenderSize;
             var drawrect = VisualTreeHelper.GetDrawing(this)?.Bounds;
             var desbound = VisualTreeHelper.GetDescendantBounds(this);
-           var desTF= RenderTransform.TransformBounds(desbound);
+            var desTF = RenderTransform.TransformBounds(desbound);
             Measure(desTF.Size);
             //Arrange(new Rect(desTF.Size));
             Arrange(desTF);

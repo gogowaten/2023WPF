@@ -27,7 +27,7 @@
         </local:DirectionLine.RenderTransform>
       </local:DirectionLine>
       
-      <local:DirectionLine2 MyPoints="0,0 50,0 100,0 150,50 200,0" Stroke="Crimson" StrokeThickness="1"
+      <local:DirectionLine2 MyPoints="0,0 50,0 100,0 150,50" Stroke="Crimson" StrokeThickness="1"
                       StrokeDashArray="1" StrokeBase="Cyan"
                       Canvas.Left="10" Canvas.Top="110"/>
       
