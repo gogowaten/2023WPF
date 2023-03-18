@@ -192,7 +192,7 @@ namespace _202303171255_DashLine
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            for (int i = 0; i < MyPoints.Count; i++)
+            for (int i = 0; i < MyPoints.Count-1; i++)
             {
                 if ((i - 1) % 3 != 0)
                 {

@@ -30,8 +30,11 @@
       <local:DirectionLine2 MyPoints="0,0 50,0 100,0 150,50" Stroke="Crimson" StrokeThickness="1"
                       StrokeDashArray="1" StrokeBase="Cyan"
                       Canvas.Left="10" Canvas.Top="110"/>
-      
-      
+
+      <local:DirectionLine MyPoints="0,0 50,0 100,0 150,50" Stroke="Gold" StrokeThickness="4"
+                           DashArray="10" StrokeBase="Black"
+                           Canvas.Left="10" Canvas.Top="150"/>
+
     </Canvas>
   </Grid>
 </Window>
