@@ -19,6 +19,7 @@
 
       <local:BeCanvas x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50 200,100 200,150 0,100"/>
 
+
       <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="130" Canvas.Top="9"/>
       <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="180" Canvas.Top="9"/>
       <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="280" Canvas.Top="59"/>

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
+
+
+//Bezier表示専用Canvas
+//Canvasサイズは表示しているBezierの見た目サイズに合わせる
+//Bezierの表示位置を見た目の0,0にオフセットする
+//回転などの変形には未対応
 
 namespace _20230319_BezierSize2
 {
@@ -38,53 +39,10 @@ namespace _20230319_BezierSize2
             Children.Add(MyBezier);
 
             Loaded += BeCanvas_Loaded;
-            MyBezier.SizeChanged += MyBezier_SizeChanged;
         }
 
 
-        private void MyBezier_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            //UpdateMyRect();
-        }
-        protected override Size ArrangeOverride(Size arrangeSize)
-        {
-            //UpdateMyRect();
-            return base.ArrangeOverride(arrangeSize);
-        }
-        protected override Size MeasureOverride(Size constraint)
-        {
-            //UpdateMyRect();
-            return base.MeasureOverride(constraint);
-        }
-
-        /// <summary>
-        /// 表示しているShapeBezierのRectを取得して、自身Canvasに反映させる
-        /// </summary>
-        //private void UpdateMyRect()
-        //{
-        //    SetMyBoundsRect(GetOffsetBounds());
-        //}
-
-        private Rect GetOffsetBounds()
-        {
-            var bounds = VisualTreeHelper.GetDescendantBounds(MyBezier);
-
-            if (bounds.Width == Width
-                && bounds.Height == Height
-                && bounds.Left == GetLeft(this)
-                && bounds.Top == GetTop(this))
-            { return Rect.Empty; }
-            else return bounds;
-        }
-        private void SetMyBoundsRect(Rect desbounds)
-        {
-            if (desbounds.IsEmpty) { return; }
-
-            SetLeft(MyBezier, -desbounds.Left);
-            SetTop(MyBezier, -desbounds.Top);
-            Width = desbounds.Width;
-            Height = desbounds.Height;
-        }
+      
         private void BeCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             MyBezier.SetBinding(Bezier.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
@@ -92,6 +50,7 @@ namespace _20230319_BezierSize2
             SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
 
             //Bezierのオフセット、これはBezier自体で実行もできるけど、ここでした方がいい？
+            //さらに、Bindingじゃなくて任意のタイミングで行った方がいい時もありそう
             MyBezier.SetBinding(Canvas.LeftProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectLeft() });
             MyBezier.SetBinding(Canvas.TopProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectTop() });
 

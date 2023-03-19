@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows;
-using System.Windows.Media.Animation;
-using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace _20230319_BezierSize2
 {
@@ -82,6 +76,7 @@ namespace _20230319_BezierSize2
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
 
+
         //読み取り専用の依存関係プロパティ
         //WPF4.5入門 その43 「読み取り専用の依存関係プロパティ」 - かずきのBlog@hatena
         //        https://blog.okazuki.jp/entry/2014/08/18/083455
@@ -103,26 +98,7 @@ namespace _20230319_BezierSize2
 
 
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return;
-            field = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
 
-        //以下必要？
-        //private Rect _myBounds;
-        //public Rect MyBounds { get => _myBounds; set => SetProperty(ref _myBounds, value); }
-
-        private Rect _myTFBounds;
-        public Rect MyTFBounds { get => _myTFBounds; set => SetProperty(ref _myTFBounds, value); }
-
-        private double _myTFWidth;
-        public double MyTFWidth { get => _myTFWidth; set => SetProperty(ref _myTFWidth, value); }
-
-        private double _myTFHeight;
-        public double MyTFHeight { get => _myTFHeight; set => SetProperty(ref _myTFHeight, value); }
 
 
         #endregion 依存関係プロパティと通知プロパティ
@@ -157,13 +133,6 @@ namespace _20230319_BezierSize2
 
         private void Bezier_Loaded(object sender, RoutedEventArgs e)
         {
-            //起動時、-81 -10 241 140
-            var desbounds = VisualTreeHelper.GetDescendantBounds(this);
-            //Measure(desbounds.Size);//これもサイズ変更にはならない
-            //Arrange(desbounds);//これならサイズ変更になるけど、位置が違う
-            //以下ならサイズと位置が合うけど、無理やり感がある、またどのタイミングで実行するのかも、SizeChangedがいい？
-            var offset = VisualTreeHelper.GetOffset(this);
-            //Arrange(new Rect((Point)offset, desbounds.Size));
             SetMyBounds();
         }
 
@@ -176,28 +145,7 @@ namespace _20230319_BezierSize2
         private void Bezier_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetMyBounds();
-            ////-81 -10 241 140
-            //var desBounds = VisualTreeHelper.GetDescendantBounds(this);
-            //Rect r = new(new Point(-desBounds.X, -desBounds.Y), desBounds.Size);
-            //Arrange(r);//これならオフセットとサイズも変更される、けど描画位置はこうじゃない感じ
-            ////Measure(desBounds.Size);//これだとサイズ変更にはならない
-            ////ArrangeCore(r);//普通のArrangeと同じだった
         }
 
-        protected override Size MeasureOverride(Size constraint)
-        {
-            var desBounds = VisualTreeHelper.GetDescendantBounds(this);
-            return base.MeasureOverride(constraint);
-        }
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            var desBounds = VisualTreeHelper.GetDescendantBounds(this);
-            return base.ArrangeOverride(finalSize);
-        }
-        protected override Geometry GetLayoutClip(Size layoutSlotSize)
-        {
-            var desBounds = VisualTreeHelper.GetDescendantBounds(this);
-            return base.GetLayoutClip(layoutSlotSize);
-        }
     }
 }
