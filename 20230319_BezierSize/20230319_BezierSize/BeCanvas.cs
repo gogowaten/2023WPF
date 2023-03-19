@@ -8,6 +8,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
 
+//Bezier表示専用Canvas
+//CanvasのサイズはBezierの見た目のサイズに合わせる
+//Bezierの表示位置は、Canvasの0,0になるようにOffsetする
 namespace _20230319_BezierSize
 {
     class BeCanvas : Canvas
@@ -37,40 +40,56 @@ namespace _20230319_BezierSize
 
             Loaded += BeCanvas_Loaded;
             MyBezier.SizeChanged += MyBezier_SizeChanged;
-            MyBezier.LayoutUpdated += MyBezier_LayoutUpdated;
         }
 
-        private void MyBezier_LayoutUpdated(object? sender, EventArgs e)
+
+        private void MyBezier_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var desbounds = VisualTreeHelper.GetDescendantBounds(MyBezier);
+            UpdateMyRect();
+        }
+        protected override Size ArrangeOverride(Size arrangeSize)
+        {
+            //UpdateMyRect();
+            return base.ArrangeOverride(arrangeSize);
+        }
+        protected override Size MeasureOverride(Size constraint)
+        {
+            UpdateMyRect();
+            return base.MeasureOverride(constraint);
+        }
+
+        /// <summary>
+        /// 表示しているShapeBezierのRectを取得して、自身Canvasに反映させる
+        /// </summary>
+        private void UpdateMyRect()
+        {
+            SetMyBoundsRect(GetOffsetBounds());
+        }
+
+        private Rect GetOffsetBounds()
+        {
+            var bounds = VisualTreeHelper.GetDescendantBounds(MyBezier);
+
+            if (bounds.Width == Width
+                && bounds.Height == Height
+                && bounds.Left == GetLeft(this)
+                && bounds.Top == GetTop(this))
+            { return Rect.Empty; }
+            else return bounds;
+        }
+        private void SetMyBoundsRect(Rect desbounds)
+        {
             if (desbounds.IsEmpty) { return; }
-            if (desbounds.Width == Width && desbounds.Height == Height) { return; }
+            
             SetLeft(MyBezier, -desbounds.Left);
             SetTop(MyBezier, -desbounds.Top);
             Width = desbounds.Width;
             Height = desbounds.Height;
         }
-
-        private void MyBezier_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var desbounds = VisualTreeHelper.GetDescendantBounds(MyBezier);
-            var offset = VisualTreeHelper.GetOffset(MyBezier);
-            //Measure(desbounds.Size);
-
-        }
-
         private void BeCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             MyBezier.SetBinding(Bezier.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
-            //SetBinding(WidthProperty,new Binding() { Source=MyBezier,Path=new PropertyPath(ActualWidthProperty) });
-            //SetBinding(HeightProperty,new Binding() { Source=MyBezier,Path=new PropertyPath(ActualHeightProperty) });
 
-            //var desbounds = VisualTreeHelper.GetDescendantBounds(MyBezier);
-            //if( desbounds.IsEmpty) { return; }
-            //SetLeft(MyBezier, -desbounds.Left);
-            //SetTop(MyBezier, -desbounds.Top);
-            //Width = desbounds.Width;
-            //Height = desbounds.Height;
         }
     }
 }

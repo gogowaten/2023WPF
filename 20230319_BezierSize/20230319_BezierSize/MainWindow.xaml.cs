@@ -46,7 +46,7 @@ namespace _20230319_BezierSize
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MyBezier0.MyPoints[0] = new Point(50, 10);
+            MyBezier0.MyPoints[5] = new Point(200, 200);
             var offset = VisualTreeHelper.GetOffset(MyBezier0);
             var rendersize = MyBezier0.RenderSize;
             var renderbezier = MyBezier0.MyBezier.RenderSize;
