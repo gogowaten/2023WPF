@@ -1,0 +1,47 @@
+﻿<Window x:Class="_20230319_BezierSize3.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230319_BezierSize3"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="150"/>
+    </Grid.ColumnDefinitions>
+    <Canvas x:Name="MyCanvas">
+      <!--<Rectangle Width="241" Height="140" Fill="MediumAquamarine" Canvas.Left="81" Canvas.Top="10"/>
+      <Rectangle Width="200" Height="150" Fill="Blue" Opacity="0.5" Canvas.Left="81" Canvas.Top="10"/>
+      <Rectangle Width="241" Height="140" Fill="Gray" Opacity="0.5" Canvas.Left="0" Canvas.Top="0"/>
+      <Rectangle Width="160" Height="130" Fill="Orange" Canvas.Left="81" Canvas.Top="10"/>-->
+
+      <local:BeCanvas x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50 200,100 200,150 0,100" Background="Pink"/>
+
+
+      <!--<Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="130" Canvas.Top="9"/>
+      <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="180" Canvas.Top="9"/>
+      <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="280" Canvas.Top="59"/>
+      <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="80" Canvas.Top="59"/>
+      <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="280" Canvas.Top="109"/>
+      <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="280" Canvas.Top="159"/>
+      <Ellipse Fill="Black" Width="3" Height="3" Canvas.Left="80" Canvas.Top="109"/>-->
+
+    </Canvas>
+    <StackPanel Grid.Column="1">
+      <Button Content="test" Click="Button_Click"/>
+      <TextBlock Text="青：頂点Rect"/>
+      <TextBlock Text="桃：BeCanvas"/>
+      <TextBlock Text="橙：RenderSize"/>
+      <TextBlock Text="灰：Adorner"/>
+      <Button Content="test2" Click="Button_Click_1"/>
+      <TextBlock Text="{Binding ElementName=MyBezier0, Path=ActualWidth, StringFormat=width \= {0:N1}}"/>
+      <TextBlock Text="{Binding ElementName=MyBezier0, Path=ActualHeight, StringFormat=height \= {0:N1}}"/>
+      <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.(Canvas.Left), StringFormat=shape left \= {0:N1}}"/>
+      <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.(Canvas.Top), StringFormat=shape top \= {0:N1}}"/>
+      <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.MyExternalBounds, StringFormat=bez \= {0}}" TextWrapping="Wrap"/>
+
+    </StackPanel>
+  </Grid>
+</Window>
