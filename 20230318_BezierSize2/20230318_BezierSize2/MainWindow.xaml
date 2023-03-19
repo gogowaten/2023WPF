@@ -44,7 +44,7 @@
       <TextBlock Text="緑：Descendant"/>
       <TextBlock Text="橙：RenderSize"/>
       <TextBlock Text="灰：理想Rect"/>
-
+      <Button Content="test2" Click="Button_Click_1"/>
     </StackPanel>
   </Grid>
 </Window>

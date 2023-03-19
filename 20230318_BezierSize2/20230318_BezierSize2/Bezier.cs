@@ -114,17 +114,28 @@ namespace _20230318_BezierSize2
         public Bezier()
         {
             SizeChanged += Bezier_SizeChanged;
+            Loaded += Bezier_Loaded;
+        }
+
+        private void Bezier_Loaded(object sender, RoutedEventArgs e)
+        {
+            //起動時、-81 -10 241 140
+            var desbounds = VisualTreeHelper.GetDescendantBounds(this);
+            //Measure(desbounds.Size);//これもサイズ変更にはならない
+            //Arrange(desbounds);//これならサイズ変更になるけど、位置が違う
+            //以下ならサイズと位置が合うけど、無理やり感がある、またどのタイミングで実行するのかも、SizeChangedがいい？
+            var offset = VisualTreeHelper.GetOffset(this);
+            Arrange(new Rect((Point)offset, desbounds.Size));
         }
 
         private void Bezier_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //-81 -10 241 140
-            var desBounds = VisualTreeHelper.GetDescendantBounds(this);
-            Rect r = new(new Point(-desBounds.X, -desBounds.Y), desBounds.Size);
-            ////Rect r = new(desBounds.Size);
-            Arrange(r);//これならオフセットとサイズも変更される、けど描画位置はこうじゃない感じ
-            //Measure(desBounds.Size);//これだとサイズ変更にはならない
-            //ArrangeCore(r);//普通のArrangeと同じだった
+            ////-81 -10 241 140
+            //var desBounds = VisualTreeHelper.GetDescendantBounds(this);
+            //Rect r = new(new Point(-desBounds.X, -desBounds.Y), desBounds.Size);
+            //Arrange(r);//これならオフセットとサイズも変更される、けど描画位置はこうじゃない感じ
+            ////Measure(desBounds.Size);//これだとサイズ変更にはならない
+            ////ArrangeCore(r);//普通のArrangeと同じだった
         }
 
         protected override Size MeasureOverride(Size constraint)
