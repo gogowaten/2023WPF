@@ -74,20 +74,13 @@ namespace _20230319_BezierSize3
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-
-            var desbounds = VisualTreeHelper.GetDescendantBounds(MyCanvas);
-            var myrect = GetPointsRect(MyPoints);
-
-            var rr = new Rect(myrect.X, myrect.Y, myrect.Size.Width + ThumbSize, myrect.Height + ThumbSize);
-            if (desbounds.IsEmpty)
-            {
-                MyCanvas.Arrange(new Rect(finalSize));
-            }
-            else
-            {
-                MyCanvas.Arrange(rr);
-                //MyCanvas.Arrange(desbounds);
-            }
+            //頂点Thumbが収まるRectを取得、これをCanvasのRectに指定する
+            //このRect取得はGetDescendantBounds(MyCanvas)できそうだけど
+            //これだと今のCanvasのサイズも含めてしまうので、一度広がったCanvasがそのままになってしまうので
+            //手動のGetPointsRectにて取得している
+            //var myrect = GetPointsRect(MyPoints);
+            //var rr = new Rect(myrect.X, myrect.Y, myrect.Size.Width + ThumbSize, myrect.Height + ThumbSize);
+            //MyCanvas.Arrange(rr);
 
             return base.ArrangeOverride(finalSize);
         }
@@ -107,20 +100,14 @@ namespace _20230319_BezierSize3
             }
             return new Rect(minX, minY, maxX - minX, maxY - minY);
         }
-        //protected override Size MeasureOverride(Size constraint)
-        //{
-        //    var desbounds = VisualTreeHelper.GetDescendantBounds(MyCanvas);
-        //    if (desbounds.IsEmpty)
-        //    {
-        //        //MyCanvas.Arrange(new Rect(constraint));
-        //    }
-        //    else
-        //    {
-        //        MyCanvas.Arrange(desbounds);
-        //    }
+        protected override Size MeasureOverride(Size constraint)
+        {
+            var myrect = GetPointsRect(MyPoints);
+            var rr = new Rect(myrect.X, myrect.Y, myrect.Size.Width + ThumbSize, myrect.Height + ThumbSize);
+            MyCanvas.Arrange(rr);
 
-        //    return base.MeasureOverride(constraint);
-        //}
+            return base.MeasureOverride(constraint);
+        }
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             if (sender is Thumb thumb)

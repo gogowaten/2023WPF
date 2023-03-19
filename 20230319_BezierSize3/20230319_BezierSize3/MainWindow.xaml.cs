@@ -47,12 +47,13 @@ namespace _20230319_BezierSize3
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MyBezier0.MyPoints[5] = new Point(200, 200);
+            MyBezier0.MyPoints[4] = new Point(100, 100);
             var offset = VisualTreeHelper.GetOffset(MyBezier0);
             var rendersize = MyBezier0.RenderSize;
             var renderbezier = MyBezier0.MyBezier.RenderSize;
             var candes = VisualTreeHelper.GetDescendantBounds(MyBezier0);
             var bedes = VisualTreeHelper.GetDescendantBounds(MyBezier0.MyBezier);
+            MyBezier0.UpdateLayout();
         }
     }
 }

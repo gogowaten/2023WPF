@@ -120,6 +120,7 @@ namespace _20230319_BezierSize3
             }
         }
 
+        //SizeChangedで見た目Rectを更新
         public Bezier()
         {
             SizeChanged += Bezier_SizeChanged;
@@ -144,11 +145,19 @@ namespace _20230319_BezierSize3
             if (bounds.IsEmpty) return;
             MyExternalBounds = bounds;
         }
+
+        //見た目Rectの更新はSizeChangedで必須と
+        //ArrangeOverrideかMeasureOverrideのどちらかで必要
         private void Bezier_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetMyBounds();
         }
 
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+            SetMyBounds();
+            return base.ArrangeOverride(finalSize);
+        }
     }
 
 }

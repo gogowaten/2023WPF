@@ -3,7 +3,13 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
 
+//頂点Thumbの表示と移動できるようにした
+//BezierではSizeChangedで見た目Rectを更新
+//このRectにCanvasのサイズをBinding
 
+//頂点移動時の不具合
+//Canvasの座標は固定なので、頂点がマイナス座標になると不具合
+//見た目Rectの座標が変化したときも不具合
 namespace _20230319_BezierSize3
 {
     class BeCanvas : Canvas
