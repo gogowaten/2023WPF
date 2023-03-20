@@ -23,7 +23,10 @@ namespace _20230320_BezierSize
         public MainWindow()
         {
             InitializeComponent();
+            Left = 100;
+            Top = 100;
         }
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -49,7 +52,7 @@ namespace _20230320_BezierSize
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             MyBezier0.MyPoints[4] = new Point(100, 100);
-            MyBezier0.MyBezier.MyAdorner?.FixThumbLocate();
+            MyBezier0.MyBezier.MyAdorner?.FixThumbsLocate();
 
             var offset = VisualTreeHelper.GetOffset(MyBezier0);
             var rendersize = MyBezier0.RenderSize;
@@ -72,6 +75,25 @@ namespace _20230320_BezierSize
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             MyBezier0.MyIsEditing = !MyBezier0.MyIsEditing;
+        }
+
+        private void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            MyBezier0.Fix0Point();
+            var pt = MyBezier0.MyPoints;
+            MyBezier0.MyBezier.MyAdorner?.FixThumbsLocate();
+            //MyBezier0.FixCanvasLocate();
+        }
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            var canrect = VisualTreeHelper.GetDescendantBounds(MyBezier0);
+            var bezrect = VisualTreeHelper.GetDescendantBounds(MyBezier0.MyBezier);
+            var adorect = VisualTreeHelper.GetDescendantBounds(MyBezier0.MyBezier.MyAdorner);
+            var adocanrect = VisualTreeHelper.GetDescendantBounds(MyBezier0.MyBezier.MyAdorner.MyCanvas);
+            var pointsrect = MyAdorner.GetPointsRect(MyBezier0.MyPoints);
+            var bezexrect = MyBezier0.MyBezier.MyExternalBounds;
+            MyBezier0.FixCanvasLocate2();
         }
     }
 }

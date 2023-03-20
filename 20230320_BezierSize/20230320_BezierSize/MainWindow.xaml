@@ -27,6 +27,7 @@
       <TextBlock Text="桃：BeCanvasRect"/>
       <TextBlock Text="灰：AdornerRect"/>
       <Button Content="test2" Click="Button_Click_1"/>
+      <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.MyAdorner.MyCanvas.(Canvas.Left), StringFormat=AdCanLeft \={0}}"/>
       <GroupBox Header="BeCanvas">
         <StackPanel>
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyIsEditing, StringFormat=IsEditing {0}}"/>
@@ -47,6 +48,8 @@
       <Button Content="setLocate" Click="Button_Click_2"/>
       <Button Content="fixCanvasLocate" Click="Button_Click_3"/>
       <Button Content="編集状態切り替え" Click="Button_Click_4"/>
+      <Button Content="0FixPoint" Click="Button_Click_5"/>
+      <Button Content="確認用" Click="Button_Click_6"/>
     </StackPanel>
   </Grid>
 </Window>

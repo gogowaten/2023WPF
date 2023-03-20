@@ -3,6 +3,8 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace _20230320_BezierSize
 {
@@ -127,8 +129,8 @@ namespace _20230320_BezierSize
             SizeChanged += Bezier_SizeChanged;
             Loaded += Bezier_Loaded;
 
-            //表示位置のオフセット、見た目のサイズの0,0で表示する、けど
-            //自身で行うより、表示する親パネルで行った方がいいかも？
+            ////表示位置のオフセット、見た目のサイズの0,0で表示する、けど
+            ////自身で行うより、表示する親パネルで行った方がいいかも？
             //SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(MyExternalBoundsProperty), Converter = new MyConverterRectLeft() });
             //SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(MyExternalBoundsProperty), Converter = new MyConverterRectTop() });
 
@@ -141,7 +143,7 @@ namespace _20230320_BezierSize
             AdornerLayer.GetAdornerLayer(this).Add(MyAdorner);
         }
 
-        private void SetMyBounds()
+        public void SetMyBounds()
         {
             var bounds = VisualTreeHelper.GetDescendantBounds(this);
             if (bounds.IsEmpty) return;

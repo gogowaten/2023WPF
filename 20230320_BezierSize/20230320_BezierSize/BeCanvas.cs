@@ -30,7 +30,8 @@ namespace _20230320_BezierSize
             DependencyProperty.Register(nameof(MyIsEditing), typeof(bool), typeof(BeCanvas),
                 new FrameworkPropertyMetadata(false,
                     FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure));
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
 
@@ -48,39 +49,61 @@ namespace _20230320_BezierSize
             Loaded += BeCanvas_Loaded;
         }
 
+        //Pointsの左上を0,0にするだけ
+        public void Fix0Point()
+        {
+            Rect r = MyAdorner.GetPointsRect(MyPoints);
+            for (int i = 0; i < MyPoints.Count; i++)
+            {
+                Point pp = MyPoints[i];
+                MyPoints[i] = new Point(pp.X - r.Left, pp.Y - r.Top);
+            }
+        }
+
         public void FixBezierLocate()
         {
             var bounds = MyBezier.MyExternalBounds;
             Canvas.SetLeft(MyBezier, -bounds.Left);
             Canvas.SetTop(MyBezier, -bounds.Top);
         }
+        public void FixCanvasLocate2()
+        {
+            //CanvasとBezierのオフセット
+           var adRect= VisualTreeHelper.GetDescendantBounds(MyBezier.MyAdorner);
+
+        }
         public void FixCanvasLocate()
         {
-            var bounds = MyBezier.MyExternalBounds;
-            if(bounds.IsEmpty) { return; }
-            var bezierLocate = VisualTreeHelper.GetOffset(MyBezier);
-            var canvasLocate = VisualTreeHelper.GetOffset(this);
-            var xDiff = bezierLocate.X + bounds.Left;
-            var yDiff = bezierLocate.Y + bounds.Top;
-            var x = canvasLocate.X + xDiff;
-            var y = canvasLocate.Y + yDiff;
-            Canvas.SetLeft(this, x);
-            Canvas.SetTop(this, y);
-            var xx = bezierLocate.X - xDiff;
-            var yy = bezierLocate.Y - yDiff;
+            var exBezier = MyBezier.MyExternalBounds;
+            if (exBezier.IsEmpty) { return; }
+           var canrect= VisualTreeHelper.GetDescendantBounds(this);
+            var bezier = VisualTreeHelper.GetOffset(MyBezier);
+            var xDiff = bezier.X + exBezier.Left;
+            var yDiff = bezier.Y + exBezier.Top;
+
+            var xx = bezier.X - xDiff;
+            var yy = bezier.Y - yDiff;
             Canvas.SetLeft(MyBezier, xx);
             Canvas.SetTop(MyBezier, yy);
+            
+            var myLocate = VisualTreeHelper.GetOffset(this);
+            var x = myLocate.X + xDiff;
+            var y = myLocate.Y + yDiff;
+            Canvas.SetLeft(this, x);
+            Canvas.SetTop(this, y);
         }
+
 
         protected override Size MeasureOverride(Size constraint)
         {
             if (MyIsEditing) { FixCanvasLocate(); }
-            
+
             return base.MeasureOverride(constraint);
         }
         private void BeCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             MyBezier.SetBinding(Bezier.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
+
             SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
             SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
 
