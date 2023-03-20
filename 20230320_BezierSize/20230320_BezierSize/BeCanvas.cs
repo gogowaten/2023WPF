@@ -69,14 +69,66 @@ namespace _20230320_BezierSize
         public void FixCanvasLocate2()
         {
             //CanvasとBezierのオフセット
-           var adRect= VisualTreeHelper.GetDescendantBounds(MyBezier.MyAdorner);
+            var adRect = VisualTreeHelper.GetDescendantBounds(MyBezier.MyAdorner);
+            var beRect = VisualTreeHelper.GetDescendantBounds(MyBezier);
+            var myRect = VisualTreeHelper.GetDescendantBounds(this);
+            var adOffset = VisualTreeHelper.GetOffset(MyBezier.MyAdorner);
+            var beOffset = VisualTreeHelper.GetOffset(MyBezier);
+            var myOffset = VisualTreeHelper.GetOffset(this);
+            var myp = MyPoints;
 
+            if (adRect.X < 0)
+            {
+                var x = beOffset.X + adRect.X;
+                Canvas.SetLeft(MyBezier, x);
+                Fix0Point();
+                MyBezier.MyAdorner?.FixThumbsLocate();
+            }
+
+            if (myRect.X < 0)
+            {
+                var xxxx = adRect.X - beRect.X;
+                Canvas.SetLeft(MyBezier, xxxx);
+                Fix0Point();
+                MyBezier.MyAdorner?.FixThumbsLocate();
+                var x = myOffset.X + myRect.X;
+                Canvas.SetLeft(this, x);
+            }
+            
+            if (adRect.Y < 0)
+            {
+                var y = beOffset.Y + adRect.Y;
+                Canvas.SetTop(MyBezier, y);
+                Fix0Point();
+                MyBezier.MyAdorner?.FixThumbsLocate();
+            }
+
+            if (myRect.Y < 0)
+            {
+                var yyyy = adRect.Y - beRect.Y;
+                Canvas.SetTop(MyBezier, yyyy);
+                Fix0Point();
+                MyBezier.MyAdorner?.FixThumbsLocate();
+                var y = myOffset.Y + myRect.Y;
+                Canvas.SetTop(this, y);
+            }
+            
+
+        }
+        public void MyOffset(Vector offset)
+        {
+            var x = Canvas.GetLeft(this);
+            var y = Canvas.GetTop(this);
+            var xx = x + offset.X;
+            var yy = y + offset.Y;
+            Canvas.SetLeft(this, xx);
+            Canvas.SetTop(this, yy);
         }
         public void FixCanvasLocate()
         {
             var exBezier = MyBezier.MyExternalBounds;
             if (exBezier.IsEmpty) { return; }
-           var canrect= VisualTreeHelper.GetDescendantBounds(this);
+            var canrect = VisualTreeHelper.GetDescendantBounds(this);
             var bezier = VisualTreeHelper.GetOffset(MyBezier);
             var xDiff = bezier.X + exBezier.Left;
             var yDiff = bezier.Y + exBezier.Top;
@@ -85,7 +137,7 @@ namespace _20230320_BezierSize
             var yy = bezier.Y - yDiff;
             Canvas.SetLeft(MyBezier, xx);
             Canvas.SetTop(MyBezier, yy);
-            
+
             var myLocate = VisualTreeHelper.GetOffset(this);
             var x = myLocate.X + xDiff;
             var y = myLocate.Y + yDiff;
