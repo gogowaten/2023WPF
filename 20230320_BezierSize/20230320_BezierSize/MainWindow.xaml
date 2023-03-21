@@ -31,24 +31,24 @@
       <GroupBox Header="BeCanvas">
         <StackPanel>
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyIsEditing, StringFormat=IsEditing {0}}"/>
-          <TextBlock Text="{Binding ElementName=MyBezier0, Path=ActualWidth, StringFormat=width \= {0:N1}}"/>
-          <TextBlock Text="{Binding ElementName=MyBezier0, Path=ActualHeight, StringFormat=height \= {0:N1}}"/>
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=(Canvas.Left), StringFormat=left \= {0:N1}}"/>
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=(Canvas.Top), StringFormat=top \= {0:N1}}"/>
         </StackPanel>
       </GroupBox>
       <GroupBox Header="Bezier">
         <StackPanel>
-          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.ActualWidth, StringFormat=width \= {0:N1}}"/>
-          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.ActualHeight, StringFormat=height \= {0:N1}}"/>
-          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.(Canvas.Left), StringFormat=shape left \= {0:N1}}"/>
-          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.(Canvas.Top), StringFormat=shape top \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.(Canvas.Left), StringFormat=left \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.(Canvas.Top), StringFormat=top \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.MyExternalBounds.Left, StringFormat=exLeft \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.MyExternalBounds.Top, StringFormat=exTop \= {0:N1}}"/>
+          
         </StackPanel>
       </GroupBox>
       <Button Content="setLocate" Click="Button_Click_2"/>
       <Button Content="fixCanvasLocate" Click="Button_Click_3"/>
       <Button Content="編集状態切り替え" Click="Button_Click_4"/>
       <Button Content="0FixPoint" Click="Button_Click_5"/>
+      <Button Content="0FixPoint2" Click="Button_Click_7"/>
       <Button Content="確認用" Click="Button_Click_6"/>
     </StackPanel>
   </Grid>

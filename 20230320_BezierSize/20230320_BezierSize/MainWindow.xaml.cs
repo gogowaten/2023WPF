@@ -69,7 +69,7 @@ namespace _20230320_BezierSize
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            MyBezier0.FixCanvasLocate();
+            MyBezier0.FixCanvasLocate0();
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
@@ -82,7 +82,7 @@ namespace _20230320_BezierSize
             MyBezier0.Fix0Point();
             var pt = MyBezier0.MyPoints;
             MyBezier0.MyBezier.MyAdorner?.FixThumbsLocate();
-            //MyBezier0.FixCanvasLocate();
+            //MyBezier0.FixCanvasLocate0();
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
@@ -94,6 +94,12 @@ namespace _20230320_BezierSize
             var pointsrect = MyAdorner.GetPointsRect(MyBezier0.MyPoints);
             var bezexrect = MyBezier0.MyBezier.MyExternalBounds;
             MyBezier0.FixCanvasLocate2();
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            MyBezier0.Fix0Point2();
+            MyBezier0.MyBezier.MyAdorner?.FixThumbsLocate();
         }
     }
 }
