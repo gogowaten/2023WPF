@@ -60,30 +60,36 @@ namespace _20230320_BezierSize
                 MyPoints[i] = new Point(pp.X - r.Left, pp.Y - r.Top);
             }
         }
+
+        //できた！！！！！！！！！！！！！！
         public void Fix0Point2()
         {
-            Rect r = MyAdorner.GetPointsRect(MyPoints);
+            Rect pts = MyAdorner.GetPointsRect(MyPoints);
             for (int i = 0; i < MyPoints.Count; i++)
             {
                 Point pp = MyPoints[i];
-                MyPoints[i] = new Point(pp.X - r.Left, pp.Y - r.Top);
+                MyPoints[i] = new Point(pp.X - pts.Left, pp.Y - pts.Top);
             }
             var canRect = VisualTreeHelper.GetDescendantBounds(this);
-            var bezRect = VisualTreeHelper.GetDescendantBounds(MyBezier);
             var cLocate = VisualTreeHelper.GetOffset(this);
+            var bezRect = VisualTreeHelper.GetDescendantBounds(MyBezier);
             var bLocate = VisualTreeHelper.GetOffset(MyBezier);
 
-            SetLeft(this, cLocate.X + canRect.X);
+            //var x = cLocate.X + canRect.X;
+            var cx = bLocate.X + bezRect.X;
+            //var cxx = x + cx;
+            var cxxx = cLocate.X + cx;
+            SetLeft(this, cxxx);
             SetTop(this, cLocate.Y + canRect.Y);
 
             var bx = bLocate.X + bezRect.X - canRect.X;
             var by = bLocate.Y + bezRect.Y - canRect.Y;
-            bx = r.X-bezRect.X;
-            by = r.Y-bezRect.Y;
-            //bx = r.X-bezRect.X+cLocate.X;
-            //by = r.Y-bezRect.Y+cLocate.Y;
+            bx = bLocate.X + pts.X-canRect.X;
+            by = bLocate.Y + pts.Y;
+            var xxx = -bezRect.X+pts.X;
+            var xxxx = bLocate.X + pts.X;
 
-            SetLeft(MyBezier, bx);
+            SetLeft(MyBezier, xxx);
             SetTop(MyBezier, by);
         }
 
