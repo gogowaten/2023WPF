@@ -156,13 +156,13 @@ namespace _20230320_BezierSize
             {
                 var neko = 0;
             }
-            //var x = canOffset.X + canRect.X; SetLeft(this, x);
-            //var y = canOffset.Y + canRect.Y; SetTop(this, y);
+            //var x = canLocate.X + canRect.X; SetLeft(this, x);
+            //var y = canLocate.Y + canRect.Y; SetTop(this, y);
 
             //Bezierのオフセット、PointsのRectの座標が0,0以外ならオフセットが必要
-            //var xx = ptRect.X + bezOffset.X - canRect.X;
-            //SetLeft(MyBezier, xx); Fix0Point(); MyBezier.MyAdorner?.FixThumbsLocate();
-            //var yy = ptRect.Y + bezOffset.Y - canRect.Y;
+            //var xx0 = ptRect.X + bezLocate.X - canRect.X;
+            //SetLeft(MyBezier, xx0); Fix0Point(); MyBezier.MyAdorner?.FixThumbsLocate();
+            //var yy = ptRect.Y + bezLocate.Y - canRect.Y;
             //SetTop(MyBezier, yy);Fix0Point();MyBezier.MyAdorner?.FixThumbsLocate();
 
             var x = canOffset.X + xDiff; SetLeft(this, x);
@@ -181,29 +181,44 @@ namespace _20230320_BezierSize
         //それ以外はできているので、あと少し？
         public void FixCanvasLocate01()
         {
-            var bezExRect = MyBezier.MyExternalBounds;
-            if (bezExRect.IsEmpty) { return; }
-            var canOffset = VisualTreeHelper.GetOffset(this);
+            //var bezExRect = MyBezier.MyExternalBounds;
+            //if (bezExRect.IsEmpty) { return; }
+            var canLocate = VisualTreeHelper.GetOffset(this);
             var canRect = VisualTreeHelper.GetDescendantBounds(this);
-            var bezOffset = VisualTreeHelper.GetOffset(MyBezier);
+            var bezLocate = VisualTreeHelper.GetOffset(MyBezier);
             var bezRect = VisualTreeHelper.GetDescendantBounds(MyBezier);
             var ptsRect = MyAdorner.GetPointsRect(MyPoints);
 
-            var xDiff = bezOffset.X + bezExRect.Left;
-            var yDiff = bezOffset.Y + bezExRect.Top;
-            var x = bezOffset.X - xDiff;
-            var xx = bezOffset.X + ptsRect.X - canRect.X;
+            var xDiff = bezLocate.X + bezRect.Left;
+            var yDiff = bezLocate.Y + bezRect.Top;
 
-            SetLeft(MyBezier, xx);
-            SetTop(MyBezier, bezOffset.Y - yDiff);
+            //var myLocate = VisualTreeHelper.GetOffset(this);
+            SetLeft(this, canLocate.X + xDiff);
+            SetTop(this, canLocate.Y + yDiff);
+
+            var xx0 = ptsRect.X - canRect.X;
+            var xx1 = ptsRect.X + canRect.X;
+            var xx2 = ptsRect.X - bezRect.X;
+            var xx3 = ptsRect.X + bezRect.X;
+            var xx4 = bezRect.X - ptsRect.X;
+            var xx5 = bezRect.X + canRect.X;
+            var xx6 = bezRect.X - canRect.X;
+            var xx7 = canRect.X - bezRect.X;
+            var xx8 = canRect.X - ptsRect.X;
+            var yy0 = ptsRect.Y - canRect.Y;
+            SetLeft(MyBezier, bezLocate.X + xx0);
+            SetTop(MyBezier, bezLocate.Y + yy0);
+
             Fix0Point();
             MyBezier.MyAdorner?.FixThumbsLocate();
-
-
-            var myLocate = VisualTreeHelper.GetOffset(this);
-            SetLeft(this, myLocate.X + xDiff);
-            SetTop(this, myLocate.Y + yDiff);
-
+            if (bezLocate.X + bezRect.X != 0)
+            {
+                SetLeft(MyBezier, -bezRect.X);
+            }
+            if (bezLocate.Y + bezRect.Y != 0)
+            {
+                SetTop(MyBezier, -bezRect.Y);
+            }
         }
 
         //CanvasとBezierのオフセットはできているけど、PointsのFix0ができていない
@@ -227,11 +242,35 @@ namespace _20230320_BezierSize
 
         }
 
+        //できた！！！！！！！！！！！！！！！！！！！！！！
+        //マウスで移動中の計算でもできた
+        public void FixCanvasLocate00()
+        {
+            var bezExRect = MyBezier.MyExternalBounds;
+            if (bezExRect.IsEmpty) { return; }
+            var canRect = VisualTreeHelper.GetDescendantBounds(this);
+            var ptsRect = MyAdorner.GetPointsRect(MyPoints);
+
+            var bezOffset = VisualTreeHelper.GetOffset(MyBezier);
+            var xDiff = bezOffset.X + bezExRect.Left;
+            var yDiff = bezOffset.Y + bezExRect.Top;
+
+            var myLocate = VisualTreeHelper.GetOffset(this);
+            SetLeft(this, myLocate.X + xDiff);
+            SetTop(this, myLocate.Y + yDiff);
+
+            SetLeft(MyBezier, bezOffset.X - xDiff + ptsRect.X);
+            SetTop(MyBezier, bezOffset.Y - yDiff + ptsRect.Y);
+            Fix0Point();
+            MyBezier.MyAdorner?.FixThumbsLocate();
+
+        }
+
 
         protected override Size MeasureOverride(Size constraint)
         {
             //if (MyIsEditing) { Fix0Point2(); }
-            if (MyIsEditing) { FixCanvasLocate01(); }
+            if (MyIsEditing) { FixCanvasLocate00(); }
 
             return base.MeasureOverride(constraint);
         }
