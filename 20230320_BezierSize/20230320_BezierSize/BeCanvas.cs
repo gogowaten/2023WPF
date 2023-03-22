@@ -62,6 +62,7 @@ namespace _20230320_BezierSize
         }
 
         //できた！！！！！！！！！！！！！！
+        //けど、移動中に適用するとすっ飛ぶ、使うときは移動後
         public void Fix0Point2()
         {
             Rect pts = MyAdorner.GetPointsRect(MyPoints);
@@ -80,17 +81,17 @@ namespace _20230320_BezierSize
             //var cxx = x + cx;
             var cxxx = cLocate.X + cx;
             SetLeft(this, cxxx);
-            SetTop(this, cLocate.Y + canRect.Y);
+            SetTop(this, cLocate.Y + bLocate.Y + bezRect.Y);
 
-            var bx = bLocate.X + bezRect.X - canRect.X;
-            var by = bLocate.Y + bezRect.Y - canRect.Y;
-            bx = bLocate.X + pts.X-canRect.X;
-            by = bLocate.Y + pts.Y;
-            var xxx = -bezRect.X+pts.X;
-            var xxxx = bLocate.X + pts.X;
-
+            //var bx = bLocate.X + bezRect.X - canRect.X;
+            //var by = bLocate.Y + bezRect.Y - canRect.Y;
+            //bx = bLocate.X + pts.X-canRect.X;
+            //var by = bLocate.Y + pts.Y;
+            var xxx = -bezRect.X + pts.X;
+            //var xxxx = bLocate.X + pts.X;
+            var yyy = -bezRect.Y + pts.Y;
             SetLeft(MyBezier, xxx);
-            SetTop(MyBezier, by);
+            SetTop(MyBezier, yyy);
         }
 
         public void FixBezierLocate()
@@ -227,7 +228,8 @@ namespace _20230320_BezierSize
 
         protected override Size MeasureOverride(Size constraint)
         {
-            if (MyIsEditing) { FixCanvasLocate0(); }
+            if (MyIsEditing) { Fix0Point2(); }
+            //if (MyIsEditing) { FixCanvasLocate0(); }
 
             return base.MeasureOverride(constraint);
         }
