@@ -77,22 +77,13 @@ namespace _20230322_BezierSize
             var bezRect = VisualTreeHelper.GetDescendantBounds(MyBezier);
             var bLocate = VisualTreeHelper.GetOffset(MyBezier);
 
-            //var x = cLocate.X + canRect.X;
-            var cx = bLocate.X + bezRect.X;
-            //var cxx = x + cx;
-            var cxxx = cLocate.X + cx;
+            var cxxx = cLocate.X + bLocate.X + bezRect.X;
             SetLeft(this, cxxx);
             SetTop(this, cLocate.Y + bLocate.Y + bezRect.Y);
 
-            //var bx = bLocate.X + bezRect.X - canRect.X;
-            //var by = bLocate.Y + bezRect.Y - canRect.Y;
-            //bx = bLocate.X + pts.X-canRect.X;
-            //var by = bLocate.Y + pts.Y;
-            var xxx = -bezRect.X + pts.X;
-            //var xxxx = bLocate.X + pts.X;
-            var yyy = -bezRect.Y + pts.Y;
+            var xxx = -bezRect.X + pts.X;            
             SetLeft(MyBezier, xxx);
-            SetTop(MyBezier, yyy);
+            SetTop(MyBezier, -bezRect.Y + pts.Y);
         }
 
         public void FixBezierLocate()

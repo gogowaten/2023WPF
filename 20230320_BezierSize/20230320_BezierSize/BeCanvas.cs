@@ -177,6 +177,8 @@ namespace _20230320_BezierSize
 
         }
 
+        //リアルタイム、Canvas座標のプラス方向の処理ができていない
+        //それ以外はできているので、あと少し？
         public void FixCanvasLocate01()
         {
             var bezExRect = MyBezier.MyExternalBounds;
@@ -228,8 +230,8 @@ namespace _20230320_BezierSize
 
         protected override Size MeasureOverride(Size constraint)
         {
-            if (MyIsEditing) { Fix0Point2(); }
-            //if (MyIsEditing) { FixCanvasLocate0(); }
+            //if (MyIsEditing) { Fix0Point2(); }
+            if (MyIsEditing) { FixCanvasLocate01(); }
 
             return base.MeasureOverride(constraint);
         }
