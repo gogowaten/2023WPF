@@ -1,0 +1,47 @@
+﻿<Window x:Class="_20230323_BezierSize.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230323_BezierSize"
+        mc:Ignorable="d"
+         Title="MainWindow" Height="450" Width="600">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="150"/>
+    </Grid.ColumnDefinitions>
+    <Canvas x:Name="MyCanvas">
+
+      <local:BeCanvas x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50 200,100 200,150 0,100" Background="Pink"
+                      Canvas.Left="100" Canvas.Top="50"/>
+
+
+    </Canvas>
+    <StackPanel Grid.Column="1">
+      <Button Content="test" Click="Button_Click"/>
+      <TextBlock Text="青：頂点Thumbs" Background="CornflowerBlue"/>
+      <TextBlock Text="桃：BeCanvasRect" Background="Pink"/>
+      <TextBlock Text="緑：頂点ThumbsRect" Background="LightGreen"/>
+      <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.MyAdorner.MyCanvas.(Canvas.Left), StringFormat=AdCanLeft \={0}}"/>
+      <GroupBox Header="BeCanvas" Background="Pink">
+        <StackPanel>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyIsEditing, StringFormat=IsEditing {0}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=(Canvas.Left), StringFormat=left \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=(Canvas.Top), StringFormat=top \= {0:N1}}"/>
+        </StackPanel>
+      </GroupBox>
+      <GroupBox Header="Bezier" Background="LightGreen">
+        <StackPanel>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.(Canvas.Left), StringFormat=left \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.(Canvas.Top), StringFormat=top \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.MyExternalBounds.Left, StringFormat=exLeft \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyBezier.MyExternalBounds.Top, StringFormat=exTop \= {0:N1}}"/>
+        </StackPanel>
+      </GroupBox>
+
+      <Button Content="編集状態切り替え" Click="Button_Click_4"/>
+      <Button Content="Fix0Point2" Click="Button_Click_7"/>
+    </StackPanel>
+  </Grid>
+</Window>
