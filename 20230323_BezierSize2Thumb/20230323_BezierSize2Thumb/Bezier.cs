@@ -1,10 +1,9 @@
 ﻿using System.Linq;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace _20230323_BezierSize2Thumb
 {
@@ -152,7 +151,8 @@ namespace _20230323_BezierSize2Thumb
             SetMyBounds();
             MyAdorner = new(this);
             AdornerLayer.GetAdornerLayer(this).Add(MyAdorner);
-            SetBinding(MyAnchorVisibleProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty), Converter = new MyConverterBoolVisible() }); ;
+            SetBinding(MyAnchorVisibleProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty), Converter = new MyConverterBoolVisible() });
+            MyAdorner.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorVisibleProperty) });
         }
 
         public void SetMyBounds()

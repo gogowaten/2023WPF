@@ -31,6 +31,8 @@ namespace _20230323_BezierSize2Thumb
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        
+
         #endregion 依存関係プロパティ
 
 

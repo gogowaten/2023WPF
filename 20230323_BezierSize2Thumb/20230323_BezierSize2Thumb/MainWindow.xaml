@@ -14,7 +14,7 @@
     <Canvas x:Name="MyCanvas">
 
       <local:ShapeThumb x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50 200,100 200,150 0,100" Background="Pink"
-                      Canvas.Left="100" Canvas.Top="50"/>
+                      Canvas.Left="100" Canvas.Top="50" MyIsEditing="False"/>
 
       
     </Canvas>
@@ -30,7 +30,7 @@
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=(Canvas.Left), StringFormat=left \= {0:N1}}"/>
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=(Canvas.Top), StringFormat=top \= {0:N1}}"/>
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=ActualWidth, StringFormat=thumbwidth \= {0:N1}}"/>
-          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyTemplateCanvas.ActualWidth, StringFormat=canwidth \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyCanvas.ActualWidth, StringFormat=canwidth \= {0:N1}}"/>
         </StackPanel>
       </GroupBox>
       <GroupBox Header="Bezier" Background="LightGreen">

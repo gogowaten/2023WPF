@@ -136,21 +136,90 @@ namespace _20230323_BezierSize2Thumb
         private void ShapeThumb_Loaded(object sender, RoutedEventArgs e)
         {
             MySetBindings();
-            //UpdateLayout();
-
-
+            UpdateLayout();//必須、これがないとGetDescendantBoundsがEmpty
+            //Fix0Point();
+            
+            if (MyBezier.MyExternalBounds.IsEmpty == false)
+            {                
+                FixBezierLocate();
+                //FixCanvasLocate00();
+            }
         }
         public void FixBezierLocate()
         {
+            if (MyBezier.MyExternalBounds.IsEmpty) return;
             var bounds = MyBezier.MyExternalBounds;
             Canvas.SetLeft(MyBezier, -bounds.Left);
             Canvas.SetTop(MyBezier, -bounds.Top);
+        }
+
+        /// <summary>
+        /// PointCollectionのRectを返す
+        /// </summary>
+        /// <param name="pt">PointCollection</param>
+        /// <returns></returns>
+        public static Rect GetPointsRect(PointCollection pt)
+        {
+            if (pt.Count == 0) return new Rect();
+            double minX = double.MaxValue;
+            double minY = double.MaxValue;
+            double maxX = double.MinValue;
+            double maxY = double.MinValue;
+            foreach (var item in pt)
+            {
+                if (minX > item.X) minX = item.X;
+                if (minY > item.Y) minY = item.Y;
+                if (maxX < item.X) maxX = item.X;
+                if (maxY < item.Y) maxY = item.Y;
+            }
+            return new Rect(minX, minY, maxX - minX, maxY - minY);
+        }
+
+
+        //Pointsの左上を0,0にするだけ
+        public void Fix0Point()
+        {
+            Rect r = MyAdorner.GetPointsRect(MyPoints);
+            for (int i = 0; i < MyPoints.Count; i++)
+            {
+                Point pp = MyPoints[i];
+                MyPoints[i] = new Point(pp.X - r.Left, pp.Y - r.Top);
+            }
+        }
+
+        //使う場面は
+        //頂点ThumbのDragDeltaイベントなどで図形が変化しているとき
+        public void FixCanvasLocate00()
+        {
+            var bezExRect = MyBezier.MyExternalBounds;
+            if (bezExRect.IsEmpty) { return; }
+            //var canRect = VisualTreeHelper.GetDescendantBounds(this);
+
+            //自身Canvasの座標修正、
+            //新しい座標 = 自身の座標＋(図形の座標＋Rect座標)
+            var bezLocate = VisualTreeHelper.GetOffset(MyBezier);
+            var xDiff = bezLocate.X + bezExRect.Left;
+            var yDiff = bezLocate.Y + bezExRect.Top;
+            var myLocate = VisualTreeHelper.GetOffset(this);
+            Canvas.SetLeft(this, myLocate.X + xDiff);
+            Canvas.SetTop(this, myLocate.Y + yDiff);
+
+            //図形の座標修正、
+            //新しい座標 = 図形の座標 - (図形の座標＋Rect座標) + PointsのRect座標
+            var ptsRect = GetPointsRect(MyPoints);
+            Canvas.SetLeft(MyBezier, bezLocate.X - xDiff + ptsRect.X);
+            Canvas.SetTop(MyBezier, bezLocate.Y - yDiff + ptsRect.Y);
+
+            //PointsのRect座標を0,0に修正
+            Fix0Point();
+            //頂点Thumbの座標修正、Pointsに合わせる
+            MyBezier.MyAdorner?.FixThumbsLocate();
         }
         protected override Size MeasureOverride(Size constraint)
         {
             if (MyBezier.MyIsEditing)
             {
-                FixBezierLocate();
+                FixCanvasLocate00();
             }
             return base.MeasureOverride(constraint);
         }
