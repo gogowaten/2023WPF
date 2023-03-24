@@ -12,14 +12,30 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      <!--<Rectangle Width="241" Height="140" Fill="MediumAquamarine" Canvas.Left="81" Canvas.Top="10"/>
-      <Rectangle Width="200" Height="150" Fill="Blue" Opacity="0.5" Canvas.Left="81" Canvas.Top="10"/>
-      <Rectangle Width="241" Height="140" Fill="Gray" Opacity="0.5" Canvas.Left="0" Canvas.Top="0"/>
-      <Rectangle Width="160" Height="130" Fill="Orange" Canvas.Left="81" Canvas.Top="10"/>-->
 
-      <local:BeCanvas x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50 200,100 200,150 0,100" Background="Pink"
-                      Canvas.Left="100" Canvas.Top="50" MyShapeType="Bezier"/>
-
+      <!--<local:BeCanvas x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50" Background="Pink"
+                      Canvas.Left="100" Canvas.Top="50" MyShapeType="Line" MyIsEditing="True"
+                      MyShapeAngle="{Binding ElementName=MySliderAngle, Path=Value}"/>-->
+      <!--<local:BeCanvas x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50 200,100 200,150 0,100" Background="Pink"
+                      Canvas.Left="100" Canvas.Top="50" MyShapeType="Bezier"/>-->
+      <!--<Path x:Name="MyBezier0" Stroke="Red" StrokeThickness="100" Canvas.Left="100" Canvas.Top="100"
+            RenderTransformOrigin="0.5,0.5">
+        <Path.Data>
+          <LineGeometry StartPoint="0,0" EndPoint="100,0"/>
+        </Path.Data>
+        <Path.RenderTransform>
+          <RotateTransform Angle="{Binding ElementName=MySliderAngle, Path=Value}"/>
+        </Path.RenderTransform>
+      </Path>-->
+      <Rectangle x:Name="MyBezier0" Width="100" Height="100" RenderTransformOrigin="0.5,0.5" Fill="Crimson"
+                 Canvas.Left="90" Canvas.Top="90">
+        <Rectangle.RenderTransform>
+          <TransformGroup>
+            <RotateTransform Angle="{Binding ElementName=MySliderAngle, Path=Value}"/>
+            <ScaleTransform/>
+          </TransformGroup>
+        </Rectangle.RenderTransform>
+      </Rectangle>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>
@@ -33,6 +49,8 @@
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=MyIsEditing, StringFormat=IsEditing {0}}"/>
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=(Canvas.Left), StringFormat=left \= {0:N1}}"/>
           <TextBlock Text="{Binding ElementName=MyBezier0, Path=(Canvas.Top), StringFormat=top \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=ActualWidth, StringFormat=width \= {0:N1}}"/>
+          <TextBlock Text="{Binding ElementName=MyBezier0, Path=ActualHeight, StringFormat=height \= {0:N1}}"/>
         </StackPanel>
       </GroupBox>
       <GroupBox Header="Bezier">
@@ -47,6 +65,8 @@
       <Button Content="編集状態切り替え" Click="Button_Click_4"/>
       <Button Content="Fix0Point2" Click="Button_Click_7"/>
       <Button Content="図形タイプ切り替え" Click="Button_Click_2"/>
+      <Slider x:Name="MySliderAngle" Value="0" Minimum="-180" Maximum="180" SmallChange="1"/>
+      <Button Content="角度リセット" Click="Button_Click_3"/>
     </StackPanel>
   </Grid>
 </Window>

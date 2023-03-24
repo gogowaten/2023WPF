@@ -138,7 +138,7 @@ namespace _20230324
                         default:
                             break;
                     }
-                    
+
                 }
                 geometry.Freeze();
                 return geometry;
@@ -153,12 +153,7 @@ namespace _20230324
         {
             SizeChanged += Bezier_SizeChanged;
             Loaded += Bezier_Loaded;
-
-            ////表示位置のオフセット、見た目のサイズの0,0で表示する、けど
-            ////自身で行うより、表示する親パネルで行った方がいいかも？
-            //SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(MyExternalBoundsProperty), Converter = new MyConverterRectLeft() });
-            //SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(MyExternalBoundsProperty), Converter = new MyConverterRectTop() });
-
+            RenderTransformOrigin = new Point(0.5, 0.5);
         }
 
         private void Bezier_Loaded(object sender, RoutedEventArgs e)
@@ -172,7 +167,16 @@ namespace _20230324
         {
             var bounds = VisualTreeHelper.GetDescendantBounds(this);
             if (bounds.IsEmpty) return;
-            MyExternalBounds = bounds;
+            var rr = RenderTransform.TransformBounds(bounds);
+            Pen pen = new(Stroke, StrokeThickness);
+            var neko = this.DefiningGeometry.GetWidenedPathGeometry(pen).Bounds;
+            var wneko = this.RenderedGeometry.GetWidenedPathGeometry(pen).Bounds;
+            var nekot = RenderTransform.TransformBounds(neko);
+            var gw = DefiningGeometry.Clone().GetWidenedPathGeometry(pen);
+            var rt = RenderTransform.Clone();
+            gw.Transform = RenderTransform;
+            var gwre = gw.Bounds;
+            MyExternalBounds = rr;
         }
 
         //見た目Rectの更新はSizeChangedで必須と

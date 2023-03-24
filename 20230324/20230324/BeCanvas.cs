@@ -8,7 +8,7 @@ namespace _20230324
 {
     public class BeCanvas : Canvas
     {
-
+        #region 依存関係プロパティ
         public PointCollection MyPoints
         {
             get { return (PointCollection)GetValue(MyPointsProperty); }
@@ -46,6 +46,22 @@ namespace _20230324
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public double MyShapeAngle
+        {
+            get { return (double)GetValue(MyShapeAngleProperty); }
+            set { SetValue(MyShapeAngleProperty, value); }
+        }
+        public static readonly DependencyProperty MyShapeAngleProperty =
+            DependencyProperty.Register(nameof(MyShapeAngle), typeof(double), typeof(BeCanvas),
+                new FrameworkPropertyMetadata(0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        #endregion 依存関係プロパティ
+
 
 
         public Bezier MyBezier { get; set; }
@@ -127,114 +143,6 @@ namespace _20230324
             Canvas.SetTop(MyBezier, -bounds.Top);
         }
 
-        //未使用
-        //頂点移動中にオフセット処理していない場合の修正オフセット
-        public void FixCanvasLocate2()
-        {
-            //CanvasとBezierのオフセット
-            var adoRect = VisualTreeHelper.GetDescendantBounds(MyBezier.MyAdorner);
-            var bezRect = VisualTreeHelper.GetDescendantBounds(MyBezier);
-            var canRect = VisualTreeHelper.GetDescendantBounds(this);
-            var adoOffset = VisualTreeHelper.GetOffset(MyBezier.MyAdorner);
-            var bezOffset = VisualTreeHelper.GetOffset(MyBezier);
-            var canOffset = VisualTreeHelper.GetOffset(this);
-            //var bezExRect = MyBezier.MyExternalBounds;
-            var ptRect = MyAdorner.GetPointsRect(MyPoints);
-
-            //Bezierのオフセット、PointsのRectの座標が0,0以外ならオフセットが必要
-            if (ptRect.X != 0)
-            {
-                SetLeft(MyBezier, ptRect.X - canRect.X + bezOffset.X);
-                Fix0Point();
-                MyBezier.MyAdorner?.FixThumbsLocate();
-            }
-            if (ptRect.Y != 0)
-            {
-                SetTop(MyBezier, ptRect.Y - canRect.Y + bezOffset.Y);
-                Fix0Point();
-                MyBezier.MyAdorner?.FixThumbsLocate();
-            }
-
-            //Canvasのオフセット
-            if (canRect.X < 0)
-            {
-                SetLeft(this, canOffset.X + canRect.X);
-            }
-            if (canRect.Y < 0)
-            {
-                SetTop(this, canOffset.Y + canRect.Y);
-            }
-
-        }
-
-        //リアルタイム、突き出たときの処理がおかしい
-        public void FixCanvasLocate3()
-        {
-            //CanvasとBezierのオフセット
-            var adoRect = VisualTreeHelper.GetDescendantBounds(MyBezier.MyAdorner);
-            var adoOffset = VisualTreeHelper.GetOffset(MyBezier.MyAdorner);
-            var bezRect = VisualTreeHelper.GetDescendantBounds(MyBezier);
-            var bezOffset = VisualTreeHelper.GetOffset(MyBezier);
-            var canRect = VisualTreeHelper.GetDescendantBounds(this);
-            var canOffset = VisualTreeHelper.GetOffset(this);
-            //var bezExRect = MyBezier.MyExternalBounds;
-            var ptRect = MyAdorner.GetPointsRect(MyPoints);
-            var xDiff = bezOffset.X + bezRect.X;
-            var yDiff = bezOffset.Y + bezRect.Y;
-            if (xDiff != 0)
-            {
-                var neko = 0;
-            }
-            //var x = canOffset.X + canRect.X; SetLeft(this, x);
-            //var y = canOffset.Y + canRect.Y; SetTop(this, y);
-
-            //Bezierのオフセット、PointsのRectの座標が0,0以外ならオフセットが必要
-            //var xx = ptRect.X + bezOffset.X - canRect.X;
-            //SetLeft(MyBezier, xx); Fix0Point(); MyBezier.MyAdorner?.FixThumbsLocate();
-            //var yy = ptRect.Y + bezOffset.Y - canRect.Y;
-            //SetTop(MyBezier, yy);Fix0Point();MyBezier.MyAdorner?.FixThumbsLocate();
-
-            var x = canOffset.X + xDiff; SetLeft(this, x);
-            var y = canOffset.Y + yDiff; SetTop(this, y);
-            var xx = ptRect.X + bezOffset.X - canRect.X - xDiff;
-            var xxx = bezOffset.X - xDiff;
-            SetLeft(MyBezier, xx); Fix0Point(); MyBezier.MyAdorner?.FixThumbsLocate();
-            var yy = ptRect.Y + bezOffset.Y - canRect.Y - yDiff;
-            var yyy = bezOffset.Y - yDiff;
-            SetTop(MyBezier, yy); Fix0Point(); MyBezier.MyAdorner?.FixThumbsLocate();
-
-
-        }
-
-        //リアルタイム、Canvas座標のプラス方向の処理ができていない
-        //それ以外はできているので、あと少し？
-        public void FixCanvasLocate01()
-        {
-            var bezExRect = MyBezier.MyExternalBounds;
-            if (bezExRect.IsEmpty) { return; }
-            var canOffset = VisualTreeHelper.GetOffset(this);
-            var canRect = VisualTreeHelper.GetDescendantBounds(this);
-            var bezOffset = VisualTreeHelper.GetOffset(MyBezier);
-            var bezRect = VisualTreeHelper.GetDescendantBounds(MyBezier);
-            var ptsRect = MyAdorner.GetPointsRect(MyPoints);
-
-            var xDiff = bezOffset.X + bezExRect.Left;
-            var yDiff = bezOffset.Y + bezExRect.Top;
-            var x = bezOffset.X - xDiff;
-            var xx = bezOffset.X + ptsRect.X - canRect.X;
-
-            SetLeft(MyBezier, xx);
-            SetTop(MyBezier, bezOffset.Y - yDiff);
-            Fix0Point();
-            MyBezier.MyAdorner?.FixThumbsLocate();
-
-
-            var myLocate = VisualTreeHelper.GetOffset(this);
-            SetLeft(this, myLocate.X + xDiff);
-            SetTop(this, myLocate.Y + yDiff);
-
-        }
-
         //CanvasとBezierのオフセットはできているけど、PointsのFix0ができていない
         public void FixCanvasLocate0()
         {
@@ -299,6 +207,7 @@ namespace _20230324
         {
             MyBezier.SetBinding(Bezier.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
             MyBezier.SetBinding(Bezier.MyTypeProperty, new Binding() { Source = this, Path = new PropertyPath(MyShapeTypeProperty) });
+            MyBezier.SetBinding(RenderTransformProperty, new Binding() { Source = this, Path = new PropertyPath(MyShapeAngleProperty), Converter = new MyConverterRotateTransform() });
 
             SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
             SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });

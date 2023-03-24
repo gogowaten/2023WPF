@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,7 @@ namespace _20230324
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var rendersize = MyBezier0.RenderSize;//160 130
-            var actWidth = MyBezier0.MyBezier.ActualWidth;
+            //var actWidth = MyBezier0.MyBezier.ActualWidth;
             var offset = VisualTreeHelper.GetOffset(MyBezier0);
 
             var drawRect = VisualTreeHelper.GetDrawing(MyBezier0)?.Bounds;//-81 -10 241 140
@@ -43,43 +44,65 @@ namespace _20230324
             RenderTargetBitmap bitmap = new((int)rendersize.Width, (int)rendersize.Height, 96, 96, PixelFormats.Pbgra32);
             //bitmap.Render(dv);
             bitmap.Render(MyBezier0);
+            var rt = MyBezier0.RenderTransform.Clone();
+            var topleft = rt.Transform(new());
+            var bottomleft = rt.Transform(new(0, 100));
 
+            Matrix mtx = new();
+            if(MyBezier0.RenderTransform is TransformGroup group)
+            {
+                foreach (var item in group.Children)
+                {
+                    mtx.Append(item.Value);
+                }
+            }
+
+            Matrix trv = rt.Value;
+            trv.RotateAt(1, 50, 50);            
+            var tt= trv.Transform(new Point());
+            var ttt= trv.Transform(new Point(0,100));
+            var tttt= trv.Transform(new Point(50,50));
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MyBezier0.MyPoints[4] = new Point(100, 100);
-            MyBezier0.MyBezier.MyAdorner?.FixThumbsLocate();
+            //MyBezier0.MyPoints[4] = new Point(100, 100);
+            //MyBezier0.MyBezier.MyAdorner?.FixThumbsLocate();
 
-            var offset = VisualTreeHelper.GetOffset(MyBezier0);
-            var rendersize = MyBezier0.RenderSize;
-            var renderbezier = MyBezier0.MyBezier.RenderSize;
-            var candes = VisualTreeHelper.GetDescendantBounds(MyBezier0);
-            var bedes = VisualTreeHelper.GetDescendantBounds(MyBezier0.MyBezier);
-            MyBezier0.UpdateLayout();
+            //var offset = VisualTreeHelper.GetOffset(MyBezier0);
+            //var rendersize = MyBezier0.RenderSize;
+            //var renderbezier = MyBezier0.MyBezier.RenderSize;
+            //var candes = VisualTreeHelper.GetDescendantBounds(MyBezier0);
+            //var bedes = VisualTreeHelper.GetDescendantBounds(MyBezier0.MyBezier);
+            //MyBezier0.UpdateLayout();
         }
 
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            MyBezier0.MyIsEditing = !MyBezier0.MyIsEditing;
+            //MyBezier0.MyIsEditing = !MyBezier0.MyIsEditing;
         }
 
 
 
         private void Button_Click_7(object sender, RoutedEventArgs e)
         {
-            MyBezier0.Fix0Point2();
-            MyBezier0.MyBezier.MyAdorner?.FixThumbsLocate();
+            //MyBezier0.Fix0Point2();
+            //MyBezier0.MyBezier.MyAdorner?.FixThumbsLocate();
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (MyBezier0.MyShapeType == ShapeType.Line)
-            {
-                MyBezier0.MyShapeType = ShapeType.Bezier;
-            }
-            else MyBezier0.MyShapeType = ShapeType.Line;
+            //if (MyBezier0.MyShapeType == ShapeType.Line)
+            //{
+            //    MyBezier0.MyShapeType = ShapeType.Bezier;
+            //}
+            //else MyBezier0.MyShapeType = ShapeType.Line;
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            //MyBezier0.MyShapeAngle = 0.0;
         }
     }
 }
