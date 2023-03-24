@@ -14,6 +14,7 @@
     <Canvas x:Name="MyCanvas">
 
       <local:ShapeThumb x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50 200,100 200,150 0,100" Background="Pink"
+                        DragDelta="MyBezier0_DragDelta"
                       Canvas.Left="100" Canvas.Top="50" MyIsEditing="False"/>
 
       
