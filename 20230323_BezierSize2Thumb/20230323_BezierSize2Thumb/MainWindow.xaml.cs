@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 //2023WPF/20230323_BezierSize at main · gogowaten/2023WPF
 //https://github.com/gogowaten/2023WPF/tree/main/20230323_BezierSize
 //より、図形座標修正
