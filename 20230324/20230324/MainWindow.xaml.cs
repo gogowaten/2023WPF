@@ -28,6 +28,7 @@ namespace _20230324
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            //MyBezier0.SetBounds();
             var rendersize = MyBezier0.RenderSize;//160 130
             //var actWidth = MyBezier0.MyBezier.ActualWidth;
             var offset = VisualTreeHelper.GetOffset(MyBezier0);
@@ -105,4 +106,5 @@ namespace _20230324
             //MyBezier0.MyShapeAngle = 0.0;
         }
     }
+    
 }

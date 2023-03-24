@@ -13,29 +13,14 @@
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
 
-      <!--<local:BeCanvas x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50" Background="Pink"
-                      Canvas.Left="100" Canvas.Top="50" MyShapeType="Line" MyIsEditing="True"
-                      MyShapeAngle="{Binding ElementName=MySliderAngle, Path=Value}"/>-->
-      <!--<local:BeCanvas x:Name="MyBezier0" MyPoints="50,0 100,0 200,50 0,50 200,100 200,150 0,100" Background="Pink"
-                      Canvas.Left="100" Canvas.Top="50" MyShapeType="Bezier"/>-->
-      <!--<Path x:Name="MyBezier0" Stroke="Red" StrokeThickness="100" Canvas.Left="100" Canvas.Top="100"
-            RenderTransformOrigin="0.5,0.5">
-        <Path.Data>
-          <LineGeometry StartPoint="0,0" EndPoint="100,0"/>
-        </Path.Data>
-        <Path.RenderTransform>
-          <RotateTransform Angle="{Binding ElementName=MySliderAngle, Path=Value}"/>
-        </Path.RenderTransform>
-      </Path>-->
-      <Rectangle x:Name="MyBezier0" Width="100" Height="100" RenderTransformOrigin="0.5,0.5" Fill="Crimson"
-                 Canvas.Left="90" Canvas.Top="90">
-        <Rectangle.RenderTransform>
+      <local:TTT x:Name="MyBezier0" Canvas.Left="100" Canvas.Top="100" RenderTransformOrigin="0.5,0.5">
+        <local:TTT.RenderTransform>
           <TransformGroup>
             <RotateTransform Angle="{Binding ElementName=MySliderAngle, Path=Value}"/>
-            <ScaleTransform/>
           </TransformGroup>
-        </Rectangle.RenderTransform>
-      </Rectangle>
+        </local:TTT.RenderTransform>
+      </local:TTT>
+      
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test" Click="Button_Click"/>
