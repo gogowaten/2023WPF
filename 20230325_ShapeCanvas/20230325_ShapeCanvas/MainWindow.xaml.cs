@@ -37,6 +37,8 @@ namespace _20230325_ShapeCanvas
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             MyGeo.MyIsEditing = !MyGeo.MyIsEditing;
+            if (MyGeo.MyIsEditing) { MyGeo.MyBoundsBorder.Visibility=Visibility.Visible; }
+            else { MyGeo.MyBoundsBorder.Visibility= Visibility.Collapsed; }
         }
     }
 }

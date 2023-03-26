@@ -176,12 +176,12 @@ namespace _20230325_ShapeCanvas
         }
 
         private void Bezier_Loaded(object sender, RoutedEventArgs e)
-        {            
-            SetMyBounds();
+        {
             AdornerLayer.GetAdornerLayer(this).Add(MyAdorner);
             SetBinding(MyAnchorVisibleProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty), Converter = new MyConverterBoolVisible() });
             MyAdorner.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorVisibleProperty) });
             MyAdorner.SetBinding(MyAdorner.MyAnchorThumbSizeProperty, new Binding() { Source = this,Path=new PropertyPath(Bezier.MyAnchorThumbSizeProperty) });
+            SetMyBounds();
         }
 
         public void SetMyBounds()
@@ -190,7 +190,7 @@ namespace _20230325_ShapeCanvas
             if (bounds.IsEmpty) return;
             MyExternalBounds = bounds;
 
-
+        
             Rect adEx = new(MyAdorner.MyVThumbsBounds.Size);
             Rect rr = Rect.Union(adEx, MyExternalBounds);
             if (rr.IsEmpty) return;

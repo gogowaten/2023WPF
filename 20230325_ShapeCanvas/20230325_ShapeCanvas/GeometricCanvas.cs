@@ -126,22 +126,22 @@ namespace _20230325_ShapeCanvas
         #endregion 依存関係プロパティと通知プロパティ
 
         public Bezier MyBezier { get; private set; }
-        public Border MyBorder { get; private set; }
+        public Border MyBoundsBorder { get; private set; }
 
         public GeometricCanvas()
         {
             MyBezier = new() { Stroke = Brushes.Crimson, StrokeThickness = 20.0, };
-            MyBorder = new() { BorderBrush = new SolidColorBrush(Color.FromArgb(150, 100, 100, 100)), BorderThickness = new Thickness(1.0) };
+            MyBoundsBorder = new() { BorderBrush = new SolidColorBrush(Color.FromArgb(150, 100, 100, 100)), BorderThickness = new Thickness(1.0) };
 
             Children.Add(MyBezier);
-            Children.Add(MyBorder);
+            Children.Add(MyBoundsBorder);
             Loaded += GeometricCanvas_Loaded;
         }
 
         private void GeometricCanvas_Loaded(object sender, RoutedEventArgs e)
         {
             SetMyBindings();
-            UpdateLayout();
+            UpdateLayout();//必須、ここで実行しないと次のがEmptyでFixが実行されないので表示位置がずれる
             if (MyBezier.MyExternalBounds.IsEmpty == false) { FixGeometricLocate(); };
         }
         private void FixGeometricLocate()
@@ -158,18 +158,16 @@ namespace _20230325_ShapeCanvas
             MyBezier.SetBinding(Bezier.MyIsEditingProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty) });
             MyBezier.SetBinding(Bezier.MyAnchorThumbSizeProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorThumbSizeProperty) });
 
-
-
             SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
             SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
-
-            MyBorder.SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExExternalBoundsProperty), Converter = new MyConverterRectWidth() });
-            MyBorder.SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExExternalBoundsProperty), Converter = new MyConverterRectHeight() });
-            MyBorder.SetBinding(Canvas.LeftProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExExternalBoundsProperty), Converter = new MyConverterRectX() });
-            MyBorder.SetBinding(Canvas.TopProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExExternalBoundsProperty), Converter = new MyConverterRectY() });
+            
+            MyBoundsBorder.SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExExternalBoundsProperty), Converter = new MyConverterRectWidth() });
+            MyBoundsBorder.SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExExternalBoundsProperty), Converter = new MyConverterRectHeight() });
+            MyBoundsBorder.SetBinding(Canvas.LeftProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExExternalBoundsProperty), Converter = new MyConverterRectX() });
+            MyBoundsBorder.SetBinding(Canvas.TopProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExExternalBoundsProperty), Converter = new MyConverterRectY() });
+          
 
         }
-
 
         /// <summary>
         /// PointCollectionのRectを返す

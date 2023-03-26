@@ -76,13 +76,25 @@ namespace _20230325_ShapeCanvas
             MyTargetBezier = adornedElement;
             MyVisuals = new VisualCollection(this) { MyCanvas };
             Loaded += MyAdorner_Loaded;
-
+            SizeChanged += MyAdorner_SizeChanged;
         }
+
 
         private void MyAdorner_Loaded(object sender, RoutedEventArgs e)
         {
             SetBinding(MyPointsProperty, new Binding() { Source = MyTargetBezier, Path = new PropertyPath(Bezier.MyPointsProperty) });
 
+            UpdateLayout();//Loadedで実行するとデザイナー画面で頂点ThumbRectが反映されるけど、アプリ起動直後にはそうなっていない、なんで？
+            AddAnchorThumbs();
+
+            var myrect = GetPointsRect(MyPoints);
+            var rr = new Rect(myrect.X, myrect.Y, myrect.Size.Width + MyAnchorThumbSize, myrect.Height + MyAnchorThumbSize);
+            MyCanvas.Arrange(rr);
+            MyVThumbsBounds = rr;
+
+        }
+        private void AddAnchorThumbs()
+        {
             for (int i = 0; i < MyPoints.Count; i++)
             {
                 Thumb thumb = new()
@@ -100,12 +112,6 @@ namespace _20230325_ShapeCanvas
                 Canvas.SetTop(thumb, MyPoints[i].Y);
                 thumb.DragDelta += Thumb_DragDelta;
             }
-            var myrect = GetPointsRect(MyPoints);
-            var rr = new Rect(myrect.X, myrect.Y, myrect.Size.Width + MyAnchorThumbSize, myrect.Height + MyAnchorThumbSize);
-
-
-            MyCanvas.Arrange(rr);
-            MyVThumbsBounds = rr;
         }
 
         //頂点ThumbとPointsのズレを修正
@@ -117,14 +123,22 @@ namespace _20230325_ShapeCanvas
                 Canvas.SetLeft(MyThumbList[i], pp.X);
                 Canvas.SetTop(MyThumbList[i], pp.Y);
             }
-            //var r = GetPointsRect(MyPoints);
-            //MyCanvas.Arrange(r);
+
         }
+        //起動時1回発生、デザイナー画面で頂点ThumbのRectが更新されない
+        //ArrangeOverrideとMeasureOverrideは更新される
+        private void MyAdorner_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //UpDateCanvasAndAnchorThumbsBounds();
+        }
+
+        //起動時3回発生する
         //protected override Size ArrangeOverride(Size finalSize)
         //{
         //    UpDateCanvasAndAnchorThumbsBounds();
         //    return base.ArrangeOverride(finalSize);
         //}
+        //起動時2回発生、ArrangeOverrideと結果に変化なしなので、効率がいい？
         protected override Size MeasureOverride(Size constraint)
         {
             UpDateCanvasAndAnchorThumbsBounds();
@@ -133,11 +147,6 @@ namespace _20230325_ShapeCanvas
         private void UpDateCanvasAndAnchorThumbsBounds()
         {
             //CanvasのサイズをArrange()で指定する、サイズは頂点Thumbが収まるサイズ
-
-            //サイズ取得はGetDescendantBounds(MyCanvas)できそうだけど
-            //Canvas自身のサイズも含めてしまうようで、これだと
-            //ThumbがCanvasより内側になったときに不都合なので
-            //GetPointsRect()のサイズにThumb要素のサイズを足したものにしている
             Rect ptsRect = GetPointsRect(MyPoints);
             //座標もここで指定できそうなんだけど、なぜか指定値の半分になるのでここではしていない
             var r = new Rect(new Size(ptsRect.Size.Width + MyAnchorThumbSize, ptsRect.Size.Height + MyAnchorThumbSize));
