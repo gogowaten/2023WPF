@@ -101,21 +101,32 @@ namespace _20230325_ShapeCanvas
             private set { SetValue(MyExternalBoundsPropertyKey, value); }
         }
 
-        /// <summary>
-        /// 見た目上のRect、図形とAdornerのThumbsが収まるRect
-        /// </summary>
-        private static readonly DependencyPropertyKey MyExExternalBoundsPropertyKey =
-            DependencyProperty.RegisterReadOnly(nameof(MyExExternalBounds), typeof(Rect), typeof(Bezier),
+        ///// <summary>
+        ///// 見た目上のRect、図形とAdornerのThumbsが収まるRect
+        ///// </summary>
+        //private static readonly DependencyPropertyKey MyAllBoundsPropertyKey =
+        //    DependencyProperty.RegisterReadOnly(nameof(MyAllBounds), typeof(Rect), typeof(Bezier),
+        //        new FrameworkPropertyMetadata(Rect.Empty,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure));
+        //public static readonly DependencyProperty MyAllBoundsProperty =
+        //    MyAllBoundsPropertyKey.DependencyProperty;
+        //public Rect MyAllBounds
+        //{
+        //    get { return (Rect)GetValue(MyAllBoundsProperty); }
+        //    private set { SetValue(MyAllBoundsPropertyKey, value); }
+        //}
+
+        public Rect MyAllBounds
+        {
+            get { return (Rect)GetValue(MyAllBoundsProperty); }
+            set { SetValue(MyAllBoundsProperty, value); }
+        }
+        public static readonly DependencyProperty MyAllBoundsProperty =
+            DependencyProperty.Register(nameof(MyAllBounds), typeof(Rect), typeof(Bezier),
                 new FrameworkPropertyMetadata(Rect.Empty,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure));
-        public static readonly DependencyProperty MyExExternalBoundsProperty =
-            MyExExternalBoundsPropertyKey.DependencyProperty;
-        public Rect MyExExternalBounds
-        {
-            get { return (Rect)GetValue(MyExExternalBoundsProperty); }
-            private set { SetValue(MyExExternalBoundsPropertyKey, value); }
-        }
 
 
         public bool MyIsEditing
@@ -131,17 +142,17 @@ namespace _20230325_ShapeCanvas
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
-        public double MyAnchorThumbSize
-        {
-            get { return (double)GetValue(MyAnchorThumbSizeProperty); }
-            set { SetValue(MyAnchorThumbSizeProperty, value); }
-        }
-        public static readonly DependencyProperty MyAnchorThumbSizeProperty =
-            DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(Bezier),
-                new FrameworkPropertyMetadata(20.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        //public double MyAnchorThumbSize
+        //{
+        //    get { return (double)GetValue(MyAnchorThumbSizeProperty); }
+        //    set { SetValue(MyAnchorThumbSizeProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyAnchorThumbSizeProperty =
+        //    DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(Bezier),
+        //        new FrameworkPropertyMetadata(20.0,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
 
@@ -180,7 +191,14 @@ namespace _20230325_ShapeCanvas
             AdornerLayer.GetAdornerLayer(this).Add(MyAdorner);
             SetBinding(MyAnchorVisibleProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty), Converter = new MyConverterBoolVisible() });
             MyAdorner.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorVisibleProperty) });
-            MyAdorner.SetBinding(MyAdorner.MyAnchorThumbSizeProperty, new Binding() { Source = this,Path=new PropertyPath(Bezier.MyAnchorThumbSizeProperty) });
+            //MyAdorner.SetBinding(MyAdorner.MyAnchorThumbSizeProperty, new Binding() { Source = this,Path=new PropertyPath(Bezier.MyAnchorThumbSizeProperty) });
+            MultiBinding mb = new();
+            Binding b0 = new() { Source=MyAdorner,Path=new PropertyPath(MyAdorner.MyVThumbsBoundsProperty) };
+            Binding b1 = new() { Source=this,Path=new PropertyPath(MyExternalBoundsProperty) };
+            mb.Bindings.Add(b0); mb.Bindings.Add(b1);
+            mb.Converter = new MyConverterRectRect();
+            SetBinding(MyAllBoundsProperty, mb);
+
             SetMyBounds();
         }
 
@@ -195,7 +213,7 @@ namespace _20230325_ShapeCanvas
             Rect rr = Rect.Union(adEx, MyExternalBounds);
             if (rr.IsEmpty) return;
             rr.Offset(-MyExternalBounds.X, -MyExternalBounds.Y);
-            MyExExternalBounds = rr;
+            //MyAllBounds = rr;
 
         }
 

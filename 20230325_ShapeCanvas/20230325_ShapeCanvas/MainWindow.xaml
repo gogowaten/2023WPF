@@ -21,11 +21,13 @@
     <StackPanel Grid.Column="1">
       <Button Content="切り替え" Click="Button_Click"/>
       <TextBlock Text="{Binding ElementName=MyGeo, Path=(Canvas.Left),StringFormat=0.00 \= left}"/>
+      <TextBlock Text="{Binding ElementName=MyGeo, Path=(Canvas.Top),StringFormat=0.00 \= top}"/>
       <TextBlock Text="{Binding ElementName=MyGeo, Path=ActualWidth,StringFormat=0.00 \= W}"/>
       <TextBlock Text="{Binding ElementName=MyGeo, Path=MyBezier.(Canvas.Left),StringFormat=0.00 \= ShapeLeft}"/>
       <TextBlock Text="{Binding ElementName=MyGeo, Path=MyBezier.ActualWidth,StringFormat=0.00 \= ShapeW}"/>
       <TextBlock Text="{Binding ElementName=MyGeo, Path=MyBezier.MyAdorner.ActualWidth,StringFormat= 0.00 \= adW}"/>
       <TextBlock Text="{Binding ElementName=MyGeo, Path=MyBezier.MyAdorner.MyCanvas.ActualWidth,StringFormat=0.00 \= adCanW}"/>
+      <Button Content="check" Click="Button_Click_1"/>
     </StackPanel>
   </Grid>
 </Window>

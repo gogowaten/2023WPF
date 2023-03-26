@@ -85,5 +85,19 @@ namespace _20230325_ShapeCanvas
         }
     }
 
+    public class MyConverterRectRect : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            Rect r1 = (Rect)values[0];
+            Rect r2 = (Rect)values[1];
+            Rect result=Rect.Union(r1, r2);
+            return result;
+        }
 
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
