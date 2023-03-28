@@ -209,10 +209,10 @@ namespace _20230325_ShapeCanvas
             MyExternalBounds = bounds;
 
         
-            Rect adEx = new(MyAdorner.MyVThumbsBounds.Size);
-            Rect rr = Rect.Union(adEx, MyExternalBounds);
-            if (rr.IsEmpty) return;
-            rr.Offset(-MyExternalBounds.X, -MyExternalBounds.Y);
+            //Rect adEx = new(MyAdorner.MyVThumbsBounds.Size);
+            //Rect rr = Rect.Union(adEx, MyExternalBounds);
+            //if (rr.IsEmpty) return;
+            //rr.Offset(-MyExternalBounds.X, -MyExternalBounds.Y);
             //MyAllBounds = rr;
 
         }

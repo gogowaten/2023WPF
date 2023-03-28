@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
+using System.Runtime.InteropServices;
 
 namespace _20230325_ShapeCanvas
 {
@@ -126,15 +127,13 @@ namespace _20230325_ShapeCanvas
         #endregion 依存関係プロパティと通知プロパティ
 
         public Bezier MyBezier { get; private set; }
-        //public Border MyBoundsBorder { get; private set; }
-
+        public double MotoX { get; private set; }
+        public double MotoY { get; private set; }
         public GeometricCanvas()
         {
             MyBezier = new() { Stroke = Brushes.Crimson, StrokeThickness = 20.0, };
-            //MyBoundsBorder = new() { BorderBrush = new SolidColorBrush(Color.FromArgb(150, 100, 100, 100)), BorderThickness = new Thickness(1.0) };
 
             Children.Add(MyBezier);
-            //Children.Add(MyBoundsBorder);
             Loaded += GeometricCanvas_Loaded;
         }
 
@@ -178,11 +177,17 @@ namespace _20230325_ShapeCanvas
                 var all = MyBezier.MyAllBounds;
                 var ex = MyBezier.MyExternalBounds;
                 var offset = VisualTreeHelper.GetOffset(this);
+                MotoX = offset.X;
+                MotoY = offset.Y;
                 var xx = offset.X - ex.X + all.X;
+                var xxx = ex.X < 0 ? offset.X : offset.X - ex.X;
                 Canvas.SetLeft(this, xx);
                 var yy = offset.Y - ex.Y + all.Y;
+                var yyy = ex.Y < 0 ? offset.Y : offset.Y - ex.Y;
                 Canvas.SetTop(this, yy);
 
+                var bx = ex.X < 0 ? 0 : -ex.Y;
+                var by = ex.Y < 0 ? 0 : -ex.Y;
                 Canvas.SetLeft(MyBezier, -all.X);
                 Canvas.SetTop(MyBezier, -all.Y);
             }
@@ -198,40 +203,6 @@ namespace _20230325_ShapeCanvas
                 //var xx = offset.X + ex;
                 //Canvas.SetLeft(this, xx);
                 //Canvas.SetTop(this, offset.Y + MyBezier.MyExternalBounds.Y);
-            }
-        }
-
-        /// <summary>
-        /// PointCollectionのRectを返す
-        /// </summary>
-        /// <param name="pt">PointCollection</param>
-        /// <returns></returns>
-        public static Rect GetPointsRect(PointCollection pt)
-        {
-            if (pt.Count == 0) return new Rect();
-            double minX = double.MaxValue;
-            double minY = double.MaxValue;
-            double maxX = double.MinValue;
-            double maxY = double.MinValue;
-            foreach (var item in pt)
-            {
-                if (minX > item.X) minX = item.X;
-                if (minY > item.Y) minY = item.Y;
-                if (maxX < item.X) maxX = item.X;
-                if (maxY < item.Y) maxY = item.Y;
-            }
-            return new Rect(minX, minY, maxX - minX, maxY - minY);
-        }
-
-
-        //Pointsの左上を0,0にするだけ
-        public void Fix0Point()
-        {
-            Rect r = MyAdorner.GetPointsRect(MyPoints);
-            for (int i = 0; i < MyPoints.Count; i++)
-            {
-                Point pp = MyPoints[i];
-                MyPoints[i] = new Point(pp.X - r.Left, pp.Y - r.Top);
             }
         }
 
@@ -273,26 +244,36 @@ namespace _20230325_ShapeCanvas
             var bezLocate = VisualTreeHelper.GetOffset(MyBezier);
             var xDiff = bezLocate.X + bezExRect.Left;
             var yDiff = bezLocate.Y + bezExRect.Top;
-            
+
             //var myLocate = VisualTreeHelper.GetOffset(this);
             var left = Canvas.GetLeft(this);//これとVisualTreeHelper.GetOffset(this);これは同じ値かと思っていたけど違う
             //GetLeftのほうが最新の値
             var ptsRect = GetPointsRect(MyPoints);
             var all = MyBezier.MyAllBounds;
-            var xdd = xDiff + all.X;
-            var ydd = yDiff + all.Y;
-            var tbounds = MyBezier.MyAdorner.MyVThumbsBounds;
-            var x = left + ptsRect.X;
-            var xx = ptsRect.X + xDiff;
-            var allbez = all.X - bezExRect.X;
-            Canvas.SetLeft(this, x);
             var top = Canvas.GetTop(this);
-            var y = top + ptsRect.Y;
-            Canvas.SetTop(this, y);
+            double yyyy;
+            if (all.Y != 0) { yyyy = top + ptsRect.Y + yDiff; }
+            else if (bezExRect.Y > 0) { yyyy = top + ptsRect.Y; }
+            else { yyyy = top; }
+            double xxxx;
+            if (all.X != 0) { xxxx = left + ptsRect.X + xDiff; }
+            else if (bezExRect.X > 0) { xxxx = left + ptsRect.X; }
+            else { xxxx = left; }
+
+            Canvas.SetLeft(this, xxxx);
+            Canvas.SetTop(this, yyyy);
+
             //図形の座標修正、
             //Canvas.SetLeft(MyBezier, bezLocate.X - xDiff + ptsRect.X);
             //Canvas.SetTop(MyBezier, bezLocate.Y - yDiff + ptsRect.Y);
+            var bx = bezExRect.X < 0 ? -bezExRect.X : 0;
+            var by = bezExRect.Y < 0 ? -bezExRect.Y : 0;
+            var bleft = Canvas.GetLeft(MyBezier);
+            var bTop = Canvas.GetTop(MyBezier);
 
+            Canvas.SetLeft(MyBezier, bx);
+            Canvas.SetTop(MyBezier, by);
+            
             //PointsのRect座標を0,0に修正
             Fix0Point();
             //頂点Thumbの座標修正、Pointsに合わせる
@@ -307,6 +288,41 @@ namespace _20230325_ShapeCanvas
                 //                FixCanvasLocate00();
             }
             return base.MeasureOverride(constraint);
+        }
+
+
+        /// <summary>
+        /// PointCollectionのRectを返す
+        /// </summary>
+        /// <param name="pt">PointCollection</param>
+        /// <returns></returns>
+        public static Rect GetPointsRect(PointCollection pt)
+        {
+            if (pt.Count == 0) return new Rect();
+            double minX = double.MaxValue;
+            double minY = double.MaxValue;
+            double maxX = double.MinValue;
+            double maxY = double.MinValue;
+            foreach (var item in pt)
+            {
+                if (minX > item.X) minX = item.X;
+                if (minY > item.Y) minY = item.Y;
+                if (maxX < item.X) maxX = item.X;
+                if (maxY < item.Y) maxY = item.Y;
+            }
+            return new Rect(minX, minY, maxX - minX, maxY - minY);
+        }
+
+
+        //Pointsの左上を0,0にするだけ
+        public void Fix0Point()
+        {
+            Rect r = MyAdorner.GetPointsRect(MyPoints);
+            for (int i = 0; i < MyPoints.Count; i++)
+            {
+                Point pp = MyPoints[i];
+                MyPoints[i] = new Point(pp.X - r.Left, pp.Y - r.Top);
+            }
         }
 
 

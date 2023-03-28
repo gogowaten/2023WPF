@@ -12,11 +12,12 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvs">
-      <Rectangle Width="100" Height="50" Fill="DodgerBlue"/>
+      <Rectangle Width="100" Height="50" Fill="Crimson"/>
 
-      <local:GeometricCanvas x:Name="MyGeo" Canvas.Left="100" Canvas.Top="50" Background="DodgerBlue" MyIsEditing="False"
-                             MyPoints="50,0 0,100 200,0 50,100" MyStroke="Gold" MyStrokeThickness="20"
-                             MyAnchorThumbSize="20"/>
+      <local:GeometricCanvas x:Name="MyGeo"
+                             Canvas.Left="100" Canvas.Top="50" Background="DodgerBlue"
+                             MyIsEditing="False" MyAnchorThumbSize="20"
+                             MyPoints="50,0 0,100 200,0 50,100" MyStroke="Gold" MyStrokeThickness="20"/>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="切り替え" Click="Button_Click"/>
