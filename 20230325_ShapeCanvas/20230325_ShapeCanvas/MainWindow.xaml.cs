@@ -13,7 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-//テスト完成形
+//テスト完成形を目指したけど今一歩で、Canvas図形の上の境界で頂点Thumbを上下に移動させるとCanvas図形が少しづつ上に移動してしまう
+//同じように左の境界で左右に移動で左に移動してしまう
+
 //切り替えボタンで頂点Thumbを表示して、編集状態になると
 //頂点ThumbとそのRect表示
 

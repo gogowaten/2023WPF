@@ -236,28 +236,29 @@ namespace _20230325_ShapeCanvas
         }
         public void FixCanvasLocate01()
         {
-            var bezExRect = MyBezier.MyExternalBounds;
-            if (bezExRect.IsEmpty) { return; }
-            //var canRect = VisualTreeHelper.GetDescendantBounds(this);
+            var bezEx = MyBezier.MyExternalBounds;
+            if (bezEx.IsEmpty) { return; }
+            var canRect = VisualTreeHelper.GetDescendantBounds(this);
 
             //自身Canvasの座標修正、
             var bezLocate = VisualTreeHelper.GetOffset(MyBezier);
-            var xDiff = bezLocate.X + bezExRect.Left;
-            var yDiff = bezLocate.Y + bezExRect.Top;
+            var xDiff = bezLocate.X + bezEx.Left;
+            var yDiff = bezLocate.Y + bezEx.Top;
 
             //var myLocate = VisualTreeHelper.GetOffset(this);
-            var left = Canvas.GetLeft(this);//これとVisualTreeHelper.GetOffset(this);これは同じ値かと思っていたけど違う
+            //これとVisualTreeHelper.GetOffset(this);これは同じ値かと思っていたけど違う
             //GetLeftのほうが最新の値
+            var left = Canvas.GetLeft(this);
+            var top = Canvas.GetTop(this);
             var ptsRect = GetPointsRect(MyPoints);
             var all = MyBezier.MyAllBounds;
-            var top = Canvas.GetTop(this);
             double yyyy;
             if (all.Y != 0) { yyyy = top + ptsRect.Y + yDiff; }
-            else if (bezExRect.Y > 0) { yyyy = top + ptsRect.Y; }
+            else if (bezEx.Y > 0) { yyyy = top + ptsRect.Y; }
             else { yyyy = top; }
             double xxxx;
             if (all.X != 0) { xxxx = left + ptsRect.X + xDiff; }
-            else if (bezExRect.X > 0) { xxxx = left + ptsRect.X; }
+            else if (bezEx.X > 0) { xxxx = left + ptsRect.X; }
             else { xxxx = left; }
 
             Canvas.SetLeft(this, xxxx);
@@ -266,8 +267,8 @@ namespace _20230325_ShapeCanvas
             //図形の座標修正、
             //Canvas.SetLeft(MyBezier, bezLocate.X - xDiff + ptsRect.X);
             //Canvas.SetTop(MyBezier, bezLocate.Y - yDiff + ptsRect.Y);
-            var bx = bezExRect.X < 0 ? -bezExRect.X : 0;
-            var by = bezExRect.Y < 0 ? -bezExRect.Y : 0;
+            var bx = bezEx.X < 0 ? -bezEx.X : 0;
+            var by = bezEx.Y < 0 ? -bezEx.Y : 0;
             var bleft = Canvas.GetLeft(MyBezier);
             var bTop = Canvas.GetTop(MyBezier);
 

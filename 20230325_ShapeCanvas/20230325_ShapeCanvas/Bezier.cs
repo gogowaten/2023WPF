@@ -208,13 +208,6 @@ namespace _20230325_ShapeCanvas
             if (bounds.IsEmpty) return;
             MyExternalBounds = bounds;
 
-        
-            //Rect adEx = new(MyAdorner.MyVThumbsBounds.Size);
-            //Rect rr = Rect.Union(adEx, MyExternalBounds);
-            //if (rr.IsEmpty) return;
-            //rr.Offset(-MyExternalBounds.X, -MyExternalBounds.Y);
-            //MyAllBounds = rr;
-
         }
 
         //見た目Rectの更新はSizeChangedで必須と
