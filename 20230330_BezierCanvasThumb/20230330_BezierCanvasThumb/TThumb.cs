@@ -1,13 +1,17 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Media;
 
-
-namespace _20230330_BezierCanvas
+namespace _20230330_BezierCanvasThumb
 {
-    public class GeometricCanvas : Canvas
+    class TThumb : Thumb
     {
         #region 依存関係プロパティと通知プロパティ
 
@@ -17,7 +21,7 @@ namespace _20230330_BezierCanvas
             set { SetValue(MyPointsProperty, value); }
         }
         public static readonly DependencyProperty MyPointsProperty =
-            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(GeometricCanvas),
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TThumb),
                 new FrameworkPropertyMetadata(new PointCollection(),
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -32,7 +36,7 @@ namespace _20230330_BezierCanvas
             set { SetValue(MyAnchorVisibleProperty, value); }
         }
         public static readonly DependencyProperty MyAnchorVisibleProperty =
-            DependencyProperty.Register(nameof(MyAnchorVisible), typeof(Visibility), typeof(GeometricCanvas),
+            DependencyProperty.Register(nameof(MyAnchorVisible), typeof(Visibility), typeof(TThumb),
                 new FrameworkPropertyMetadata(Visibility.Visible,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -47,7 +51,7 @@ namespace _20230330_BezierCanvas
             set { SetValue(MyLineSmoothJoinProperty, value); }
         }
         public static readonly DependencyProperty MyLineSmoothJoinProperty =
-            DependencyProperty.Register(nameof(MyLineSmoothJoin), typeof(bool), typeof(GeometricCanvas),
+            DependencyProperty.Register(nameof(MyLineSmoothJoin), typeof(bool), typeof(TThumb),
                 new FrameworkPropertyMetadata(false,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -63,7 +67,7 @@ namespace _20230330_BezierCanvas
             set { SetValue(MyLineCloseProperty, value); }
         }
         public static readonly DependencyProperty MyLineCloseProperty =
-            DependencyProperty.Register(nameof(MyLineClose), typeof(bool), typeof(GeometricCanvas),
+            DependencyProperty.Register(nameof(MyLineClose), typeof(bool), typeof(TThumb),
                 new FrameworkPropertyMetadata(false,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -76,7 +80,7 @@ namespace _20230330_BezierCanvas
             set { SetValue(MyStrokeProperty, value); }
         }
         public static readonly DependencyProperty MyStrokeProperty =
-            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(GeometricCanvas),
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(TThumb),
                 new FrameworkPropertyMetadata(Brushes.Crimson,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -88,7 +92,7 @@ namespace _20230330_BezierCanvas
             set { SetValue(MyStrokeThicknessProperty, value); }
         }
         public static readonly DependencyProperty MyStrokeThicknessProperty =
-            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(GeometricCanvas),
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(TThumb),
                 new FrameworkPropertyMetadata(20.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -101,7 +105,7 @@ namespace _20230330_BezierCanvas
             set { SetValue(MyIsEditingProperty, value); }
         }
         public static readonly DependencyProperty MyIsEditingProperty =
-            DependencyProperty.Register(nameof(MyIsEditing), typeof(bool), typeof(GeometricCanvas),
+            DependencyProperty.Register(nameof(MyIsEditing), typeof(bool), typeof(TThumb),
                 new FrameworkPropertyMetadata(false,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -114,7 +118,7 @@ namespace _20230330_BezierCanvas
             set { SetValue(MyAnchorThumbSizeProperty, value); }
         }
         public static readonly DependencyProperty MyAnchorThumbSizeProperty =
-            DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(GeometricCanvas),
+            DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(TThumb),
                 new FrameworkPropertyMetadata(20.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -122,97 +126,109 @@ namespace _20230330_BezierCanvas
 
         #endregion 依存関係プロパティと通知プロパティ
 
-        public Bezier MyBezier { get; private set; }
-        public GeometricCanvas()
-        {
-            MyBezier = new() { Stroke = Brushes.Crimson, StrokeThickness = 20.0, };
+        public Bezier MyShape { get; private set; }
+        public Canvas MyCanvas { get; private set; }
 
-            Children.Add(MyBezier);
-            Loaded += GeometricCanvas_Loaded;
+        public TThumb()
+        {
+            MyCanvas = SetTemplate();
+            MyShape = new();
+            MyCanvas.Children.Add(MyShape);
+            Loaded += TThumb_Loaded;
+            DragDelta += TThumb_DragDelta;
         }
 
-        private void GeometricCanvas_Loaded(object sender, RoutedEventArgs e)
+        private void TThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (sender is TThumb tt)
+            {
+                Canvas.SetLeft(tt, Canvas.GetLeft(tt) + e.HorizontalChange);
+                Canvas.SetTop(tt, Canvas.GetTop(tt) + e.VerticalChange);
+            }
+        }
+
+        private void TThumb_Loaded(object sender, RoutedEventArgs e)
         {
             SetMyBindings();
-            UpdateLayout();//必須、ここで実行しないと次のがEmptyでFixが実行されないので表示位置がずれる
-            if (MyBezier.MyExternalBounds.IsEmpty == false) { FixGeometricLocate(); }
-            MyBezier.MyAdorner.ThumbDragCompleted += MyAdorner_ThumbDragCompleted;
+            UpdateLayout();//要る？
+            if (MyShape.MyExternalBounds.IsEmpty == false)
+            {
+                {
+                    Canvas.SetLeft(MyShape, -MyShape.MyExternalBounds.X);
+                    Canvas.SetTop(MyShape, -MyShape.MyExternalBounds.Y);
+                }
+            }
+            MyShape.MyAdorner.ThumbDragCompleted += MyAdorner_ThumbDragCompleted;
         }
 
-        //頂点Thumbのドラッグ移動終了後にCanvas自身と図形の座標修正
         private void MyAdorner_ThumbDragCompleted(object arg1, Vector arg2)
         {
-
             FixCanvasLocate03();
-
         }
 
-        private void FixGeometricLocate()
-        {
-            if (MyBezier.MyExternalBounds.IsEmpty) return;
-            SetLeft(MyBezier, -MyBezier.MyExternalBounds.X);
-            SetTop(MyBezier, -MyBezier.MyExternalBounds.Y);
-        }
         private void SetMyBindings()
         {
-            MyBezier.SetBinding(Bezier.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
-            MyBezier.SetBinding(Bezier.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeProperty) });
-            MyBezier.SetBinding(Bezier.StrokeThicknessProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeThicknessProperty) });
-            MyBezier.SetBinding(Bezier.MyIsEditingProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty) });
-            MyBezier.SetBinding(Bezier.MyAnchorThumbSizeProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorThumbSizeProperty) });
+            MyShape.SetBinding(Bezier.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
+            MyShape.SetBinding(Bezier.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeProperty) });
+            MyShape.SetBinding(Bezier.StrokeThicknessProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeThicknessProperty) });
+            MyShape.SetBinding(Bezier.MyIsEditingProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty) });
+            MyShape.SetBinding(Bezier.MyAnchorThumbSizeProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorThumbSizeProperty) });
 
-            SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
-            SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
+            MyCanvas.SetBinding(BackgroundProperty, new Binding() { Source = this, Path = new PropertyPath(BackgroundProperty) });
+
+            SetBinding(WidthProperty, new Binding() { Source = MyShape, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
+            SetBinding(HeightProperty, new Binding() { Source = MyShape, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
+
 
         }
-        //編集状態の切り替え、CanvasサイズのBinding変更と、Canvasと図形の座標修正
         public void ChangeBinding()
         {
             if (MyIsEditing)
             {
-                SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyAllBoundsProperty), Converter = new MyConverterRectWidth() });
-                SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyAllBoundsProperty), Converter = new MyConverterRectHeight() });
-                var all = MyBezier.MyAllBounds;
-                var ex = MyBezier.MyExternalBounds;
+                SetBinding(WidthProperty, new Binding() { Source = MyShape, Path = new PropertyPath(Bezier.MyAllBoundsProperty), Converter = new MyConverterRectWidth() });
+                SetBinding(HeightProperty, new Binding() { Source = MyShape, Path = new PropertyPath(Bezier.MyAllBoundsProperty), Converter = new MyConverterRectHeight() });
+                var all = MyShape.MyAllBounds;
+                var ex = MyShape.MyExternalBounds;
 
                 Canvas.SetLeft(this, Canvas.GetLeft(this) + all.X - ex.X);
                 Canvas.SetTop(this, Canvas.GetTop(this) + all.Y - ex.Y);
 
-                Canvas.SetLeft(MyBezier, -all.X);
-                Canvas.SetTop(MyBezier, -all.Y);
+                Canvas.SetLeft(MyShape, -all.X);
+                Canvas.SetTop(MyShape, -all.Y);
             }
             else
             {
-                SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
-                SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
-                var ex = MyBezier.MyExternalBounds;
-                var all = MyBezier.MyAllBounds;
+                SetBinding(WidthProperty, new Binding() { Source = MyShape, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
+                SetBinding(HeightProperty, new Binding() { Source = MyShape, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
+                var ex = MyShape.MyExternalBounds;
+                var all = MyShape.MyAllBounds;
                 //var offset = VisualTreeHelper.GetOffset(this);
 
                 Canvas.SetLeft(this, Canvas.GetLeft(this) + ex.X - all.X);
                 Canvas.SetTop(this, Canvas.GetTop(this) + ex.Y - all.Y);
-                Canvas.SetLeft(MyBezier, -ex.X);
-                Canvas.SetTop(MyBezier, -ex.Y);
+                Canvas.SetLeft(MyShape, -ex.X);
+                Canvas.SetTop(MyShape, -ex.Y);
             }
         }
-
-
         /// <summary>
         /// 頂点Thumbのドラッグ移動終了後に実行する
         /// Canvas自身と図形の座標決定する
         /// </summary>
         public void FixCanvasLocate03()
         {
-            var ex = MyBezier.MyExternalBounds;
+            var ex = MyShape.MyExternalBounds;
             var pts = GetPointsRect(MyPoints);
             var left = Canvas.GetLeft(this); var top = Canvas.GetTop(this);
-            var bLeft = Canvas.GetLeft(MyBezier); var bTop = Canvas.GetTop(MyBezier);
+            var bLeft = Canvas.GetLeft(MyShape); var bTop = Canvas.GetTop(MyShape);
 
             //自身の座標決定
-            //double x = ex.X > pts.X ? left + pts.X + bLeft : left + ex.X + bLeft;
-            double x = ex.X > pts.X ? left + bLeft + pts.X : left + bLeft + ex.X;
-            //double y = ex.Y > pts.Y ? top + pts.Y + bTop : top + ex.Y + bTop;
-            double y = ex.Y > pts.Y ? top + bTop + pts.Y : top + bTop + ex.Y;
+            double x;
+            if (ex.X > pts.X) x = left + pts.X + bLeft;
+            else x = left + ex.X + bLeft;
+
+            double y;
+            if (ex.Y > pts.Y) y = top + pts.Y + bTop;
+            else y = top + ex.Y + bTop;
             Canvas.SetLeft(this, x);
             Canvas.SetTop(this, y);
 
@@ -221,26 +237,15 @@ namespace _20230330_BezierCanvas
             var ex_ptsy = ex.Y - pts.Y;
             double bx = ex_ptsx < 0 ? -ex_ptsx : 0;
             double by = ex_ptsy < 0 ? -ex_ptsy : 0;
-            Canvas.SetLeft(MyBezier, bx);
-            Canvas.SetTop(MyBezier, by);
+            Canvas.SetLeft(MyShape, bx);
+            Canvas.SetTop(MyShape, by);
 
             if (pts.X != 0 || pts.Y != 0)
             {
                 Fix0Point();
-                MyBezier.MyAdorner.FixThumbsLocate();
+                MyShape.MyAdorner.FixThumbsLocate();
             }
         }
-
-        //protected override Size MeasureOverride(Size constraint)
-        //{
-        //    if (MyBezier.MyIsEditing)
-        //    {
-        //        //FixCanvasLocate01();
-        //        //                FixCanvasLocate00();
-        //    }
-        //    return base.MeasureOverride(constraint);
-        //}
-
 
         /// <summary>
         /// PointCollectionのRectを返す
@@ -276,7 +281,16 @@ namespace _20230330_BezierCanvas
             }
         }
 
-
+        private Canvas SetTemplate()
+        {
+            FrameworkElementFactory factory = new(typeof(Canvas), "panel");
+            Template = new() { VisualTree = factory };
+            ApplyTemplate();
+            if (Template.FindName("panel", this) is Canvas panel)
+            {
+                return panel;
+            }
+            else { throw new Exception(); }
+        }
     }
-
 }
