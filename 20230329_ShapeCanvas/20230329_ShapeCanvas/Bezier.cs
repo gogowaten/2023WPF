@@ -191,7 +191,7 @@ namespace _20230329_ShapeCanvas
             AdornerLayer.GetAdornerLayer(this).Add(MyAdorner);
             SetBinding(MyAnchorVisibleProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty), Converter = new MyConverterBoolVisible() });
             MyAdorner.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorVisibleProperty) });
-            //MyAdorner.SetBinding(MyAdorner.MyAnchorThumbSizeProperty, new Binding() { Source = this,Path=new PropertyPath(Bezier.MyAnchorThumbSizeProperty) });
+            MyAdorner.SetBinding(MyAdorner.MyAnchorThumbSizeProperty, new Binding() { Source = this,Path=new PropertyPath(Bezier.MyAnchorThumbSizeProperty) });
             MultiBinding mb = new();
             Binding b0 = new() { Source = MyAdorner, Path = new PropertyPath(MyAdorner.MyVThumbsBoundsProperty) };
             Binding b1 = new() { Source = this, Path = new PropertyPath(MyExternalBoundsProperty) };
