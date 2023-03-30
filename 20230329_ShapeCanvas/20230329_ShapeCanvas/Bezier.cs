@@ -142,17 +142,17 @@ namespace _20230329_ShapeCanvas
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
-        //public double MyAnchorThumbSize
-        //{
-        //    get { return (double)GetValue(MyAnchorThumbSizeProperty); }
-        //    set { SetValue(MyAnchorThumbSizeProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyAnchorThumbSizeProperty =
-        //    DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(Bezier),
-        //        new FrameworkPropertyMetadata(20.0,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public double MyAnchorThumbSize
+        {
+            get { return (double)GetValue(MyAnchorThumbSizeProperty); }
+            set { SetValue(MyAnchorThumbSizeProperty, value); }
+        }
+        public static readonly DependencyProperty MyAnchorThumbSizeProperty =
+            DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(Bezier),
+                new FrameworkPropertyMetadata(20.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
 
@@ -191,7 +191,7 @@ namespace _20230329_ShapeCanvas
             AdornerLayer.GetAdornerLayer(this).Add(MyAdorner);
             SetBinding(MyAnchorVisibleProperty, new Binding() { Source = this, Path = new PropertyPath(MyIsEditingProperty), Converter = new MyConverterBoolVisible() });
             MyAdorner.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorVisibleProperty) });
-            //MyAdorner.SetBinding(MyAdorner.MyAnchorThumbSizeProperty, new Binding() { Source = this,Path=new PropertyPath(Bezier.MyAnchorThumbSizeProperty) });
+            MyAdorner.SetBinding(MyAdorner.MyAnchorThumbSizeProperty, new Binding() { Source = this,Path=new PropertyPath(Bezier.MyAnchorThumbSizeProperty) });
             MultiBinding mb = new();
             Binding b0 = new() { Source = MyAdorner, Path = new PropertyPath(MyAdorner.MyVThumbsBoundsProperty) };
             Binding b1 = new() { Source = this, Path = new PropertyPath(MyExternalBoundsProperty) };
