@@ -107,7 +107,7 @@ namespace _20230329_ShapeCanvas
                 };
                 MyThumbList.Add(thumb);
                 MyCanvas.Children.Add(thumb);
-                //背景色決め打ち
+                //テスト用目印のため、背景色決め打ち
                 MyCanvas.Background = new SolidColorBrush(Color.FromArgb(50, 100, 200, 0));
                 Canvas.SetLeft(thumb, MyPoints[i].X);
                 Canvas.SetTop(thumb, MyPoints[i].Y);
@@ -116,6 +116,7 @@ namespace _20230329_ShapeCanvas
             }
         }
 
+        //イベント、頂点Thumbのドラッグ移動終了後に、そのことを通知するため
         public event Action<object, Vector>? ThumbDragCompleted;
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {

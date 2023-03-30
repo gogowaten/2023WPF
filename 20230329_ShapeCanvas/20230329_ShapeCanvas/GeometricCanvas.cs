@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Data;
-using System.Runtime.InteropServices;
-using System.Windows.Documents;
-using System.Windows.Controls.Primitives;
 
 namespace _20230329_ShapeCanvas
 {
@@ -145,35 +137,12 @@ namespace _20230329_ShapeCanvas
             MyBezier.MyAdorner.ThumbDragCompleted += MyAdorner_ThumbDragCompleted;
         }
 
+        //頂点Thumbのドラッグ移動終了後にCanvas自身と図形の座標修正
         private void MyAdorner_ThumbDragCompleted(object arg1, Vector arg2)
         {
-            //var top = Canvas.GetTop(this);
-            //var btop = Canvas.GetTop(MyBezier);
-            //var ex = MyBezier.MyExternalBounds;
-            //var all = MyBezier.MyAllBounds;
-            var pts = GetPointsRect(MyPoints);
-            //var bdiff = btop + ex.Y;
-            //var bdiff2 = pts.Y - btop;
 
-            //if (arg2.Y != 0)
-            //{
-            //    var yyy = btop + pts.Y;
-            //    var yyyy = bdiff;
-            //    double ny = top + yyy;
-            //    if (bdiff != 0) ny = top + yyyy;
-            //    if (btop == 0) ny = top + yyy;
+            FixCanvasLocate03();
 
-            //    Canvas.SetTop(this, ny);
-
-            //    var byy = btop + pts.Y;
-            //    var by = ex.Y - pts.Y;
-            //    if (by > 0) { by = 0; }
-            //    else by = -by;
-            //    Canvas.SetTop(MyBezier, by);
-
-            //}
-            FixCanvasLocate02();
-            if (pts.X != 0 || pts.Y != 0) { Fix0Point(); MyBezier.MyAdorner.FixThumbsLocate(); }
         }
 
         private void FixGeometricLocate()
@@ -193,34 +162,20 @@ namespace _20230329_ShapeCanvas
             SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
             SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
 
-            //MyBoundsBorder.SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyVThumbsBoundsProperty), Converter = new MyConverterRectWidth() });
-            //MyBoundsBorder.SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyVThumbsBoundsProperty), Converter = new MyConverterRectHeight() });
-            //MyBoundsBorder.SetBinding(Canvas.LeftProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyVThumbsBoundsProperty), Converter = new MyConverterRectX() });
-            //MyBoundsBorder.SetBinding(Canvas.TopProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyVThumbsBoundsProperty), Converter = new MyConverterRectY() });
-
         }
+        //編集状態の切り替え、CanvasサイズのBinding変更と、Canvasと図形の座標修正
         public void ChangeBinding()
         {
             if (MyIsEditing)
             {
                 SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyAllBoundsProperty), Converter = new MyConverterRectWidth() });
                 SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyAllBoundsProperty), Converter = new MyConverterRectHeight() });
-                //SetBinding(Canvas.LeftProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyVThumbsBoundsProperty), Converter = new MyConverterRectX() });
-                //SetBinding(Canvas.TopProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyVThumbsBoundsProperty), Converter = new MyConverterRectY() });
                 var all = MyBezier.MyAllBounds;
                 var ex = MyBezier.MyExternalBounds;
-                //var offset = VisualTreeHelper.GetOffset(this);
-                var left = Canvas.GetLeft(this);
-                var top = Canvas.GetTop(this);
-                var xx = left - ex.X + all.X;
-                //var xxx = ex.X < 0 ? left : left - ex.X;
-                Canvas.SetLeft(this, xx);
-                var y = all.Y - ex.Y;
-                var yy = top + y;
-                Canvas.SetTop(this, yy);
 
-                //var bx = ex.X < 0 ? 0 : -ex.Y;
-                //var by = ex.Y < 0 ? 0 : -ex.Y;
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + all.X - ex.X);
+                Canvas.SetTop(this, Canvas.GetTop(this) + all.Y - ex.Y);
+
                 Canvas.SetLeft(MyBezier, -all.X);
                 Canvas.SetTop(MyBezier, -all.Y);
             }
@@ -228,14 +183,14 @@ namespace _20230329_ShapeCanvas
             {
                 SetBinding(WidthProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectWidth() });
                 SetBinding(HeightProperty, new Binding() { Source = MyBezier, Path = new PropertyPath(Bezier.MyExternalBoundsProperty), Converter = new MyConverterRectHeight() });
-                //BindingOperations.ClearBinding(this, Canvas.LeftProperty);
-                //BindingOperations.ClearBinding(this, Canvas.TopProperty);
-                //var x = MyBezier.MyVThumbsBounds.X;
-                //var ex = MyBezier.MyExternalBounds.X;
+                var ex = MyBezier.MyExternalBounds;
+                var all = MyBezier.MyAllBounds;
                 //var offset = VisualTreeHelper.GetOffset(this);
-                //var xx = offset.X + ex;
-                //Canvas.SetLeft(this, xx);
-                //Canvas.SetTop(this, offset.Y + MyBezier.MyExternalBounds.Y);
+
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + ex.X - all.X);
+                Canvas.SetTop(this, Canvas.GetTop(this) + ex.Y - all.Y);
+                Canvas.SetLeft(MyBezier, -ex.X);
+                Canvas.SetTop(MyBezier, -ex.Y);
             }
         }
 
@@ -313,46 +268,81 @@ namespace _20230329_ShapeCanvas
             //頂点Thumbの座標修正、Pointsに合わせる
             MyBezier.MyAdorner?.FixThumbsLocate();
         }
+
+        /// <summary>
+        /// できた、頂点Thumbのドラッグ移動終了後に実行する
+        /// Canvas自身と図形の座標決定する
+        /// </summary>
         public void FixCanvasLocate02()
         {
             var all = MyBezier.MyAllBounds; var ex = MyBezier.MyExternalBounds;
             var pts = GetPointsRect(MyPoints);
             var ex_ptsx = ex.X - pts.X;
             var ex_ptsy = ex.Y - pts.Y;
-            double x = 0, y = 0, bx = 0, by = 0;
             var left = Canvas.GetLeft(this); var top = Canvas.GetTop(this);
             var bLeft = Canvas.GetLeft(MyBezier); var bTop = Canvas.GetTop(MyBezier);
-            var yy = bTop + ex.Y; y = top + yy;
 
             var x0 = left + pts.X;
             var x1 = left + pts.X + bLeft;
-            
-            var x3 = left + pts.X + ex_ptsx;
-            var x4 = left + ex.X + bLeft + ex_ptsx;
-            var x5 = left + ex.X;
-            var x6 = left + ex.X + bLeft;
-            var x7 = left + ex_ptsx + bLeft;
-            if (all.X == ex.X)
-            {
-                x = x1;
-            }
-            else if (ex_ptsx > 0 && all.X != ex.X)
-            {
-                x = x0;
-            }
+            //var x2 = left + ex.X;
+            var x3 = left + ex.X + bLeft;
+            double x;
+            if (ex.X > pts.X) x = x1;
+            else if (all.X == ex.X || ex.X < pts.X) x = x3;
             else x = x0;
-
-
-
+            var y0 = top + pts.Y;
+            var y1 = top + pts.Y + bTop;
+            var y2 = top + ex.Y + bTop;
+            double y;
+            if (ex.Y > pts.Y) y = y1;
+            else if (all.Y == ex.Y || ex.Y < pts.Y) y = y2;
+            else y = y0;
             Canvas.SetLeft(this, x);
             Canvas.SetTop(this, y);
 
-            bx = ex_ptsx < 0 ? -ex_ptsx : 0;
-            by = ex_ptsy < 0 ? -ex_ptsy : 0;
+            double bx = ex_ptsx < 0 ? -ex_ptsx : 0;
+            double by = ex_ptsy < 0 ? -ex_ptsy : 0;
             Canvas.SetLeft(MyBezier, bx);
             Canvas.SetTop(MyBezier, by);
 
-            Fix0Point(); MyBezier.MyAdorner?.FixThumbsLocate();
+            if (pts.X != 0 || pts.Y != 0) { Fix0Point(); MyBezier.MyAdorner.FixThumbsLocate(); }
+            //Fix0Point(); MyBezier.MyAdorner?.FixThumbsLocate();
+        }
+
+        /// <summary>
+        /// FixCanvasLocate02を簡潔にしただけ
+        /// </summary>
+        public void FixCanvasLocate03()
+        {
+            var ex = MyBezier.MyExternalBounds;
+            var pts = GetPointsRect(MyPoints);
+            var left = Canvas.GetLeft(this); var top = Canvas.GetTop(this);
+            var bLeft = Canvas.GetLeft(MyBezier); var bTop = Canvas.GetTop(MyBezier);
+
+            //自身の座標決定
+            double x;
+            if (ex.X > pts.X) x = left + pts.X + bLeft;
+            else x = left + ex.X + bLeft;
+
+            double y;
+            if (ex.Y > pts.Y) y = top + pts.Y + bTop;
+            else y = top + ex.Y + bTop;
+            Canvas.SetLeft(this, x);
+            Canvas.SetTop(this, y);
+
+            //図形の座標決定
+            var ex_ptsx = ex.X - pts.X;
+            var ex_ptsy = ex.Y - pts.Y;
+            double bx = ex_ptsx < 0 ? -ex_ptsx : 0;
+            double by = ex_ptsy < 0 ? -ex_ptsy : 0;
+            Canvas.SetLeft(MyBezier, bx);
+            Canvas.SetTop(MyBezier, by);
+
+            if (pts.X != 0 || pts.Y != 0)
+            {
+                Fix0Point();
+                MyBezier.MyAdorner.FixThumbsLocate();
+            }
         }
 
         protected override Size MeasureOverride(Size constraint)

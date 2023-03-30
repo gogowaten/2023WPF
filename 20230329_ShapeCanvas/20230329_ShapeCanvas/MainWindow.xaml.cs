@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
+//できた、リアルタイムは諦めてドラッグ移動終了後に座標修正するようにするテスト
+
 namespace _20230329_ShapeCanvas
 {
     /// <summary>
