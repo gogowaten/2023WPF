@@ -1,0 +1,33 @@
+﻿<Window x:Class="_20230330_BezierCanvas.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230330_BezierCanvas"
+        mc:Ignorable="d"
+                    Title="MainWindow" Height="450" Width="600">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="150"/>
+    </Grid.ColumnDefinitions>
+    <Canvas x:Name="MyCanvs">
+      <Rectangle Width="100" Height="50" Fill="Crimson"/>
+      <local:GeometricCanvas x:Name="MyGeo"
+                             Canvas.Left="100" Canvas.Top="50" Background="DodgerBlue" Opacity="0.8"
+                             MyIsEditing="False" MyAnchorThumbSize="50"
+                             MyPoints="50,0 0,100 200,0 50,100" MyStroke="Gold" MyStrokeThickness="50"/>
+    </Canvas>
+    <StackPanel Grid.Column="1">
+      <Button Content="切り替え" Click="Button_Click"/>
+      <TextBlock Text="{Binding ElementName=MyGeo, Path=(Canvas.Left),StringFormat=0.00 \= left}"/>
+      <TextBlock Text="{Binding ElementName=MyGeo, Path=(Canvas.Top),StringFormat=0.00 \= top}"/>
+      <TextBlock Text="{Binding ElementName=MyGeo, Path=ActualWidth,StringFormat=0.00 \= W}"/>
+      <TextBlock Text="{Binding ElementName=MyGeo, Path=MyBezier.(Canvas.Left),StringFormat=0.00 \= ShapeLeft}"/>
+      <TextBlock Text="{Binding ElementName=MyGeo, Path=MyBezier.ActualWidth,StringFormat=0.00 \= ShapeW}"/>
+      <TextBlock Text="{Binding ElementName=MyGeo, Path=MyBezier.MyAdorner.ActualWidth,StringFormat= 0.00 \= adW}"/>
+      <TextBlock Text="{Binding ElementName=MyGeo, Path=MyBezier.MyAdorner.MyCanvas.ActualWidth,StringFormat=0.00 \= adCanW}"/>
+      <Button Content="check" Click="Button_Click_1"/>
+    </StackPanel>
+  </Grid>
+</Window>
