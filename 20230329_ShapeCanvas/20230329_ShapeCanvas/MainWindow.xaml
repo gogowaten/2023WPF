@@ -18,7 +18,7 @@
       <Rectangle Width="600" Height="1" Fill="Crimson" Canvas.Top="30"/>
       <local:GeometricCanvas x:Name="MyGeo"
                              Canvas.Left="100" Canvas.Top="50" Background="DodgerBlue" Opacity="0.8"
-                             MyIsEditing="True" MyAnchorThumbSize="20"
+                             MyIsEditing="True" MyAnchorThumbSize="50"
                              MyPoints="50,0 0,100 200,0 50,100" MyStroke="Gold" MyStrokeThickness="50"/>
     </Canvas>
     <StackPanel Grid.Column="1">
