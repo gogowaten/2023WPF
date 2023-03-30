@@ -142,17 +142,17 @@ namespace _20230329_ShapeCanvas
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
-        //public double MyAnchorThumbSize
-        //{
-        //    get { return (double)GetValue(MyAnchorThumbSizeProperty); }
-        //    set { SetValue(MyAnchorThumbSizeProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyAnchorThumbSizeProperty =
-        //    DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(Bezier),
-        //        new FrameworkPropertyMetadata(20.0,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public double MyAnchorThumbSize
+        {
+            get { return (double)GetValue(MyAnchorThumbSizeProperty); }
+            set { SetValue(MyAnchorThumbSizeProperty, value); }
+        }
+        public static readonly DependencyProperty MyAnchorThumbSizeProperty =
+            DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(Bezier),
+                new FrameworkPropertyMetadata(20.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
 
