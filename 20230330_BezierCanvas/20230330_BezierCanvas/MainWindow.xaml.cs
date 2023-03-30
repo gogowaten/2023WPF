@@ -13,6 +13,23 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
+//20230329を書き直しただけ
+//図形を表示するCanvas
+//編集状態の切り替えで頂点Thumbを表示、ドラッグ移動できる
+//ドラッグ移動終了後にCanvasと図形の座標修正
+//サイズは移動中に変化
+
+//クラス
+//GeometricCanvas：Canvas継承
+//  CanvasーBezier
+
+//Bezier:Shape継承、ベジェ曲線
+//  BezierーAdorner
+
+//MyAdorner：Bezier専用、頂点Thumbを表示する、ドラッグ移動もここ、目印用に背景色を設定している
+//  AdornerーCanvasーThumbs
+
 namespace _20230330_BezierCanvas
 {
     /// <summary>

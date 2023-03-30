@@ -11,13 +11,15 @@
       <ColumnDefinition/>
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
-    <Canvas x:Name="MyCanvs">
-      <Rectangle Width="100" Height="50" Fill="Crimson"/>
-      <local:GeometricCanvas x:Name="MyGeo"
+    <ScrollViewer HorizontalScrollBarVisibility="Auto">
+      <Canvas x:Name="MyCanvs">
+        <Rectangle Width="100" Height="50" Fill="Crimson"/>
+        <local:GeometricCanvas x:Name="MyGeo"
                              Canvas.Left="100" Canvas.Top="50" Background="DodgerBlue" Opacity="0.8"
                              MyIsEditing="False" MyAnchorThumbSize="50"
                              MyPoints="50,0 0,100 200,0 50,100" MyStroke="Gold" MyStrokeThickness="50"/>
-    </Canvas>
+      </Canvas>
+    </ScrollViewer>
     <StackPanel Grid.Column="1">
       <Button Content="切り替え" Click="Button_Click"/>
       <TextBlock Text="{Binding ElementName=MyGeo, Path=(Canvas.Left),StringFormat=0.00 \= left}"/>
