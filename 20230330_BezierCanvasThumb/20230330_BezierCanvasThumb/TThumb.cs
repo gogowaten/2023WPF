@@ -223,11 +223,13 @@ namespace _20230330_BezierCanvasThumb
 
             //自身の座標決定
             double x;
-            if (ex.X > pts.X) x = left + pts.X + bLeft;
+            if (ex.X > pts.X)
+                x = left + pts.X + bLeft;
             else x = left + ex.X + bLeft;
 
             double y;
-            if (ex.Y > pts.Y) y = top + pts.Y + bTop;
+            if (ex.Y > pts.Y)
+                y = top + pts.Y + bTop;
             else y = top + ex.Y + bTop;
             Canvas.SetLeft(this, x);
             Canvas.SetTop(this, y);

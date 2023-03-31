@@ -11,13 +11,13 @@
       <ColumnDefinition/>
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
-    <ScrollViewer HorizontalScrollBarVisibility="Auto">
-      <Canvas x:Name="MyCanvs">
-        <local:TThumb x:Name="MyTThumb" Canvas.Left="100" Canvas.Top="50" Background="DodgerBlue"
+
+    <Canvas x:Name="MyCanvs">
+      <local:TThumb x:Name="MyTThumb" Canvas.Left="100" Canvas.Top="50" Background="DodgerBlue"
                              MyIsEditing="False" MyAnchorThumbSize="30"
                              MyPoints="50,0 0,100 200,0 50,100" MyStroke="Gold" MyStrokeThickness="50"/>
-      </Canvas>
-    </ScrollViewer>
+    </Canvas>
+
     <StackPanel Grid.Column="1">
       <Button Content="切り替え" Click="Button_Click"/>
       <TextBlock Text="{Binding ElementName=MyTThumb, Path=(Canvas.Left),StringFormat=0.00 \= left}"/>
