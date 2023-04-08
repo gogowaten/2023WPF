@@ -4,6 +4,8 @@ using System.Windows.Controls;
 //方法: ContextMenuOpening イベントを処理する - WPF .NET Framework | Microsoft Learn
 //https://learn.microsoft.com/ja-jp/dotnet/desktop/wpf/advanced/how-to-handle-the-contextmenuopening-event
 
+//WPF、右クリックメニューの表示、非表示切り替えはnullとIsOpen = trueでできた - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/04/08/154552
 
 //右クリックメニュー(ContextMenu)の表示、非表示テスト
 namespace _20230408_ContextMemu
