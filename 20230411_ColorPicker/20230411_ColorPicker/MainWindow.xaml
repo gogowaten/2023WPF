@@ -1,0 +1,72 @@
+﻿<Window x:Class="_20230411_ColorPicker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230411_ColorPicker"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600"
+        Name="MyMain">
+  <Window.Resources>
+    <local:Converter x:Key="vc"/>
+    <local:ConverterHSV x:Key="vcHSV"/>
+    <local:ConverterHue x:Key="HHsv"/>
+    <local:ConverterSaturation x:Key="hSSv"/>
+    <local:ConverterValue x:Key="hsVV"/>
+    <local:ConverterSolidBruhs x:Key="solid"/>
+    <local:ConverterR x:Key="r"/>
+    <local:ConverterG x:Key="g"/>
+    <local:ConverterB x:Key="b"/>
+  </Window.Resources>
+  <Grid DataContext="{Binding ElementName=MyMain}">
+    <StackPanel>
+      <DockPanel >
+        <Border x:Name="MyBorder" Width="200" Height="200"
+                Background="Orange"/>
+        <Border Width="20" Background="DodgerBlue">
+          <TextBlock Text="Hue"/>
+        </Border>
+        <Border Width="20" Background="Gray">
+          <Canvas>
+            <Slider Width="{Binding ElementName=MyBorder, Path=ActualHeight}" Canvas.Left="20"
+                    Value="50" Minimum="0" Maximum="255">
+              <Slider.RenderTransform>
+                <RotateTransform Angle="90"/>
+              </Slider.RenderTransform>
+            </Slider>
+            <TextBlock Text="透"/>
+          </Canvas>
+        </Border>
+        
+        <TabControl>
+          <TabItem Header="RGB">
+            <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
+            <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
+            <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
+            </DockPanel>
+          </TabItem>
+          <TabItem Header="HSV">
+            <DockPanel>
+              <TextBlock DockPanel.Dock="Top" Text="HSV value"/>
+              <TextBlock DockPanel.Dock="Top" Text="HSV value"/>
+              <TextBlock DockPanel.Dock="Top" Text="HSV value"/>              
+            </DockPanel>
+          </TabItem>
+        </TabControl>
+        <ScrollBar x:Name="MyScrollBarR" Minimum="0" Maximum="255" SmallChange="10"/>
+        <ScrollBar x:Name="MyScrollBarG" Minimum="0" Maximum="255" SmallChange="10"/>
+        <ScrollBar x:Name="MyScrollBarB" Minimum="0" Maximum="255" SmallChange="10"/>
+
+        <ScrollBar x:Name="MyScrollBarH" Minimum="0" Maximum="360" SmallChange="30" Value="0"/>
+        <ScrollBar x:Name="MyScrollBarS" Minimum="0" Maximum="1" SmallChange="0.1" Value="1"/>
+        <ScrollBar x:Name="MyScrollBarV" Minimum="0" Maximum="1" SmallChange="0.1" Value="0.5"/>
+
+        <!--<TextBlock Text="{Binding ElementName=MyMain, Path=MyColor}"/>-->
+        <TextBlock Text="{Binding ElementName=MyMain, Path=MyHsv.H}"/>
+      </DockPanel>
+      <local:ColorPicker Width="100" Height="100" PickupColor="MediumAquamarine"/>
+    </StackPanel>
+
+  </Grid>
+</Window>
