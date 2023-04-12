@@ -178,7 +178,7 @@ namespace _20230411_ColorPicker
         }
         public static (byte r, byte g, byte b) HSV2RGB(HSV hsv)
         {
-            Color color = HSV2Color(h, s, v);
+            Color color = HSV2Color(hsv.H, hsv.S, hsv.V);
             return (color.R, color.G, color.B);
         }
         #endregion HSV(円柱モデル) -> RGB

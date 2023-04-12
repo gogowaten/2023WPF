@@ -51,17 +51,47 @@ namespace _20230411_ColorPicker
         public MainWindow()
         {
             InitializeComponent();
-            
-            
+
+
             Loaded += MainWindow_Loaded;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             MyBorderHue.Background = new ImageBrush(GetHueImage(1, 6));
+            MyBorder.Background = new ImageBrush(GetSVImage2(30, 32));
         }
 
-        private BitmapSource GetSVImage( int w ,int h)
+        private BitmapSource GetSVImage2(double hue, int size)
+        {
+            var wb = new WriteableBitmap(size, size, 96, 96, PixelFormats.Rgb24, null);
+            int stride = (size * wb.Format.BitsPerPixel + 7) / 8;
+            var pixels = new byte[size * stride];
+            wb.CopyPixels(pixels, stride, 0);            
+            int p = 0;
+            Parallel.For(0, size, y =>
+            {
+                ParallelImageSV(p, y, stride, pixels, hue, size, size);
+            });
+
+            wb.WritePixels(new Int32Rect(0, 0,size, size), pixels, stride, 0);
+            return wb;
+        }
+        private void ParallelImageSV(int p, int y, int stride, byte[] pixels, double hue, int w, int h)
+        {
+            for (int x = 0; x < w; ++x)
+            {
+                p = y * stride + (x * 3);
+                Color svColor = MathHSV.HSV2Color(hue, x / (double)w, y / (double)h);
+                pixels[p] = svColor.R;
+                pixels[p + 1] = svColor.G;
+                pixels[p + 2] = svColor.B;
+            }
+        }
+
+
+
+        private BitmapSource GetSVImage(int w, int h)
         {
 
             var wb = new WriteableBitmap(w, h, 96, 96, PixelFormats.Rgb24, null);
@@ -82,8 +112,8 @@ namespace _20230411_ColorPicker
             wb.WritePixels(new Int32Rect(0, 0, w, h), pixels, stride, 0);
             return wb;
         }
-        
-        private BitmapSource GetHueImage(int w ,int h)
+
+        private BitmapSource GetHueImage(int w, int h)
         {
             var wb = new WriteableBitmap(w, h, 96, 96, PixelFormats.Rgb24, null);
             int stride = wb.BackBufferStride;
@@ -103,7 +133,7 @@ namespace _20230411_ColorPicker
             wb.WritePixels(new Int32Rect(0, 0, w, h), pixels, stride, 0);
             return wb;
         }
-        
+
         private void ScrollRGBBinding()
         {
             MyScrollBarR.SetBinding(ScrollBar.ValueProperty, new Binding()
