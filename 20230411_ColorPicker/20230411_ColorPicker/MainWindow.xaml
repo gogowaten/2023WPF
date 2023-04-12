@@ -21,6 +21,7 @@
   <Grid DataContext="{Binding ElementName=MyMain}">
     <StackPanel>
       <DockPanel >
+        <Border x:Name="MyBorderHue" Width="50" Height="200"/>
         <Border x:Name="MyBorder" Width="200" Height="200"
                 Background="Orange"/>
         <Border Width="20" Background="DodgerBlue">

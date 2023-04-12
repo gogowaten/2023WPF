@@ -8,21 +8,21 @@ using System.Windows.Media;
 
 namespace _20230411_ColorPicker
 {
-    public struct MyHsv
+    public struct HSV
     {
-       //public double H, S, V;
+        //public double H, S, V;
         public double H { get; set; }
         public double S { get; set; }
         public double V { get; set; }
 
-        public MyHsv(double h, double s, double v)
+        public HSV(double h, double s, double v)
         {
             H = h;
             S = s;
             V = v;
         }
     }
-    public static class HSV
+    public static class MathHSV
     {
         //public double Hue;          //0.0fから360.0f
         //public double Saturation;   //0.0fから1.0f
@@ -42,6 +42,7 @@ namespace _20230411_ColorPicker
         //}
 
 
+        #region Color -> HSV
 
         /// <summary>
         /// Color(RGB)をHSV(円柱モデル)に変換、Hの値は0fから360f、SとVは0fから1f
@@ -50,8 +51,16 @@ namespace _20230411_ColorPicker
         /// <returns>HSV</returns>
         public static (double h, double s, double v) Color2HSV(Color color)
         {
+            return RGB2hsv(color.R, color.G, color.B);
+        }
+        public static HSV Color2HSV2(Color color)
+        {
             return RGB2HSV(color.R, color.G, color.B);
         }
+
+        #endregion Color -> HSV
+
+        #region RGB -> HSV
 
         /// <summary>
         /// RGBをHSV(円柱モデル)に変換、RGBそれぞれの値を指定する
@@ -60,7 +69,7 @@ namespace _20230411_ColorPicker
         /// <param name="g"></param>
         /// <param name="b"></param>
         /// <returns>HSV</returns>
-        public static (double h, double s, double v) RGB2HSV(byte r, byte g, byte b)
+        public static (double h, double s, double v) RGB2hsv(byte r, byte g, byte b)
         {
             byte Max = Math.Max(r, Math.Max(g, b));
             byte Min = Math.Min(r, Math.Min(g, b));
@@ -89,15 +98,29 @@ namespace _20230411_ColorPicker
 
             return (h, s, v);
         }
+        public static HSV RGB2HSV(byte r, byte g, byte b)
+        {
+            (double h, double s, double v) = RGB2hsv(r, g, b);
+            return new HSV(h, s, v);
+        }
 
-        public static (double h, double s, double v) RGB2HSV(double r, double g, double b)
+        public static (double h, double s, double v) RGB2hsv(double r, double g, double b)
+        {
+            return RGB2hsv(
+                (byte)(Math.Round(r, MidpointRounding.AwayFromZero)),
+                (byte)(Math.Round(g, MidpointRounding.AwayFromZero)),
+                (byte)(Math.Round(b, MidpointRounding.AwayFromZero)));
+        }
+        public static HSV RGB2HSV(double r, double g, double b)
         {
             return RGB2HSV(
                 (byte)(Math.Round(r, MidpointRounding.AwayFromZero)),
                 (byte)(Math.Round(g, MidpointRounding.AwayFromZero)),
                 (byte)(Math.Round(b, MidpointRounding.AwayFromZero)));
         }
+        #endregion RGB -> HSV
 
+        #region Color -> HSV(円錐モデル)
 
         //        プログラミング 第6弾(プログラム ) - Color Model：色をプログラムするブログ - Yahoo!ブログ
         //https://blogs.yahoo.co.jp/pspevolution7/17682985.html
@@ -107,7 +130,7 @@ namespace _20230411_ColorPicker
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>
-        public static (double h, double s, double v) Color2HSV_ConicalModel(Color color)
+        public static (double h, double s, double v) Color2Hsv_ConicalModel(Color color)
         {
             byte R = color.R;
             byte G = color.G;
@@ -139,20 +162,28 @@ namespace _20230411_ColorPicker
 
             return (h, s, v);
         }
-
-        /// <summary>
-        /// RGBをHSV(円錐モデル)に変換、RGBそれぞれの値を指定する
-        /// </summary>
-        /// <param name="r"></param>
-        /// <param name="g"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
-        public static (double h, double s, double v) RGB2HSV_ConicalModel(byte r, byte g, byte b)
+        public static HSV Color2HSV_ConicalModel(Color color)
         {
-            return Color2HSV_ConicalModel(Color.FromRgb(r, g, b));
+            (double h, double s, double v) = Color2Hsv_ConicalModel(color);
+            return new HSV(h, s, v);
         }
+        #endregion Color -> HSV(円錐モデル)
 
+        #region HSV(円柱モデル) -> RGB
 
+        public static (byte r, byte g, byte b) Hsv2rgb(double h, double s, double v)
+        {
+            Color color = HSV2Color(h, s, v);
+            return (color.R, color.G, color.B);
+        }
+        public static (byte r, byte g, byte b) HSV2RGB(HSV hsv)
+        {
+            Color color = HSV2Color(h, s, v);
+            return (color.R, color.G, color.B);
+        }
+        #endregion HSV(円柱モデル) -> RGB
+
+        #region HSV(円柱モデル) -> Color
 
         /// <summary>
         /// HSV(円柱モデル)をColorに変換
@@ -205,12 +236,33 @@ namespace _20230411_ColorPicker
                 (byte)Math.Round(g * 255f, MidpointRounding.AwayFromZero),
                 (byte)Math.Round(b * 255f, MidpointRounding.AwayFromZero));
         }
-
-        public static (byte r, byte g, byte b) HSV2RGB(double h, double s, double v)
+        public static Color HSV2Color(HSV hsv)
         {
-            Color color = HSV2Color(h, s, v);
-            return (color.R, color.G, color.B);
+            return HSV2Color(hsv.H, hsv.S, hsv.V);
         }
+        #endregion HSV(円柱モデル) -> Color
+
+        #region HSV(円錐モデル) -> RGB
+
+        /// <summary>
+        /// RGBをHSV(円錐モデル)に変換、RGBそれぞれの値を指定する
+        /// </summary>
+        /// <param name="r"></param>
+        /// <param name="g"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static (double h, double s, double v) RGB2hsv_ConicalModel(byte r, byte g, byte b)
+        {
+            return Color2Hsv_ConicalModel(Color.FromRgb(r, g, b));
+        }
+        public static HSV RGB2HSV_ConicalModel(byte r, byte g, byte b)
+        {
+            return Color2HSV_ConicalModel(Color.FromRgb(r, g, b));
+        }
+        #endregion HSV(円錐モデル) -> RGB
+
+        #region HSV(円錐モデル) -> Color
+
 
         /// <summary>
         /// 円錐モデルのHSVをColorに変換
@@ -271,6 +323,7 @@ namespace _20230411_ColorPicker
             return (color.R, color.G, color.B);
         }
 
+        #endregion HSV(円錐モデル) -> HSV
 
         //public override string ToString()
         //{

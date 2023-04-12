@@ -34,14 +34,14 @@ namespace _20230411_ColorPicker
                 new FrameworkPropertyMetadata(Color.FromArgb(0, 0, 0, 0),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public MyHsv MyHsv
+        public HSV MyHsv
         {
-            get { return (MyHsv)GetValue(MyHsvProperty); }
+            get { return (HSV)GetValue(MyHsvProperty); }
             set { SetValue(MyHsvProperty, value); }
         }
         public static readonly DependencyProperty MyHsvProperty =
-            DependencyProperty.Register(nameof(MyHsv), typeof(MyHsv), typeof(MainWindow),
-                new FrameworkPropertyMetadata(new MyHsv(0, 0, 0),
+            DependencyProperty.Register(nameof(MyHsv), typeof(HSV), typeof(MainWindow),
+                new FrameworkPropertyMetadata(new HSV(0, 0, 0),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
@@ -51,52 +51,59 @@ namespace _20230411_ColorPicker
         public MainWindow()
         {
             InitializeComponent();
-
-            SetBinding(MyColorProperty, new Binding()
-            {
-                Source = this,
-                Path = new PropertyPath(MyHsvProperty),
-                Converter = new ConverterHsv()
-            });
-            MyBorder.SetBinding(BackgroundProperty, new Binding()
-            {
-                Source = this,
-                Path = new PropertyPath(MyColorProperty),
-                Converter = new ConverterSolidBruhs()
-            });
-
-            MyScrollBarH.SetBinding(ScrollBar.ValueProperty, new Binding()
-            {
-                Source = this,
-                Path = new PropertyPath(MyHsvProperty),
-                Converter = new ConverterHsv2H(),
-                Mode = BindingMode.TwoWay,
-                ConverterParameter = new object[] { MyScrollBarS.Value, MyScrollBarV.Value }
-            });
-            MyScrollBarS.SetBinding(ScrollBar.ValueProperty, new Binding()
-            {
-                Source = this,
-                Path = new PropertyPath(MyHsvProperty),
-                Converter = new ConverterHsv2S(),
-                Mode = BindingMode.TwoWay,
-                ConverterParameter = new object[] { MyScrollBarH.Value, MyScrollBarV.Value }
-            });
-            MyScrollBarV.SetBinding(ScrollBar.ValueProperty, new Binding()
-            {
-                Source = this,
-                Path = new PropertyPath(MyHsvProperty),
-                Converter = new ConverterHsv2V(),
-                Mode = BindingMode.TwoWay,
-                ConverterParameter = new object[] { MyScrollBarH.Value, MyScrollBarS.Value }
-            });
-
-            //MyBorder.SetBinding(BackgroundProperty, new Binding()
-            //{
-            //    Source = this,
-            //    Path = new PropertyPath(MyHsvProperty),
-            //    Converter = new ConverterHsv(),
-            //});
+            
+            
+            Loaded += MainWindow_Loaded;
         }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            MyBorderHue.Background = new ImageBrush(GetHueImage(1, 6));
+        }
+
+        private BitmapSource GetSVImage( int w ,int h)
+        {
+
+            var wb = new WriteableBitmap(w, h, 96, 96, PixelFormats.Rgb24, null);
+            int stride = wb.BackBufferStride;
+            var pixels = new byte[h * stride];
+            wb.CopyPixels(pixels, stride, 0);
+            for (int y = 0; y < h; ++y)
+            {
+                for (int x = 0; x < w; ++x)
+                {
+                    int p = y * stride + (x * 3);
+                    Color hue = MathHSV.HSV2Color(y / (float)h * 360f, 1f, 0.9f);
+                    pixels[p] = hue.R;
+                    pixels[p + 1] = hue.G;
+                    pixels[p + 2] = hue.B;
+                }
+            }
+            wb.WritePixels(new Int32Rect(0, 0, w, h), pixels, stride, 0);
+            return wb;
+        }
+        
+        private BitmapSource GetHueImage(int w ,int h)
+        {
+            var wb = new WriteableBitmap(w, h, 96, 96, PixelFormats.Rgb24, null);
+            int stride = wb.BackBufferStride;
+            var pixels = new byte[h * stride];
+            wb.CopyPixels(pixels, stride, 0);
+            for (int y = 0; y < h; ++y)
+            {
+                for (int x = 0; x < w; ++x)
+                {
+                    int p = y * stride + (x * 3);
+                    Color hue = MathHSV.HSV2Color(y / (float)h * 360f, 1f, 0.9f);
+                    pixels[p] = hue.R;
+                    pixels[p + 1] = hue.G;
+                    pixels[p + 2] = hue.B;
+                }
+            }
+            wb.WritePixels(new Int32Rect(0, 0, w, h), pixels, stride, 0);
+            return wb;
+        }
+        
         private void ScrollRGBBinding()
         {
             MyScrollBarR.SetBinding(ScrollBar.ValueProperty, new Binding()

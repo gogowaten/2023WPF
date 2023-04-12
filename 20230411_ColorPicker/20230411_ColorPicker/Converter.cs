@@ -13,7 +13,7 @@ namespace _20230411_ColorPicker
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            MyHsv hsv = (MyHsv)value;
+            HSV hsv = (HSV)value;
             return hsv.H;
         }
 
@@ -23,14 +23,14 @@ namespace _20230411_ColorPicker
             object[] ooo = (object[])parameter;
             double para1 = (double)ooo[0];
             double para2 = (double)ooo[1];
-            return new MyHsv(para0, para1, para2);
+            return new HSV(para0, para1, para2);
         }
     }
     public class ConverterHsv2S : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            MyHsv hsv = (MyHsv)value;
+            HSV hsv = (HSV)value;
             return hsv.S;
         }
 
@@ -40,14 +40,14 @@ namespace _20230411_ColorPicker
             object[] ooo = (object[])parameter;
             double para1 = (double)ooo[0];
             double para2 = (double)ooo[1];
-            return new MyHsv(para1, para0, para2);
+            return new HSV(para1, para0, para2);
         }
     }
     public class ConverterHsv2V : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            MyHsv hsv = (MyHsv)value;
+            HSV hsv = (HSV)value;
             return hsv.V;
         }
 
@@ -57,7 +57,7 @@ namespace _20230411_ColorPicker
             object[] ooo = (object[])parameter;
             double para1 = (double)ooo[0];
             double para2 = (double)ooo[1];
-            return new MyHsv(para1, para2, para0);
+            return new HSV(para1, para2, para0);
         }
     }
 
@@ -85,7 +85,7 @@ namespace _20230411_ColorPicker
             double h = (double)values[0];
             double s = (double)values[1];
             double v = (double)values[2];
-            Color c = HSV.HSV2Color(h, s, v);
+            Color c = MathHSV.HSV2Color(h, s, v);
             return new SolidColorBrush(c);
         }
 
@@ -93,7 +93,7 @@ namespace _20230411_ColorPicker
         {
             SolidColorBrush brush = (SolidColorBrush)value;
             Color color = brush.Color;
-            var hsv = HSV.Color2HSV(color);
+            var hsv = MathHSV.Color2HSV(color);
             return new object[] { hsv.h, hsv.s, hsv.v };
         }
     }
@@ -103,7 +103,7 @@ namespace _20230411_ColorPicker
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Color color = (Color)value;
-            return HSV.Color2HSV(color).h;
+            return MathHSV.Color2HSV(color).h;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -116,7 +116,7 @@ namespace _20230411_ColorPicker
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Color color = (Color)value;
-            return HSV.Color2HSV(color).s;
+            return MathHSV.Color2HSV(color).s;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -129,7 +129,7 @@ namespace _20230411_ColorPicker
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Color color = (Color)value;
-            return HSV.Color2HSV(color).v;
+            return MathHSV.Color2HSV(color).v;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -197,15 +197,15 @@ namespace _20230411_ColorPicker
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            MyHsv hsv = (MyHsv)value;
-            return HSV.HSV2Color(hsv.H, hsv.S, hsv.V);
+            HSV hsv = (HSV)value;
+            return MathHSV.HSV2Color(hsv.H, hsv.S, hsv.V);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Color color = (Color)value;
-            (double h, double s, double v) = HSV.Color2HSV(color);
-            return new MyHsv(h, s, v);
+            (double h, double s, double v) = MathHSV.Color2HSV(color);
+            return new HSV(h, s, v);
         }
     }
 
