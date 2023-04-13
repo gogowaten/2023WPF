@@ -54,6 +54,8 @@ namespace _20230411_ColorPicker
 
 
             Loaded += MainWindow_Loaded;
+            WriteableBitmap bitmap = new(2, 2, 96, 96, PixelFormats.Rgb24, null);
+            
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

@@ -1,0 +1,56 @@
+﻿<Window x:Class="_20230413.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230413"
+        xmlns:Up="clr-namespace:ControlLibraryCore20200620;assembly=ControlLibraryCore20200620"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+  <Grid x:Name="MyGrid">
+
+    <StackPanel Orientation="Horizontal">
+
+      <StackPanel>
+        <StackPanel Orientation="Horizontal">
+          <Canvas Width="200" Height="200" Background="AliceBlue">
+            <Image Name="ImageSV" Width="200" Height="200" UseLayoutRounding="True" Stretch="None" Canvas.Top="0" Canvas.Left="0"/>
+            <Thumb Name="ThumbPicker" Width="20" Height="20" Canvas.Top="0" Canvas.Left="0"/>
+          </Canvas>
+          <Grid Margin="10,0,0,0">
+            <Image Name="ImageHue" Width="20" Height="200" UseLayoutRounding="True" Stretch="None"/>
+            <Slider Name="SliderHue" Minimum="0" Maximum="359" Value="0"
+                    SmallChange="1" LargeChange="10" Width="20" Height="200"
+                    IsSnapToTickEnabled="True" TickFrequency="1"
+                    Orientation="Vertical" Background="Transparent"/>
+          </Grid>
+        </StackPanel>
+      </StackPanel>
+
+      <StackPanel Orientation="Horizontal">
+        <UniformGrid Rows="3" Columns="1" Height="100" VerticalAlignment="Top" Margin="0,0,0,0">
+          <Up:NumericUpDown Name="UpDownR" Height="32" MyMaxValue="255" MyMinValue="0" MyLargeChange="10" MyStringFormat="R : 000"/>
+          <Up:NumericUpDown Name="UpDownG" Height="32" MyMaxValue="255" MyMinValue="0" MyLargeChange="10" MyStringFormat="G : 000"/>
+          <Up:NumericUpDown Name="UpDownB" Height="32" MyMaxValue="255" MyMinValue="0" MyLargeChange="10" MyStringFormat="B : 000"/>
+        </UniformGrid>
+
+        <UniformGrid Rows="3" Columns="1" Height="100" VerticalAlignment="Top" Margin="4,0,0,0">
+          <Up:NumericUpDown Name="UpDownH" Height="32" MyMaxValue="359" MyMinValue="0" MyLargeChange="10" MyStringFormat="H : 000°" MyTextAlignment="Left"/>
+          <Up:NumericUpDown Name="UpDownS" Height="32" MyMaxValue="100" MyMinValue="0" MyLargeChange="10" MyStringFormat="S : 000\%"/>
+          <Up:NumericUpDown Name="UpDownV" Height="32" MyMaxValue="100" MyMinValue="0" MyLargeChange="10" MyStringFormat="V : 000\%"/>
+        </UniformGrid>
+      </StackPanel>
+
+      <StackPanel Margin="4,0,0,0">
+        <Grid>
+          <Image Name="ImageAlpha" Width="40" Height="50" HorizontalAlignment="Right"/>
+          <Border Name="BorderPickupColorSample" Width="80" Height="50" Background="AntiqueWhite"/>
+        </Grid>
+        <Up:NumericUpDown Name="UpDownA" Height="32" MyMaxValue="255" MyMinValue="0" MyStringFormat="A : 000"/>
+
+        <!--<Button Name="ButtonTest" Content="test"/>-->
+      </StackPanel>
+      <Button Content="test" Click="Button_Click"/>
+    </StackPanel>
+  </Grid>
+</Window>

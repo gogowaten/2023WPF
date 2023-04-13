@@ -66,7 +66,7 @@
         <!--<TextBlock Text="{Binding ElementName=MyMain, Path=MyColor}"/>-->
         <TextBlock Text="{Binding ElementName=MyMain, Path=MyHsv.H}"/>
       </DockPanel>
-      <local:ColorPicker Width="100" Height="100" PickupColor="MediumAquamarine"/>
+      <!--<local:ColorPicker Width="100" Height="100" PickupColor="MediumAquamarine"/>-->
     </StackPanel>
 
   </Grid>
