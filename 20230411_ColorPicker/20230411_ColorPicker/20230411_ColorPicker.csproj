@@ -8,11 +8,4 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="ControlLibraryCore20200620">
-      <HintPath>..\..\..\userControl\ControlLibraryCore20200620\ControlLibraryCore20200620\bin\Release\net6.0-windows\publish\ControlLibraryCore20200620.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-  </ItemGroup>
-
 </Project>

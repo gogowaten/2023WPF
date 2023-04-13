@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 //using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,17 @@ using System.Windows.Media;
 
 namespace _20230411_ColorPicker
 {
+    //[DebuggerDisplay("h = {H}, s = {S}")]
     public struct HSV
     {
         //public double H, S, V;
         public double H { get; set; }
         public double S { get; set; }
         public double V { get; set; }
-
+        public override string ToString()
+        {
+            return $"{H}, {S}, {V}";
+        }
         public HSV(double h, double s, double v)
         {
             H = h;
@@ -170,7 +175,7 @@ namespace _20230411_ColorPicker
         #endregion Color -> HSV(円錐モデル)
 
         #region HSV(円柱モデル) -> RGB
-
+        
         public static (byte r, byte g, byte b) Hsv2rgb(double h, double s, double v)
         {
             Color color = HSV2Color(h, s, v);

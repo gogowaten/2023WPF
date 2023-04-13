@@ -34,34 +34,87 @@ namespace _20230411_ColorPicker
                 new FrameworkPropertyMetadata(Color.FromArgb(0, 0, 0, 0),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public HSV MyHsv
+        public HSV MyHSV
         {
             get { return (HSV)GetValue(MyHsvProperty); }
             set { SetValue(MyHsvProperty, value); }
         }
         public static readonly DependencyProperty MyHsvProperty =
-            DependencyProperty.Register(nameof(MyHsv), typeof(HSV), typeof(MainWindow),
+            DependencyProperty.Register(nameof(MyHSV), typeof(HSV), typeof(MainWindow),
                 new FrameworkPropertyMetadata(new HSV(0, 0, 0),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
-
+        private MarkerAdorner MarkerAdorner { get; set; }
 
 
         public MainWindow()
         {
             InitializeComponent();
-
+            MarkerAdorner = new(MyBorder);
 
             Loaded += MainWindow_Loaded;
             WriteableBitmap bitmap = new(2, 2, 96, 96, PixelFormats.Rgb24, null);
-            
+            SetMyBinding();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             MyBorderHue.Background = new ImageBrush(GetHueImage(1, 6));
             MyBorder.Background = new ImageBrush(GetSVImage2(30, 32));
+
+            MyScrollBarR.ValueChanged += MyScrollBarR_ValueChanged;
+            MyScrollBarG.ValueChanged += MyScrollBarR_ValueChanged;
+            MyScrollBarB.ValueChanged += MyScrollBarR_ValueChanged;
+
+            MyScrollBarH.ValueChanged += MyScrollBarH_ValueChanged;
+            MyScrollBarS.ValueChanged += MyScrollBarS_ValueChanged;
+            MyScrollBarV.ValueChanged += MyScrollBarS_ValueChanged;
+
+            if (AdornerLayer.GetAdornerLayer(MyBorder) is AdornerLayer layer)
+            {
+                layer.Add(MarkerAdorner);
+            }
+            MarkerAdorner.SetBinding(MarkerAdorner.XProperty, new Binding()
+            {
+                Source = MyScrollBarS,
+                Path = new PropertyPath(ScrollBar.ValueProperty)
+            });
+            MarkerAdorner.SetBinding(MarkerAdorner.YProperty, new Binding()
+            {
+                Source = MyScrollBarV,
+                Path = new PropertyPath(ScrollBar.ValueProperty)
+            });
+
+        }
+
+        private void MyScrollBarS_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            MyHSV = new(MyScrollBarH.Value, MyScrollBarS.Value, MyScrollBarV.Value);
+        }
+
+        private void MyScrollBarH_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            MyHSV = new(MyScrollBarH.Value, MyScrollBarS.Value, MyScrollBarV.Value);
+            MyBorder.Background = new ImageBrush(GetSVImage2(MyHSV.H, 32));
+        }
+
+        private void MyScrollBarR_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            MyColor = Color.FromArgb(255, (byte)MyScrollBarR.Value, (byte)MyScrollBarG.Value, (byte)MyScrollBarB.Value);
+
+            MyBorder.Background = new ImageBrush(GetSVImage2(MyHSV.H, 32));
+        }
+
+        private void SetMyBinding()
+        {
+            SetBinding(MyColorProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(MyHsvProperty),
+                Mode = BindingMode.TwoWay,
+                Converter = new ConverterHSV2Color()
+            });
         }
 
         private BitmapSource GetSVImage2(double hue, int size)
@@ -69,14 +122,14 @@ namespace _20230411_ColorPicker
             var wb = new WriteableBitmap(size, size, 96, 96, PixelFormats.Rgb24, null);
             int stride = (size * wb.Format.BitsPerPixel + 7) / 8;
             var pixels = new byte[size * stride];
-            wb.CopyPixels(pixels, stride, 0);            
+            wb.CopyPixels(pixels, stride, 0);
             int p = 0;
             Parallel.For(0, size, y =>
             {
                 ParallelImageSV(p, y, stride, pixels, hue, size, size);
             });
 
-            wb.WritePixels(new Int32Rect(0, 0,size, size), pixels, stride, 0);
+            wb.WritePixels(new Int32Rect(0, 0, size, size), pixels, stride, 0);
             return wb;
         }
         private void ParallelImageSV(int p, int y, int stride, byte[] pixels, double hue, int w, int h)
@@ -179,6 +232,11 @@ namespace _20230411_ColorPicker
             //MyScrollBarV.Value = v;
         }
 
-
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var neko = MyColor;
+            var inu = MyHSV;
+            MyBorder.Width = 150;
+        }
     }
 }

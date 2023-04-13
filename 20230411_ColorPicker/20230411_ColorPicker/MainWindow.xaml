@@ -8,12 +8,6 @@
         Title="MainWindow" Height="450" Width="600"
         Name="MyMain">
   <Window.Resources>
-    <local:Converter x:Key="vc"/>
-    <local:ConverterHSV x:Key="vcHSV"/>
-    <local:ConverterHue x:Key="HHsv"/>
-    <local:ConverterSaturation x:Key="hSSv"/>
-    <local:ConverterValue x:Key="hsVV"/>
-    <local:ConverterSolidBruhs x:Key="solid"/>
     <local:ConverterR x:Key="r"/>
     <local:ConverterG x:Key="g"/>
     <local:ConverterB x:Key="b"/>
@@ -29,29 +23,29 @@
         </Border>
         <Border Width="20" Background="Gray">
           <Canvas>
-            <Slider Width="{Binding ElementName=MyBorder, Path=ActualHeight}" Canvas.Left="20"
-                    Value="50" Minimum="0" Maximum="255">
+            <Slider Height="{Binding ElementName=MyBorder, Path=ActualHeight}"
+                    Value="50" Minimum="0" Maximum="255" Orientation="Vertical" RenderTransformOrigin="0.5,0.5">
               <Slider.RenderTransform>
-                <RotateTransform Angle="90"/>
+                <RotateTransform Angle="180"/>
               </Slider.RenderTransform>
             </Slider>
             <TextBlock Text="透"/>
           </Canvas>
         </Border>
-        
+
         <TabControl>
           <TabItem Header="RGB">
             <DockPanel>
-            <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
-            <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
-            <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
+              <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
+              <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
+              <TextBlock DockPanel.Dock="Top" Text="RGB value"/>
             </DockPanel>
           </TabItem>
           <TabItem Header="HSV">
             <DockPanel>
               <TextBlock DockPanel.Dock="Top" Text="HSV value"/>
               <TextBlock DockPanel.Dock="Top" Text="HSV value"/>
-              <TextBlock DockPanel.Dock="Top" Text="HSV value"/>              
+              <TextBlock DockPanel.Dock="Top" Text="HSV value"/>
             </DockPanel>
           </TabItem>
         </TabControl>
@@ -62,9 +56,17 @@
         <ScrollBar x:Name="MyScrollBarH" Minimum="0" Maximum="360" SmallChange="30" Value="0"/>
         <ScrollBar x:Name="MyScrollBarS" Minimum="0" Maximum="1" SmallChange="0.1" Value="1"/>
         <ScrollBar x:Name="MyScrollBarV" Minimum="0" Maximum="1" SmallChange="0.1" Value="0.5"/>
-
+        <Button Content="test" Click="Button_Click"/>
         <!--<TextBlock Text="{Binding ElementName=MyMain, Path=MyColor}"/>-->
-        <TextBlock Text="{Binding ElementName=MyMain, Path=MyHsv.H}"/>
+        <StackPanel>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.H}"/>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.S}"/>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.V}"/>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyColor.R}"/>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyColor.G}"/>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyColor.B}"/>
+          <Ellipse Width="50" Height="50" Stroke="Red"/>
+        </StackPanel>
       </DockPanel>
       <!--<local:ColorPicker Width="100" Height="100" PickupColor="MediumAquamarine"/>-->
     </StackPanel>
