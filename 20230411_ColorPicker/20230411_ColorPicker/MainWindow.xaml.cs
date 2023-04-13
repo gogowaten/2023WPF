@@ -36,16 +36,18 @@ namespace _20230411_ColorPicker
 
         public HSV MyHSV
         {
-            get { return (HSV)GetValue(MyHsvProperty); }
-            set { SetValue(MyHsvProperty, value); }
+            get { return (HSV)GetValue(MyHSVProperty); }
+            set { SetValue(MyHSVProperty, value); }
         }
-        public static readonly DependencyProperty MyHsvProperty =
+        public static readonly DependencyProperty MyHSVProperty =
             DependencyProperty.Register(nameof(MyHSV), typeof(HSV), typeof(MainWindow),
                 new FrameworkPropertyMetadata(new HSV(0, 0, 0),
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
         private MarkerAdorner MarkerAdorner { get; set; }
+        private bool IsHsvChanging = false;
+        private bool IsRGBChanging = false;
 
 
         public MainWindow()
@@ -86,24 +88,61 @@ namespace _20230411_ColorPicker
                 Path = new PropertyPath(ScrollBar.ValueProperty)
             });
 
+            MyEllipse.SetBinding(Ellipse.FillProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(MyColorProperty),
+                Converter =new ConverterSolidBruhs(),
+            });
         }
 
         private void MyScrollBarS_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyHSV = new(MyScrollBarH.Value, MyScrollBarS.Value, MyScrollBarV.Value);
+            if (IsRGBChanging) return;
+            IsHsvChanging = true;
+            SetRGBScrollBarValue();
+            //MyHSV = new(MyScrollBarH.Value, MyScrollBarS.Value, MyScrollBarV.Value);
+            //var (r, g, b) = MathHSV.HSV2RGB(MyHSV);
+            //MyScrollBarR.Value = r;
+            //MyScrollBarG.Value = g;
+            //MyScrollBarB.Value = b;
+            IsHsvChanging = false;
         }
 
         private void MyScrollBarH_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyHSV = new(MyScrollBarH.Value, MyScrollBarS.Value, MyScrollBarV.Value);
+            if (IsRGBChanging) return;
+            IsHsvChanging = true;
+            SetRGBScrollBarValue();
+            //MyHSV = new(MyScrollBarH.Value, MyScrollBarS.Value, MyScrollBarV.Value);
             MyBorder.Background = new ImageBrush(GetSVImage2(MyHSV.H, 32));
+            //var (r, g, b) = MathHSV.HSV2RGB(MyHSV);
+            //MyScrollBarR.Value = r;
+            //MyScrollBarG.Value = g;
+            //MyScrollBarB.Value = b;
+            IsHsvChanging = false;
         }
-
+        private void SetRGBScrollBarValue()
+        {
+            MyHSV = new(MyScrollBarH.Value, MyScrollBarS.Value, MyScrollBarV.Value);
+            var (r, g, b) = MathHSV.HSV2RGB(MyHSV);
+            MyScrollBarR.Value = r;
+            MyScrollBarG.Value = g;
+            MyScrollBarB.Value = b;
+        }
         private void MyScrollBarR_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MyColor = Color.FromArgb(255, (byte)MyScrollBarR.Value, (byte)MyScrollBarG.Value, (byte)MyScrollBarB.Value);
-
-            MyBorder.Background = new ImageBrush(GetSVImage2(MyHSV.H, 32));
+            IsRGBChanging = true;
+            if (IsHsvChanging == false)
+            {
+                MyColor = Color.FromArgb(255, (byte)MyScrollBarR.Value, (byte)MyScrollBarG.Value, (byte)MyScrollBarB.Value);
+                MyBorder.Background = new ImageBrush(GetSVImage2(MyHSV.H, 32));
+                var (h, s, v) = MathHSV.Color2HSV(MyColor);
+                MyScrollBarH.Value = h;
+                MyScrollBarS.Value = s;
+                MyScrollBarV.Value = v;
+            }
+            IsRGBChanging = false;
         }
 
         private void SetMyBinding()
@@ -111,7 +150,7 @@ namespace _20230411_ColorPicker
             SetBinding(MyColorProperty, new Binding()
             {
                 Source = this,
-                Path = new PropertyPath(MyHsvProperty),
+                Path = new PropertyPath(MyHSVProperty),
                 Mode = BindingMode.TwoWay,
                 Converter = new ConverterHSV2Color()
             });

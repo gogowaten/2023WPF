@@ -212,19 +212,19 @@ namespace _20230411_ColorPicker
     //    }
     //}
 
-    //public class ConverterSolidBruhs : IValueConverter
-    //{
-    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        Color color1 = (Color)value;
-    //        return new SolidColorBrush(color1);
-    //    }
+    public class ConverterSolidBruhs : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Color color1 = (Color)value;
+            return new SolidColorBrush(color1);
+        }
 
-    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-    //}
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 
     //public class ConverterRGB : IMultiValueConverter
     //{

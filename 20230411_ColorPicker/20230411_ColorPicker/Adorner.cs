@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Data;
 using System.Globalization;
+using System.Windows.Input;
 
 namespace _20230411_ColorPicker
 {
@@ -87,6 +88,7 @@ namespace _20230411_ColorPicker
         public Thumb Marker;
         public Canvas MyCanvas;
         public Border TargetElement;
+        private Point DiffPoint;
         public MarkerAdorner(FrameworkElement adornedElement) : base(adornedElement)
         {
             if (adornedElement is Border border)
@@ -100,14 +102,28 @@ namespace _20230411_ColorPicker
             MyVisuals.Add(MyCanvas);
             MyCanvas.Width = 200;
             MyCanvas.Height = 200;
-
+            MyCanvas.Background = Brushes.Transparent;
+            //MyCanvas.PreviewMouseLeftButtonDown += MyCanvas_PreviewMouseLeftButtonDown;
+            MyCanvas.MouseLeftButtonDown += MyCanvas_MouseLeftButtonDown;
             Marker = new Thumb();
             MyCanvas.Children.Add(Marker);
 
 
             SetMarker();
             SetMarkerTemplate();
+            Marker.DragDelta += Marker_DragDelta;
+
         }
+
+        private void MyCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var neko = Mouse.GetPosition(MyCanvas);
+            DiffPoint = new Point(neko.X - X * TargetElement.Width, neko.Y - Y * TargetElement.Height);
+            X = neko.X / TargetElement.Width;
+            Y = neko.Y / TargetElement.Height;
+            Marker.RaiseEvent(e);
+        }
+
         private void SetMarker()
         {
             Binding b0 = new() { Source = this, Path = new PropertyPath(XProperty) };
@@ -152,7 +168,7 @@ namespace _20230411_ColorPicker
             factory.AppendChild(e1);
             factory.AppendChild(e2);
             Marker.Template = new() { VisualTree = factory };
-            Marker.DragDelta += Marker_DragDelta;
+
         }
 
         private void Marker_DragDelta(object sender, DragDeltaEventArgs e)
@@ -162,10 +178,10 @@ namespace _20230411_ColorPicker
 
             var xx = left + e.HorizontalChange;
             var yy = top + e.VerticalChange;
-
+            xx += DiffPoint.X;
+            yy += DiffPoint.Y;
             X = xx / TargetElement.Width;
             Y = yy / TargetElement.Height;
-
         }
         protected override Size ArrangeOverride(Size finalSize)
         {
