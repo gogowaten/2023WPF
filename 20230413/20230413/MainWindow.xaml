@@ -13,16 +13,16 @@
 
       <StackPanel>
         <StackPanel Orientation="Horizontal">
-          <Canvas Width="200" Height="200" Background="AliceBlue">
-            <Image Name="ImageSV" Width="200" Height="200" UseLayoutRounding="True" Stretch="None" Canvas.Top="0" Canvas.Left="0"/>
-            <Thumb Name="ThumbPicker" Width="20" Height="20" Canvas.Top="0" Canvas.Left="0"/>
-          </Canvas>
+          <Rectangle Name="ImageSV"
+                       Width="200" Height="200" UseLayoutRounding="True" 
+                       Canvas.Top="0" Canvas.Left="0"/>
           <Grid Margin="10,0,0,0">
             <Image Name="ImageHue" Width="20" Height="200" UseLayoutRounding="True" Stretch="None"/>
             <Slider Name="SliderHue" Minimum="0" Maximum="359" Value="0"
                     SmallChange="1" LargeChange="10" Width="20" Height="200"
                     IsSnapToTickEnabled="True" TickFrequency="1"
-                    Orientation="Vertical" Background="Transparent"/>
+                    Orientation="Vertical" Background="Transparent"
+                    RenderTransformOrigin="0.5,0.5"/>
           </Grid>
         </StackPanel>
       </StackPanel>
@@ -36,8 +36,14 @@
 
         <UniformGrid Rows="3" Columns="1" Height="100" VerticalAlignment="Top" Margin="4,0,0,0">
           <Up:NumericUpDown Name="UpDownH" Height="32" MyMaxValue="359" MyMinValue="0" MyLargeChange="10" MyStringFormat="H : 000°" MyTextAlignment="Left"/>
-          <Up:NumericUpDown Name="UpDownS" Height="32" MyMaxValue="100" MyMinValue="0" MyLargeChange="10" MyStringFormat="S : 000\%"/>
-          <Up:NumericUpDown Name="UpDownV" Height="32" MyMaxValue="100" MyMinValue="0" MyLargeChange="10" MyStringFormat="V : 000\%"/>
+          <Up:NumericUpDown Name="UpDownS" Height="32" 
+                            MyMaxValue="1" MyMinValue="0" MyLargeChange="0.1"
+                            MyStringFormat="S : 0.00"
+                            MySmallChange="0.01"/>
+          <Up:NumericUpDown Name="UpDownV" Height="32" 
+                            MyMaxValue="1" MyMinValue="0" MyLargeChange="0.1" 
+                            MyStringFormat="V : 0.00"
+                            MySmallChange="0.01"/>
         </UniformGrid>
       </StackPanel>
 

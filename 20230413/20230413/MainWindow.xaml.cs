@@ -31,7 +31,11 @@ namespace _20230413
             set { SetValue(PickupColorProperty, value); }
         }
         public static readonly DependencyProperty PickupColorProperty =
-            DependencyProperty.Register(nameof(PickupColor), typeof(Color), typeof(MainWindow));
+            DependencyProperty.Register(nameof(PickupColor), typeof(Color), typeof(MainWindow),
+                new FrameworkPropertyMetadata(Color.FromArgb(0, 0, 0, 0),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public byte R
         {
@@ -39,7 +43,11 @@ namespace _20230413
             set { SetValue(RProperty, value); }
         }
         public static readonly DependencyProperty RProperty =
-            DependencyProperty.Register(nameof(R), typeof(byte), typeof(MainWindow));
+            DependencyProperty.Register(nameof(R), typeof(byte), typeof(MainWindow),
+                new FrameworkPropertyMetadata(byte.MinValue,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public byte G
         {
@@ -47,7 +55,11 @@ namespace _20230413
             set { SetValue(GProperty, value); }
         }
         public static readonly DependencyProperty GProperty =
-            DependencyProperty.Register(nameof(G), typeof(byte), typeof(MainWindow));
+            DependencyProperty.Register(nameof(G), typeof(byte), typeof(MainWindow),
+                new FrameworkPropertyMetadata(byte.MinValue,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public byte B
         {
@@ -55,7 +67,11 @@ namespace _20230413
             set { SetValue(BProperty, value); }
         }
         public static readonly DependencyProperty BProperty =
-            DependencyProperty.Register(nameof(B), typeof(byte), typeof(MainWindow));
+            DependencyProperty.Register(nameof(B), typeof(byte), typeof(MainWindow),
+                new FrameworkPropertyMetadata(byte.MinValue,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public byte A
         {
@@ -63,47 +79,134 @@ namespace _20230413
             set { SetValue(AProperty, value); }
         }
         public static readonly DependencyProperty AProperty =
-            DependencyProperty.Register(nameof(A), typeof(byte), typeof(MainWindow));
+            DependencyProperty.Register(nameof(A), typeof(byte), typeof(MainWindow),
+                new FrameworkPropertyMetadata(byte.MinValue,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public HSV PickupHSV
+        {
+            get { return (HSV)GetValue(PickupHSVProperty); }
+            set { SetValue(PickupHSVProperty, value); }
+        }
+        public static readonly DependencyProperty PickupHSVProperty =
+            DependencyProperty.Register(nameof(PickupHSV), typeof(HSV), typeof(MainWindow),
+                new FrameworkPropertyMetadata(new HSV(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public int SVImageSize
+        {
+            get { return (int)GetValue(SVImageSizeProperty); }
+            set { SetValue(SVImageSizeProperty, value); }
+        }
+        public static readonly DependencyProperty SVImageSizeProperty =
+            DependencyProperty.Register(nameof(SVImageSize), typeof(int), typeof(MainWindow),
+                new FrameworkPropertyMetadata(200,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public int MarkerSize
+        {
+            get { return (int)GetValue(MarkerSizeProperty); }
+            set { SetValue(MarkerSizeProperty, value); }
+        }
+        public static readonly DependencyProperty MarkerSizeProperty =
+            DependencyProperty.Register(nameof(MarkerSize), typeof(int), typeof(MainWindow),
+                new FrameworkPropertyMetadata(20,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
-        #endregion
-        private int ImageSize = 200;//100以外にすると表示が崩れる
+        //public double Hue
+        //{
+        //    get { return (double)GetValue(HueProperty); }
+        //    set { SetValue(HueProperty, value); }
+        //}
+        //public static readonly DependencyProperty HueProperty =
+        //    DependencyProperty.Register(nameof(Hue), typeof(double), typeof(MainWindow),
+        //        new FrameworkPropertyMetadata(0.0,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        //public double Saturation
+        //{
+        //    get { return (double)GetValue(SaturationProperty); }
+        //    set { SetValue(SaturationProperty, value); }
+        //}
+        //public static readonly DependencyProperty SaturationProperty =
+        //    DependencyProperty.Register(nameof(Saturation), typeof(double), typeof(MainWindow),
+        //        new FrameworkPropertyMetadata(0.0,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        //public double Value
+        //{
+        //    get { return (double)GetValue(ValueProperty); }
+        //    set { SetValue(ValueProperty, value); }
+        //}
+        //public static readonly DependencyProperty ValueProperty =
+        //    DependencyProperty.Register(nameof(Value), typeof(double), typeof(MainWindow),
+        //        new FrameworkPropertyMetadata(0.0,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        #endregion 依存関係プロパティ
+
+        //private int ImageSize = 200;//100以外にすると表示が崩れる
         private bool IsHsvChanging = false;
         private bool IsRgbChanging = false;
-        private double ThumbSize = 20;
-        private Point PointDiff;//SV画像のクリック位置とThumbの位置の差を記録
+        //private double ThumbSize = 20;
+        private MarkerAdorner Marker;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            Marker = new MarkerAdorner(ImageSV);
             MySetBinting();
             MySetEvents();
-            InitializeThumb();
             MyInitialize();
 
             R = 255;
             G = 0;
             B = 0;
             A = 255;
+
+            Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (AdornerLayer.GetAdornerLayer(ImageSV) is AdornerLayer layer)
+            {
+                layer.Add(Marker);
+            }
         }
 
         private void MySetEvents()
         {
-            UpDownR.MyValueChanged += UpDownR_MyValueChanged;
-            UpDownG.MyValueChanged += UpDownR_MyValueChanged;
-            UpDownB.MyValueChanged += UpDownR_MyValueChanged;
+            UpDownR.MyValueChanged += UpDownRGB_MyValueChanged;
+            UpDownG.MyValueChanged += UpDownRGB_MyValueChanged;
+            UpDownB.MyValueChanged += UpDownRGB_MyValueChanged;
 
-            UpDownH.MyValueChanged += UpDownH_MyValueChanged;
-            UpDownS.MyValueChanged += UpDownH_MyValueChanged;
-            UpDownV.MyValueChanged += UpDownH_MyValueChanged;
+            UpDownH.MyValueChanged += UpDownHSV_MyValueChanged;
+            UpDownS.MyValueChanged += UpDownHSV_MyValueChanged;
+            UpDownV.MyValueChanged += UpDownHSV_MyValueChanged;
 
-            ImageSV.MouseLeftButtonDown += ImageSV_MouseLeftButtonDown;
-            SliderHue.MouseWheel += SliderHue_MouseWheel;
+            
         }
 
         //HSV変更時
-        private void UpDownH_MyValueChanged(object sender, MyValuechangedEventArgs e)
+        private void UpDownHSV_MyValueChanged(object sender, MyValuechangedEventArgs e)
         {
             IsHsvChanging = true;
             if (IsRgbChanging != true)
@@ -111,39 +214,18 @@ namespace _20230413
                 NumericUpDown ud = (NumericUpDown)sender;
                 if (ud == UpDownH) { SetImageSV((double)UpDownH.MyValue); }
 
-                var s = (double)UpDownS.MyValue / 100.0;
-                var v = (double)UpDownV.MyValue / 100.0;
-
-                Canvas.SetLeft(ThumbPicker, (s * ImageSize) - (ThumbSize / 2f));
-                Canvas.SetTop(ThumbPicker, (v * ImageSize) - (ThumbSize / 2f));
+                var s = (double)UpDownS.MyValue;
+                var v = (double)UpDownV.MyValue;
 
                 (R, G, B) = MathHSV.Hsv2rgb((double)UpDownH.MyValue, s, v);
 
             }
             IsHsvChanging = false;
         }
-        //private void UpDownH_MyValueChanged(object sender, MyValuechangedEventArgs e)
-        //{
-        //    IsHsvChanging = true;
-        //    if (IsRgbChanging != true)
-        //    {
-        //        NumericUpDown ud = (NumericUpDown)sender;
-        //        if (ud == UpDownH) { SetImageSV((double)UpDownH.MyValue); }
 
-        //        var s = (double)UpDownS.MyValue / ImageSize;
-        //        var v = (double)UpDownV.MyValue / ImageSize;
-
-        //        Canvas.SetLeft(ThumbPicker, (s * ImageSize) - (ThumbSize / 2f));
-        //        Canvas.SetTop(ThumbPicker, (v * ImageSize) - (ThumbSize / 2f));
-
-        //        (R, G, B) = MathHSV.Hsv2rgb((double)UpDownH.MyValue, s, v);
-
-        //    }
-        //    IsHsvChanging = false;
-        //}
 
         //RGB変更時
-        private void UpDownR_MyValueChanged(object sender, MyValuechangedEventArgs e)
+        private void UpDownRGB_MyValueChanged(object sender, MyValuechangedEventArgs e)
         {
             IsRgbChanging = true;
             if (IsHsvChanging != true)
@@ -154,249 +236,62 @@ namespace _20230413
                     UpDownH.MyValue = (int)h;
                     SetImageSV(h);
                 }
-                UpDownS.MyValue = (int)Math.Round(s * 100.0, MidpointRounding.AwayFromZero);
-                UpDownV.MyValue = (int)Math.Round(v * 100.0, MidpointRounding.AwayFromZero);
-
-                int x = (int)(s * ImageSize);
-                int y = (int)(v * ImageSize);
-                Canvas.SetLeft(ThumbPicker, x - (ThumbSize / 2f));
-                Canvas.SetTop(ThumbPicker, y - (ThumbSize / 2f));
+                UpDownS.MyValue = (decimal)s;
+                UpDownV.MyValue = (decimal)v;
             }
             IsRgbChanging = false;
         }
-        //private void UpDownR_MyValueChanged(object sender, MyValuechangedEventArgs e)
-        //{
-        //    IsRgbChanging = true;
-        //    if (IsHsvChanging != true)
-        //    {
-        //        (double h, double s, double v) = MathHSV.RGB2hsv(R, G, B);
-        //        if (UpDownH.MyValue != (int)h)
-        //        {
-        //            UpDownH.MyValue = (int)h;
-        //            SetImageSV(h);
-        //        }
-        //        UpDownS.MyValue = (int)(s * ImageSize);
-        //        UpDownV.MyValue = (int)(v * ImageSize);
 
-
-        //        Canvas.SetLeft(ThumbPicker, (int)UpDownS.MyValue - (ThumbSize / 2f));
-        //        Canvas.SetTop(ThumbPicker, (int)UpDownV.MyValue - (ThumbSize / 2f));
-        //    }
-        //    IsRgbChanging = false;
-        //}
-
-        private void SliderHue_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (e.Delta > 0) { UpDownH.MyValue--; }
-            else { UpDownH.MyValue++; }
-        }
-
-
+      
         private void MySetBinting()
         {
-            Binding br = new Binding();
-            br.Source = this;
-            br.Path = new PropertyPath(RProperty);
-            br.Mode = BindingMode.TwoWay;//必須
-            UpDownR.SetBinding(NumericUpDown.MyValueProperty, br);
+            //HSV -> Color
+            SetBinding(PickupHSVProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(PickupColorProperty),
+                Converter = new ConverterColor2HSV(),
+            });
 
-            Binding bg = new();
-            bg.Source = this;
-            bg.Path = new PropertyPath(GProperty);
-            bg.Mode = BindingMode.TwoWay;
-            UpDownG.SetBinding(NumericUpDown.MyValueProperty, bg);
-
-            Binding bb = new();
-            bb.Source = this;
-            bb.Path = new PropertyPath(BProperty);
-            bb.Mode = BindingMode.TwoWay;
-            UpDownB.SetBinding(NumericUpDown.MyValueProperty, bb);
-
-            Binding ba = new();
-            ba.Source = this;
-            ba.Path = new PropertyPath(AProperty);
-            ba.Mode = BindingMode.TwoWay;
-            UpDownA.SetBinding(NumericUpDown.MyValueProperty, ba);
-
+            //Color -> R,G,B,A
+            Binding b0 = new() { Source = this, Path = new PropertyPath(RProperty) };
+            Binding b1 = new() { Source = this, Path = new PropertyPath(GProperty) };
+            Binding b2 = new() { Source = this, Path = new PropertyPath(BProperty) };
+            Binding b3 = new() { Source = this, Path = new PropertyPath(AProperty) };
             MultiBinding mb = new();
-            mb.Bindings.Add(br);
-            mb.Bindings.Add(bg);
-            mb.Bindings.Add(bb);
-            mb.Bindings.Add(ba);
-            mb.Mode = BindingMode.TwoWay;
+            mb.Bindings.Add(b0);
+            mb.Bindings.Add(b1);
+            mb.Bindings.Add(b2);
+            mb.Bindings.Add(b3);
             mb.Converter = new ConverterRGB2Color();
-            BindingOperations.SetBinding(this, PickupColorProperty, mb);
+            SetBinding(PickupColorProperty, mb);
 
-            Binding bColor = new();
-            bColor.Source = this;
-            bColor.Path = new PropertyPath(PickupColorProperty);
-            bColor.Mode = BindingMode.TwoWay;
-            bColor.Converter = new ConverterColor2SolidBrush();
-            BorderPickupColorSample.SetBinding(Border.BackgroundProperty, bColor);
+            //NumeR,G,B,A -> R,G,B,A
+            UpDownR.SetBinding(NumericUpDown.MyValueProperty, new Binding() { Source = this, Path = new PropertyPath(RProperty) });
+            UpDownG.SetBinding(NumericUpDown.MyValueProperty, new Binding() { Source = this, Path = new PropertyPath(GProperty) });
+            UpDownB.SetBinding(NumericUpDown.MyValueProperty, new Binding() { Source = this, Path = new PropertyPath(BProperty) });
+            UpDownA.SetBinding(NumericUpDown.MyValueProperty, new Binding() { Source = this, Path = new PropertyPath(AProperty) });
 
+            SliderHue.SetBinding(Slider.ValueProperty, new Binding() { Source = UpDownH, Path = new PropertyPath(NumericUpDown.MyValueProperty) });
 
-            Binding bSlider = new();
-            bSlider.Source = UpDownH;
-            bSlider.Path = new PropertyPath(NumericUpDown.MyValueProperty);
-            bSlider.Mode = BindingMode.TwoWay;
-            SliderHue.SetBinding(Slider.ValueProperty, bSlider);
-
+            
         }
 
 
         private void MyInitialize()
         {
-            MyGrid.Margin = new Thickness(ThumbSize / 2, ThumbSize / 2, 0, 0);
-            ImageHue.Source = GetImageHue(ImageSize / 2, ImageSize);
+            MyGrid.Margin = new Thickness(MarkerSize / 2, MarkerSize / 2, 0, 0);
+            ImageHue.Source = GetImageHue((int)(SVImageSize / 2.0), (int)SVImageSize);
             ImageHue.Width = ImageHue.Source.Width;
 
             SliderHue.RenderTransform = new RotateTransform(180);
-            SliderHue.RenderTransformOrigin = new Point(0.5, 0.5);
 
             SetImageSV(0);
             SetImageAlphaSource();
 
         }
 
-        private void InitializeThumb()
-        {
-            ThumbPicker.Width = ThumbSize;//20
-            ThumbPicker.Height = ThumbSize;
-            ControlTemplate template = new ControlTemplate(typeof(Thumb));
-            template.VisualTree = new FrameworkElementFactory(typeof(Grid), "tempGrid");
-            ThumbPicker.Template = template;
-            ThumbPicker.ApplyTemplate();
 
-            Grid myGrid = (Grid)ThumbPicker.Template.FindName("tempGrid", ThumbPicker);
-            Ellipse eBlack = new()
-            {
-                Width = ThumbSize,//20
-                Height = ThumbSize,
-                Stroke = new SolidColorBrush(Colors.Black),
-                Fill = new SolidColorBrush(Colors.Transparent)
-            };
-            Ellipse eWhite = new()
-            {
-                Width = ThumbSize - 2,//18
-                Height = ThumbSize - 2,
-                Stroke = new SolidColorBrush(Colors.White)
-            };
-
-            myGrid.Children.Add(eBlack);
-            myGrid.Children.Add(eWhite);
-            //myGrid.Background = new SolidColorBrush(Colors.Transparent);
-
-            ThumbPicker.DragDelta += ThumbPicker_DragDelta;
-            ThumbPicker.PreviewMouseLeftButtonDown += ThumbPicker_PreviewMouseLeftButtonDown;
-            ThumbPicker.DragStarted += ThumbPicker_DragStarted;
-        }
-
-        private void ThumbPicker_DragStarted(object sender, DragStartedEventArgs e)
-        {
-            var h = e.HorizontalOffset;
-            var v = e.VerticalOffset;
-            PointDiff = new Point(h, v);
-        }
-
-        private void ImageSV_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Image svImage = (Image)sender;
-            Point p = e.GetPosition(svImage);
-            //SV画像のクリック位置とThumbの位置の差を記録
-            var xx = (double)UpDownS.MyValue * (ImageSize / 100.0);
-            xx += p.X;
-            var xxx = p.X - (double)UpDownS.MyValue;
-            var xxxx = p.X - Canvas.GetLeft(ThumbPicker);
-
-            PointDiff = new Point(xxxx, p.Y - Canvas.GetTop(ThumbPicker));
-            var x = (int)(Math.Round(p.X / ImageSize * 100, MidpointRounding.AwayFromZero));
-            var y = (int)(Math.Round(p.Y / ImageSize * 100, MidpointRounding.AwayFromZero));
-
-            UpDownS.MyValue = x;
-            UpDownV.MyValue = y;
-            //Canvas.SetLeft(ThumbPicker, p.X - ThumbSize / 2.0);
-            //Canvas.SetTop(ThumbPicker, p.Y - ThumbSize / 2.0);
-            //            単体テストコードでコントロールのイベントを発生させる - ABCの海岸で
-            //http://d.hatena.ne.jp/abcneet/20110620/1308551640
-            //Thumbにクリックイベント発生させてそのままThumbのドラッグ移動開始させる
-            ThumbPicker.RaiseEvent(e);
-        }
-
-        //private void ImageSV_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        //{
-        //    Image i = (Image)sender;
-        //    Point p = e.GetPosition(i);
-        //    //SV画像のクリック位置とThumbの位置の差を記録
-        //    PointDiff = new Point(p.X - (double)UpDownS.MyValue, p.Y - (double)UpDownV.MyValue);
-        //    UpDownS.MyValue = (int)p.X;
-        //    UpDownV.MyValue = (int)p.Y;
-
-        //    //            単体テストコードでコントロールのイベントを発生させる - ABCの海岸で
-        //    //http://d.hatena.ne.jp/abcneet/20110620/1308551640
-        //    //Thumbにクリックイベント発生させてそのままThumbのドラッグ移動開始させる
-        //    ThumbPicker.RaiseEvent(e);
-        //}
-
-
-        private void ThumbPicker_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //SV画像のクリック位置とThumbの位置の差を初期化
-            //PointDiff = new Point();
-        }
-
-        //Thumbドラッグ移動
-        private void ThumbPicker_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            Thumb marker = (Thumb)sender;
-            double left = Canvas.GetLeft(marker);
-            double top = Canvas.GetTop(marker);
-            double nx = Canvas.GetLeft(marker) + e.HorizontalChange;
-            double ny = Canvas.GetTop(marker) + e.VerticalChange;
-            //SV画像のクリック位置とThumbの位置の差を加味する
-            //nx += PointDiff.X;
-            //ny += PointDiff.Y;
-
-            ////移動制限、SV画像の範囲内にする
-            //double lowerLimit = -ThumbSize / 2.0;
-            //double upperLimit = ImageSize + lowerLimit;
-            //if (nx < lowerLimit) { nx = lowerLimit; }
-            //else if (nx > upperLimit) { nx = upperLimit; }
-            //if (ny < lowerLimit) { ny = lowerLimit; }
-            //else if (ny > upperLimit) { ny = upperLimit; }
-
-            //セット
-            //Canvas.SetLeft(marker, nx);
-            //Canvas.SetTop(marker, ny);
-            //彩度、明度
-            var s = (int)(nx * (100.0 / ImageSize));
-            var v = (int)(ny * (100.0 / ImageSize));
-
-            UpDownS.MyValue = s;
-            UpDownV.MyValue = v;
-        }
-        //private void ThumbPicker_DragDelta(object sender, DragDeltaEventArgs e)
-        //{
-        //    Thumb marker = (Thumb)sender;
-        //    double nx = Canvas.GetLeft(marker) + e.HorizontalChange;
-        //    double ny = Canvas.GetTop(marker) + e.VerticalChange;
-        //    ////SV画像のクリック位置とThumbの位置の差を加味する
-        //    //nx += PointDiff.X;
-        //    //ny += PointDiff.Y;
-
-        //    //移動制限、SV画像の範囲内にする
-        //    double lowerLimit = -ThumbSize / 2.0;
-        //    double upperLimit = ImageSize + lowerLimit;
-        //    if (nx < lowerLimit) { nx = lowerLimit; }
-        //    else if (nx > upperLimit) { nx = upperLimit; }
-        //    if (ny < lowerLimit) { ny = lowerLimit; }
-        //    else if (ny > upperLimit) { ny = upperLimit; }
-        //    //セット
-        //    Canvas.SetLeft(marker, nx);
-        //    Canvas.SetTop(marker, ny);
-        //    //彩度、明度
-        //    UpDownS.MyValue = (int)Math.Round(nx - lowerLimit, MidpointRounding.AwayFromZero);
-        //    UpDownV.MyValue = (int)Math.Round(ny - lowerLimit, MidpointRounding.AwayFromZero);
-        //}
 
         //Hue画像作成、起動時のみ使用。使用側でStretchすればサイズは幅1、高さ6でも実用できる
         private BitmapSource GetImageHue(int w, int h)
@@ -421,18 +316,22 @@ namespace _20230413
         //SV画像作成
         private void SetImageSV(double hue)
         {
-            var wb = new WriteableBitmap(this.ImageSize, ImageSize, 96, 96, PixelFormats.Rgb24, null);
+            int size = 20;
+            var wb = new WriteableBitmap(size, size, 96, 96, PixelFormats.Rgb24, null);
             int stride = wb.BackBufferStride;
-            var pixels = new byte[ImageSize * stride];
+            var pixels = new byte[size * stride];
             wb.CopyPixels(pixels, stride, 0);
             int p = 0;
-            Parallel.For(0, ImageSize, y =>
+            Parallel.For(0, size, y =>
             {
-                ParallelImageSV(p, y, stride, pixels, hue, this.ImageSize, ImageSize);
+                ParallelImageSV(p, y, stride, pixels, hue, size, size);
             });
 
-            wb.WritePixels(new Int32Rect(0, 0, this.ImageSize, ImageSize), pixels, stride, 0);
-            ImageSV.Source = wb;
+            wb.WritePixels(new Int32Rect(0, 0, size, size), pixels, stride, 0);
+
+            ImageBrush ib = new(wb);
+            ib.Stretch = Stretch.Uniform;
+            ImageSV.Fill = ib;
         }
         private void ParallelImageSV(int p, int y, int stride, byte[] pixels, double hue, int w, int h)
         {
@@ -451,7 +350,7 @@ namespace _20230413
             int h = (int)ImageAlpha.Height;
             var wb = new WriteableBitmap(w, h, 96, 96, PixelFormats.Bgr24, null);
             int stride = wb.BackBufferStride;
-            var pixels = new byte[ImageSize * stride];
+            var pixels = new byte[SVImageSize * stride];
             wb.CopyPixels(pixels, stride, 0);
             int x, y;
             for (int i = 0; i < pixels.Length; i += 3)
@@ -478,12 +377,46 @@ namespace _20230413
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Canvas.SetLeft(ThumbPicker, 50);
+            var color = PickupColor;
+            var hsv = PickupHSV;
+            //PickupColor = Color.FromArgb(200, 200, 0, 0);
+            R = 200;
+            G = 200;
+            var mark = Marker.X;
+            Marker.X = 50;
         }
     }
 
+    internal class ConverterSV : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            HSV hsv= (HSV)values[0];//0.0 to 1.0
+            int marker = (int)values[1];
+            int image= (int)values[2];
+            var saturation = image * hsv.S - (marker / 2.0);
+            return saturation;//Left
+        }
 
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new Exception();
+        }
+    }
+    internal class ConverterColor2HSV : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Color c = (Color)value;
+            return MathHSV.Color2HSV2(c);
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            HSV hsv = (HSV)value;
+            return MathHSV.HSV2Color(hsv);
+        }
+    }
 
     internal class ConverterRGB2Color : IMultiValueConverter
     {

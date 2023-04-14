@@ -20,7 +20,14 @@ namespace _20230413
             S = s;
             V = v;
         }
+        public override string ToString()
+        {
+            return $"{H}, {S}, {V}";
+        }
+
     }
+
+
     public static class MathHSV
     {
         //public double Hue;          //0.0fから360.0f
