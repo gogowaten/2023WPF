@@ -128,9 +128,11 @@ namespace _20230411_ColorPicker
         {
             Binding b0 = new() { Source = this, Path = new PropertyPath(XProperty) };
             Binding b1 = new() { Source = TargetElement, Path = new PropertyPath(WidthProperty) };
+            Binding b2 = new() { Source = this, Path = new PropertyPath(MarkerSizeProperty) };
             MultiBinding mb = new();
             mb.Bindings.Add(b0);
             mb.Bindings.Add(b1);
+            mb.Bindings.Add(b2);
             mb.Converter = new ConverterTopLeft2XY();
             Marker.SetBinding(Canvas.LeftProperty, mb);
 
@@ -139,6 +141,7 @@ namespace _20230411_ColorPicker
             mb = new();
             mb.Bindings.Add(b0);
             mb.Bindings.Add(b1);
+            mb.Bindings.Add(b2);
             mb.Converter = new ConverterTopLeft2XY();
             Marker.SetBinding(Canvas.TopProperty, mb);
 
@@ -176,8 +179,8 @@ namespace _20230411_ColorPicker
             var left = Canvas.GetLeft(Marker);
             var top = Canvas.GetTop(Marker);
 
-            var xx = left + e.HorizontalChange;
-            var yy = top + e.VerticalChange;
+            var xx = left + e.HorizontalChange + (MarkerSize / 2.0);
+            var yy = top + e.VerticalChange + (MarkerSize / 2.0);
             xx += DiffPoint.X;
             yy += DiffPoint.Y;
             X = xx / TargetElement.Width;

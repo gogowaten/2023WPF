@@ -87,6 +87,11 @@ namespace _20230411_ColorPicker
                 Source = MyScrollBarV,
                 Path = new PropertyPath(ScrollBar.ValueProperty)
             });
+            MarkerAdorner.SetBinding(MarkerAdorner.MarkerSizeProperty, new Binding()
+            {
+                Source = MySliderMarkerSize,
+                Path = new PropertyPath(Slider.ValueProperty)
+            });
 
             MyEllipse.SetBinding(Ellipse.FillProperty, new Binding()
             {

@@ -264,7 +264,8 @@ namespace _20230411_ColorPicker
         {
             double sv = (double)values[0];
             double rank = (double)values[1];
-            double result = sv * rank;
+            double size = (double)values[2];
+            double result = (sv * rank) - (size / 2.0);
             return result;
         }
 

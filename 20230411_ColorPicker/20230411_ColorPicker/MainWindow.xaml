@@ -59,13 +59,14 @@
         <Button Content="test" Click="Button_Click"/>
         <!--<TextBlock Text="{Binding ElementName=MyMain, Path=MyColor}"/>-->
         <StackPanel>
-          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.H, StringFormat=h 0}"/>
-          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.S, StringFormat=s 0}"/>
-          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.V, StringFormat=v 0}"/>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.H, StringFormat=h 0.0}"/>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.S, StringFormat=s 0.0}"/>
+          <TextBlock Text="{Binding ElementName=MyMain, Path=MyHSV.V, StringFormat=v 0.0}"/>
           <TextBlock Text="{Binding ElementName=MyMain, Path=MyColor.R, StringFormat=r 0}"/>
           <TextBlock Text="{Binding ElementName=MyMain, Path=MyColor.G, StringFormat=g 0}"/>
           <TextBlock Text="{Binding ElementName=MyMain, Path=MyColor.B, StringFormat=b 0}"/>
           <Ellipse x:Name="MyEllipse" Width="50" Height="50"/>
+          <Slider x:Name="MySliderMarkerSize" Minimum="1" Maximum="100"/>
         </StackPanel>
       </DockPanel>
       <!--<local:ColorPicker Width="100" Height="100" PickupColor="MediumAquamarine"/>-->
