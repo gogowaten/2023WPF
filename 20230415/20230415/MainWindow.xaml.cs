@@ -13,6 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+//RGBとHSVの相互変換
+//依存関係プロパティは、ARGBがbyte型、HSVはdouble型、Color型とHSV型
+//ARGBとHSVはSliderのValueにBinding、ValueChangeイベントで相手の値を変更、
+//このとき無限ループにならないようにフラグを使用
 
 namespace _20230415
 {
@@ -134,8 +138,8 @@ namespace _20230415
         #endregion 依存関係プロパティ
 
         //無限ループ防止用フラグ
-        private bool isRGBChangNow = false;
-        private bool isHSVChangNow = false;
+        private bool isRGBChangNow;
+        private bool isHSVChangNow;
         public MainWindow()
         {
             InitializeComponent();
