@@ -7,6 +7,29 @@ using System.Windows.Media;
 
 namespace _20230415
 {
+    public struct ARGBHSV
+    {
+
+        public byte A { get; set; } = 0;
+        public byte R { get; set; } = 0;
+        public byte G { get; set; } = 0;
+        public byte B { get; set; } = 0;
+
+
+        public double H { get; set; } = 0.0;
+        public double S { get; set; } = 0.0;
+        public double V { get; set; } = 0.0;
+        public ARGBHSV(byte a, byte r, byte g, byte b, double h, double s, double v)
+        {
+            A = a; R = r; G = g; B = b; H = h; S = s; V = v;
+        }
+        public ARGBHSV() { }
+        public override string ToString()
+        {
+            return $"{A}, {R}, {G}, {B}, {H}, {S}, {V}";
+            //return base.ToString();
+        }
+    }
     public struct HSV
     {
         //public double H, S, V;
@@ -36,6 +59,11 @@ namespace _20230415
             R = r; G = g; B = b;
         }
         public RGB() { }
+        public override string ToString()
+        {
+            return $"{R}, {G}, {B}";
+            //return base.ToString();
+        }
     }
 
     public class MathHSV
@@ -53,7 +81,7 @@ namespace _20230415
         }
         public static HSV Color2HSV2(Color color)
         {
-            return RGB2HSV(color.R, color.G, color.B);
+            return Rgb2HSV(color.R, color.G, color.B);
         }
 
         #endregion Color -> HSV
@@ -96,26 +124,35 @@ namespace _20230415
 
             return (h, s, v);
         }
-        public static HSV RGB2HSV(byte r, byte g, byte b)
+        public static HSV Rgb2HSV(byte r, byte g, byte b)
         {
             (double h, double s, double v) = RGB2hsv(r, g, b);
             return new HSV(h, s, v);
         }
 
-        public static (double h, double s, double v) RGB2hsv(double r, double g, double b)
+        public static (double h, double s, double v) Rgb2hsv(double r, double g, double b)
         {
             return RGB2hsv(
                 (byte)(Math.Round(r, MidpointRounding.AwayFromZero)),
                 (byte)(Math.Round(g, MidpointRounding.AwayFromZero)),
                 (byte)(Math.Round(b, MidpointRounding.AwayFromZero)));
         }
-        public static HSV RGB2HSV(double r, double g, double b)
+        public static HSV Rgb2HSV(double r, double g, double b)
         {
-            return RGB2HSV(
+            return Rgb2HSV(
                 (byte)(Math.Round(r, MidpointRounding.AwayFromZero)),
                 (byte)(Math.Round(g, MidpointRounding.AwayFromZero)),
                 (byte)(Math.Round(b, MidpointRounding.AwayFromZero)));
         }
+        public static (double h, double s, double v) RGB2hsv(RGB rgb)
+        {
+            return RGB2hsv(rgb.R, rgb.G, rgb.B);
+        }
+        public static HSV RGB2HSV(RGB rgb)
+        {
+            return Rgb2HSV(rgb.R, rgb.G, rgb.B);
+        }
+
         #endregion RGB -> HSV
 
         #region Color -> HSV(円錐モデル)
@@ -167,18 +204,29 @@ namespace _20230415
         }
         #endregion Color -> HSV(円錐モデル)
 
-        #region HSV(円柱モデル) -> RGB
+        #region HSV(円柱モデル) -> RGB、Color
 
         public static (byte r, byte g, byte b) Hsv2rgb(double h, double s, double v)
         {
             Color color = HSV2Color(h, s, v);
             return (color.R, color.G, color.B);
         }
-        public static (byte r, byte g, byte b) HSV2RGB(HSV hsv)
+        public static (byte r, byte g, byte b) HSV2rgb(HSV hsv)
         {
             Color color = HSV2Color(hsv.H, hsv.S, hsv.V);
             return (color.R, color.G, color.B);
         }
+        public static RGB HSV2RGB(HSV hsv)
+        {
+            var (r, g, b) = HSV2rgb(hsv);
+            return new RGB(r, g, b);
+        }
+        public static RGB Hsv2RGB(double h, double s, double v)
+        {
+            var (r, g, b) = Hsv2rgb(h, s, v);
+            return new RGB(r, g, b);
+        }
+
         #endregion HSV(円柱モデル) -> RGB
 
         #region HSV(円柱モデル) -> Color
