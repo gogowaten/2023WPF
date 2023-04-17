@@ -41,7 +41,10 @@ namespace _20230415
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
+        private static void OnARGB(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+           
+        }
         public ARGBHSV MyARGBHSV
         {
             get { return (ARGBHSV)GetValue(MyARGBHSVProperty); }
@@ -176,7 +179,7 @@ namespace _20230415
         #endregion 依存関係プロパティ
 
         ////無限ループ防止用フラグ
-        //private bool isRGBChangNow;
+        private bool isRGBChangNow;
         //private bool isHSVChangNow;
         public MainWindow()
         {

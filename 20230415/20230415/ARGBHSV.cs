@@ -21,11 +21,13 @@ namespace _20230415
             field = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-        private bool isRGBChangeNow;
-        private bool isHSVChangeNow;
-        private byte _a = 0; public byte A { get => _a; set => SetProperty(ref _a, value); }
-
-        private byte _r = 0; public byte R { get => _r; set { SetProperty(ref _r, value); RGB2HSV(); } }
+        private byte _a = 0;
+        private byte _r = 0;
+        private byte _g = 0;
+        private byte _b = 0;
+        private double _h = 0;
+        private double _s = 0;
+        private double _v = 0;
         private void RGB2HSV()
         {
             if (isHSVChangeNow) return;
@@ -33,13 +35,11 @@ namespace _20230415
             (H, S, V) = MathHSV.Rgb2hsv(_r, _g, _b);
             isRGBChangeNow = false;
         }
+        public byte A { get => _a; set => SetProperty(ref _a, value); }
+        public byte R { get => _r; set { SetProperty(ref _r, value); RGB2HSV(); } }
+        public byte G { get => _g; set { SetProperty(ref _g, value); RGB2HSV(); } }
+        public byte B { get => _b; set { SetProperty(ref _b, value); RGB2HSV(); } }
 
-        //private void RGB2HSV() => (_h, _s, _v) = MathHSV.Rgb2hsv(_r, _g, _b);
-        private byte _g = 0; public byte G { get => _g; set { SetProperty(ref _g, value); RGB2HSV(); } }
-
-        private byte _b = 0; public byte B { get => _b; set { SetProperty(ref _b, value); RGB2HSV(); } }
-
-        private double _h = 0; public double H { get => _h; set { SetProperty(ref _h, value); HSV2RGB(); } }
         private void HSV2RGB()
         {
             if (isRGBChangeNow) return;
@@ -47,13 +47,15 @@ namespace _20230415
             (R, G, B) = MathHSV.Hsv2rgb(_h, _s, _v);
             isHSVChangeNow = false;
         }
-        //private void HSV2RGB() { (_r, _g, _b) = MathHSV.Hsv2rgb(_h, _s, _v); }
-
-        private double _s = 0; public double S { get => _s; set { SetProperty(ref _s, value); HSV2RGB(); } }
-
-        private double _v = 0; public double V { get => _v; set { SetProperty(ref _v, value); HSV2RGB(); } }
+        public double H { get => _h; set { SetProperty(ref _h, value); HSV2RGB(); } }
+        public double S { get => _s; set { SetProperty(ref _s, value); HSV2RGB(); } }
+        public double V { get => _v; set { SetProperty(ref _v, value); HSV2RGB(); } }
 
         #endregion 依存関係プロパティ
+
+        private bool isRGBChangeNow;
+        private bool isHSVChangeNow;
+
         public ARGBHSV2()
         {
             //_a = 0; _r = 0; _g = 0; _b = 0; _h = 0; _s = 0; _v = 0;
@@ -65,7 +67,7 @@ namespace _20230415
         }
         public override string ToString()
         {
-            return $"{A}, {R}, {G}, {B}, {H}, {S}, {V}";
+            return $"argbhsv {A}, {R}, {G}, {B}, {H}, {S}, {V}";
             //return base.ToString();
         }
     }

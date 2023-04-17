@@ -24,7 +24,7 @@
         <TextBlock Text="{Binding MyColor, StringFormat=mycolor \= {0}}"/>
         <TextBlock Text="{Binding MyRGB, StringFormat=myrgb \= {0}}"/>
         <TextBlock Text="{Binding MyHSV, StringFormat=myhsv \= {0}}"/>
-        <TextBlock Text="{Binding MyARGBHSV2.H, StringFormat=myargbhsv2 \= {0}}"/>
+        <TextBlock Text="{Binding MyARGBHSV2, StringFormat=myargbhsv2 \= {0}}"/>
         <TextBlock Text="{Binding A, StringFormat=a 000}"/>
         <TextBlock Text="{Binding R, StringFormat=r 000}"/>
         <TextBlock Text="{Binding G, StringFormat=g 000}"/>
