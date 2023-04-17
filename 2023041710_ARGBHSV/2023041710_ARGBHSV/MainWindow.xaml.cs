@@ -6,10 +6,14 @@ using System.Windows.Data;
 using System.Windows.Media;
 
 //RGBとHSVの相互変換
-//依存関係プロパティは、ARGBがbyte型、HSVはdouble型、Color型とHSV型
+//依存関係プロパティは、ARGBがbyte型、HSVはdouble型
 //RGBのどれかを変更したらHSVを再計算
 //HSVのどれかを変更したらRGBを再計算
-//このとき無限ループにならないようにフラグで管理
+//このとき無限ループにならないようにフラグで判定
+
+//WPF、Binding＋ConverterでRGBとHSVの相互変換したかったけど、できなかったのでこうなった - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/04/17/135557
+
 namespace _2023041710_ARGBHSV
 {
 
@@ -17,6 +21,9 @@ namespace _2023041710_ARGBHSV
     {
         #region 依存関係プロパティ
 
+        /// <summary>
+        /// 目的の色
+        /// </summary>
         public Color MainColor
         {
             get { return (Color)GetValue(MainColorProperty); }
@@ -113,7 +120,7 @@ namespace _2023041710_ARGBHSV
                     new PropertyChangedCallback(OnHSV)));
 
         /// <summary>
-        /// HSVを再計算、RGB変更時に使用
+        /// HSVを再計算、R、G、B変更時に使用
         /// </summary>
         /// <param name="d"></param>
         /// <param name="e"></param>
@@ -121,15 +128,15 @@ namespace _2023041710_ARGBHSV
         {
             if (d is MainWindow mw)
             {
-                if (mw.isHSVChangNow) return;
-                mw.isRGBChangNow = true;
+                if (mw.IsHSVChangNow) return;
+                mw.IsRGBChangNow = true;
                 (mw.H, mw.S, mw.V) = MathHSV.RGB2hsv(mw.R, mw.G, mw.B);
-                mw.isRGBChangNow = false;
+                mw.IsRGBChangNow = false;
             }
         }
 
         /// <summary>
-        /// RGBを再計算、HSV変更時に使用
+        /// RGBを再計算、H、S、V変更時に使用
         /// </summary>
         /// <param name="d"></param>
         /// <param name="e"></param>
@@ -137,17 +144,17 @@ namespace _2023041710_ARGBHSV
         {
             if (d is MainWindow mw)
             {
-                if (mw.isRGBChangNow) return;
-                mw.isHSVChangNow = true;
+                if (mw.IsRGBChangNow) return;
+                mw.IsHSVChangNow = true;
                 (mw.R, mw.G, mw.B) = MathHSV.Hsv2rgb(mw.H, mw.S, mw.V);
-                mw.isHSVChangNow = false;
+                mw.IsHSVChangNow = false;
             }
         }
         #endregion 依存関係プロパティ
 
         //無限ループ防止用フラグ
-        private bool isRGBChangNow;
-        private bool isHSVChangNow;
+        private bool IsRGBChangNow;
+        private bool IsHSVChangNow;
 
         public MainWindow()
         {
@@ -157,12 +164,14 @@ namespace _2023041710_ARGBHSV
             SetSliderBindings();
 
             SetMyBindings();
-            Loaded += (s, e) => { A = 255; };
+            Loaded += (s, e) => { SetMainColorWhite(); };
+            //Loaded += (s, e) => { A = 255; };
         }
 
 
         private void SetMyBindings()
         {
+            //目的の色(MainColor)はARGBとのBindingで生成
             MultiBinding mb = new();
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(AProperty) });
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RProperty) });
@@ -171,6 +180,7 @@ namespace _2023041710_ARGBHSV
             mb.Converter = new ConverterARGB2Color();
             SetBinding(MainColorProperty, mb);
 
+            //色確認用のBorderの背景色をMainColorとBinding
             MyBorderColor.SetBinding(BackgroundProperty, new Binding()
             {
                 Source = this,
@@ -198,6 +208,12 @@ namespace _2023041710_ARGBHSV
             var myc = MainColor;
             R = 200;
         }
+
+        private void MyButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetMainColorWhite();
+        }
+        private void SetMainColorWhite() => MainColor = Color.FromArgb(255, 255, 255, 255);
     }
 
 
