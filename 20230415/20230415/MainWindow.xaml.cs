@@ -41,9 +41,25 @@ namespace _20230415
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-        private static void OnARGB(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnRGB(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-           
+            if (d is MainWindow mw)
+            {
+                if (mw.isHSVChangNow) return;
+                mw.isRGBChangNow = true;
+                (mw.H, mw.S, mw.V) = MathHSV.RGB2hsv(mw.R, mw.G, mw.B);
+                mw.isRGBChangNow = false;
+            }
+        }
+        private static void OnHSV(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is MainWindow mw)
+            {
+                if (mw.isRGBChangNow) return;
+                mw.isHSVChangNow = true;
+                (mw.R, mw.G, mw.B) = MathHSV.Hsv2rgb(mw.H, mw.S, mw.V);
+                mw.isHSVChangNow = false;
+            }
         }
         public ARGBHSV MyARGBHSV
         {
@@ -102,7 +118,8 @@ namespace _20230415
                 new FrameworkPropertyMetadata(byte.MinValue,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnRGB)));
 
 
         public byte G
@@ -115,7 +132,8 @@ namespace _20230415
                 new FrameworkPropertyMetadata(byte.MinValue,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnRGB)));
 
         public byte B
         {
@@ -127,7 +145,8 @@ namespace _20230415
                 new FrameworkPropertyMetadata(byte.MinValue,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnRGB)));
 
         public byte A
         {
@@ -151,8 +170,8 @@ namespace _20230415
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnHSV)));
         public double S
         {
             get { return (double)GetValue(SProperty); }
@@ -163,7 +182,8 @@ namespace _20230415
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnHSV)));
 
         public double V
         {
@@ -175,21 +195,48 @@ namespace _20230415
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                    new PropertyChangedCallback(OnHSV)));
         #endregion 依存関係プロパティ
 
         ////無限ループ防止用フラグ
         private bool isRGBChangNow;
-        //private bool isHSVChangNow;
+        private bool isHSVChangNow;
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
 
             SetSliderBindings();
-            
+
             SetMyBindings();
-            Loaded += (s, e) => { MyARGBHSV2.A = 255; };
+            Loaded += (s, e) => { A = 255; };
+        }
+        private void SetMyBindings3()
+        {
+            SetBinding(AProperty, new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
+            SetBinding(RProperty, new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
+            SetBinding(GProperty, new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
+            SetBinding(BProperty, new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
+            SetBinding(HProperty, new Binding(nameof(MyARGBHSV2.H)) { Source = MyARGBHSV2 });
+            SetBinding(SProperty, new Binding(nameof(MyARGBHSV2.S)) { Source = MyARGBHSV2 });
+            SetBinding(VProperty, new Binding(nameof(MyARGBHSV2.V)) { Source = MyARGBHSV2 });
+
+            MultiBinding mb = new();
+            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
+            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
+            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
+            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
+            mb.Converter = new ConverterARGB2Color();
+            SetBinding(MyColorProperty, mb);
+
+            mb = new();
+            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
+            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
+            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
+            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
+            mb.Converter = new ConverterARGB2SolidColorBrush();
+            MyBorderColor.SetBinding(BackgroundProperty, mb);
         }
         private void SetMyBindings2()
         {
@@ -298,32 +345,18 @@ namespace _20230415
         }
         private void SetMyBindings()
         {
-            SetBinding(AProperty, new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
-            SetBinding(RProperty, new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
-            SetBinding(GProperty, new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
-            SetBinding(BProperty, new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
-            SetBinding(HProperty, new Binding(nameof(MyARGBHSV2.H)) { Source = MyARGBHSV2 });
-            SetBinding(SProperty, new Binding(nameof(MyARGBHSV2.S)) { Source = MyARGBHSV2 });
-            SetBinding(VProperty, new Binding(nameof(MyARGBHSV2.V)) { Source = MyARGBHSV2 });
-
             MultiBinding mb = new();
-            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
-            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
-            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
-            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
-            mb.Converter = new ConverterARGB2Color();
+            mb.Bindings.Add(new Binding() { Source=this,Path = new PropertyPath(AProperty) });
+            mb.Bindings.Add(new Binding() { Source=this,Path = new PropertyPath(RProperty) });
+            mb.Bindings.Add(new Binding() { Source=this,Path = new PropertyPath(GProperty) });
+            mb.Bindings.Add(new Binding() { Source=this,Path = new PropertyPath(BProperty) });
+            mb.Converter=new ConverterARGB2Color();
             SetBinding(MyColorProperty, mb);
 
-            mb = new();
-            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
-            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
-            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
-            mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
-            mb.Converter = new ConverterARGB2SolidColorBrush();
-            MyBorderColor.SetBinding(BackgroundProperty, mb);
+            MyBorderColor.SetBinding(BackgroundProperty, new Binding() { Source = this, Path = new PropertyPath(MyColorProperty), Converter = new ConverterColor2Brush() });
         }
 
-       
+
         //private void MySetARGBHSVBindings3()
         //{
         //    MultiBinding mb = new();
@@ -388,29 +421,29 @@ namespace _20230415
         //}
 
 
-        private void SetSliderBindings()
-        {
-            MySliderA.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.A)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-            MySliderR.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.R)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-            MySliderG.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.G)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-            MySliderB.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.B)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-            MySliderH.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.H)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-            MySliderS.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.S)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-            MySliderV.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.V)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-
-        }
-
         //private void SetSliderBindings()
         //{
-        //    MySliderA.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(AProperty) });
-        //    MySliderR.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(RProperty) });
-        //    MySliderG.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(GProperty) });
-        //    MySliderB.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(BProperty) });
-        //    MySliderH.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(HProperty) });
-        //    MySliderS.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(SProperty) });
-        //    MySliderV.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(VProperty) });
+        //    MySliderA.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.A)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
+        //    MySliderR.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.R)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
+        //    MySliderG.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.G)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
+        //    MySliderB.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.B)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
+        //    MySliderH.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.H)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
+        //    MySliderS.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.S)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
+        //    MySliderV.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.V)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
 
         //}
+
+        private void SetSliderBindings()
+        {
+            MySliderA.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(AProperty) });
+            MySliderR.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(RProperty) });
+            MySliderG.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(GProperty) });
+            MySliderB.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(BProperty) });
+            MySliderH.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(HProperty) });
+            MySliderS.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(SProperty) });
+            MySliderV.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(VProperty) });
+
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
