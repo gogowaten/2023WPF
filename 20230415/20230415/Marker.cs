@@ -44,29 +44,29 @@ namespace _20230415
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public double MarkLeft
-        {
-            get { return (double)GetValue(MarkLeftProperty); }
-            set { SetValue(MarkLeftProperty, value); }
-        }
-        public static readonly DependencyProperty MarkLeftProperty =
-            DependencyProperty.Register(nameof(MarkLeft), typeof(double), typeof(Marker),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        //public double MarkLeft
+        //{
+        //    get { return (double)GetValue(MarkLeftProperty); }
+        //    set { SetValue(MarkLeftProperty, value); }
+        //}
+        //public static readonly DependencyProperty MarkLeftProperty =
+        //    DependencyProperty.Register(nameof(MarkLeft), typeof(double), typeof(Marker),
+        //        new FrameworkPropertyMetadata(0.0,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public double MarkTop
-        {
-            get { return (double)GetValue(MarkTopProperty); }
-            set { SetValue(MarkTopProperty, value); }
-        }
-        public static readonly DependencyProperty MarkTopProperty =
-            DependencyProperty.Register(nameof(MarkTop), typeof(double), typeof(Marker),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        //public double MarkTop
+        //{
+        //    get { return (double)GetValue(MarkTopProperty); }
+        //    set { SetValue(MarkTopProperty, value); }
+        //}
+        //public static readonly DependencyProperty MarkTopProperty =
+        //    DependencyProperty.Register(nameof(MarkTop), typeof(double), typeof(Marker),
+        //        new FrameworkPropertyMetadata(0.0,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double MarkerSize
         {
@@ -123,49 +123,51 @@ namespace _20230415
             MyVisuals = new(this);
             MyCanvas = new();
             MyVisuals.Add(MyCanvas);
-            MyCanvas.Width = TargetElement.Width;
-            MyCanvas.Height = TargetElement.Height;
-            MyCanvas.Background = Brushes.Transparent;
-            //MyCanvas.PreviewMouseLeftButtonDown += MyCanvas_PreviewMouseLeftButtonDown;
-            MyCanvas.MouseLeftButtonDown += MyCanvas_MouseLeftButtonDown;
             MarkerThumb = new Thumb();
-            MyCanvas.Children.Add(MarkerThumb);
-
-
+            SetMyCanvas();
             SetMarker();
             SetMarkerTemplate();
             MarkerThumb.DragDelta += Marker_DragDelta;
-
+            MarkerThumb.DragCompleted += (s, e) => { DiffPoint = new(); };
         }
 
+        private void SetMyCanvas()
+        {
+            MyCanvas.Background = Brushes.Transparent;
+            MyCanvas.MouseLeftButtonDown += MyCanvas_MouseLeftButtonDown;
+            MyCanvas.Children.Add(MarkerThumb);
+            MyCanvas.SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(WidthProperty) });
+            MyCanvas.SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(HeightProperty) });
+        }
+
+        
         private void MyCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var neko = Mouse.GetPosition(MyCanvas);
-            //DiffPoint = new Point(neko.X - X * TargetElement.Width, neko.Y - Y * TargetElement.Height);
-            //X = neko.X / TargetElement.Width;
-            //Y = neko.Y / TargetElement.Height;
-            //MarkThumb.RaiseEvent(e);
+            var pp = Mouse.GetPosition(MyCanvas);
+            var dx = pp.X - Canvas.GetLeft(MarkerThumb) - (MarkerSize / 2.0);
+            var dy = pp.Y - Canvas.GetTop(MarkerThumb) - (MarkerSize / 2.0);
+            DiffPoint = new Point(dx, dy);
+            
+            double xx = pp.X / TargetElement.Width;
+            if (xx < 0) xx = 0; if (xx > 1.0) xx = 1.0;
+            Saturation = xx;
+
+            double yy = pp.Y / TargetElement.Height;
+            if (yy < 0) yy = 0; if (yy > 1.0) yy = 1.0;
+            Value = yy;
+
+            MarkerThumb.RaiseEvent(e);
         }
 
         private void SetMarker()
         {
-            
             //SV変化でtopleft変化
             MultiBinding mb = new();
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(SaturationProperty) });
             mb.Bindings.Add(new Binding() { Source = TargetElement, Path = new PropertyPath(WidthProperty) });
-            mb.Converter = new ConverterTopLeft2XY();            
+            mb.Converter = new ConverterTopLeft2XY();
             MarkerThumb.SetBinding(Canvas.LeftProperty, mb);
-
-            //mb = new();
-            //mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
-            //mb.Bindings.Add(new Binding() { Source = MarkerThumb, Path = new PropertyPath(Canvas.LeftProperty) });
-            //mb.Bindings.Add(new Binding() { Source = TargetElement, Path = new PropertyPath(WidthProperty) });
-            //mb.Converter = new ConverterTopLeft2SV();
-            //mb.Mode = BindingMode.OneWay;
-            //SetBinding(SaturationProperty, mb);
-
 
             mb = new();
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
@@ -173,14 +175,6 @@ namespace _20230415
             mb.Bindings.Add(new Binding() { Source = TargetElement, Path = new PropertyPath(HeightProperty) });
             mb.Converter = new ConverterTopLeft2XY();
             MarkerThumb.SetBinding(Canvas.TopProperty, mb);
-
-            //mb = new();
-            //mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
-            //mb.Bindings.Add(new Binding() { Source = MarkerThumb, Path = new PropertyPath(Canvas.TopProperty) });
-            //mb.Bindings.Add(new Binding() { Source = TargetElement, Path = new PropertyPath(HeightProperty) });
-            //mb.Converter = new ConverterTopLeft2SV();
-            //mb.Mode = BindingMode.OneWay;
-            //SetBinding(ValueProperty, mb);
 
         }
         private void SetMarkerTemplate()
@@ -218,19 +212,16 @@ namespace _20230415
             var h = e.HorizontalChange;
             var v = e.VerticalChange;
             // ドラッグ移動ではtopleftを指定ではなく、saturation,Valueを計算して指定
-            double xx = (left + h + (MarkerSize / 2.0)) / TargetElement.Width;
-            double yy = (top + v + (MarkerSize / 2.0)) / TargetElement.Height;
-            if (xx < 0) xx = 0;
-            if (xx > 1.0) xx = 1.0;
-            if (yy < 0) yy = 0;
-            if (yy > 1.0) yy = 1.0;
+            var dx = DiffPoint.X + (MarkerSize/2.0);
+            var dy = DiffPoint.Y + (MarkerSize / 2.0);
+            double ll = left + h + dx;
+            double xx = ll / TargetElement.Width;
+            if (xx < 0) xx = 0; if (xx > 1.0) xx = 1.0;
             Saturation = xx;
+            double tt = top + v + dy;
+            double yy = tt / TargetElement.Height;
+            if (yy < 0) yy = 0; if (yy > 1.0) yy = 1.0;
             Value = yy;
-
-            //double xx = left + h;// - (MarkerSize / 2.0);
-            //double yy = top + v;// - (MarkerSize / 2.0);
-            //Canvas.SetLeft(MarkerThumb, xx);
-            //Canvas.SetTop(MarkerThumb, yy);
         }
 
 
@@ -242,23 +233,7 @@ namespace _20230415
     }
 
 
-    public class ConverterTopLeft2SV : IMultiValueConverter
-    {
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            double markerSize = (double)values[0];
-            double topleft = (double)values[1];
-            double targetSize = (double)values[2];
-            double result = (topleft + (markerSize / 2.0)) / targetSize;
-            return result;
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
+  
     public class ConverterTopLeft2XY : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

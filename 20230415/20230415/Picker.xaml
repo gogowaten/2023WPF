@@ -17,11 +17,13 @@
         <Slider x:Name="MySliderH" Maximum="360" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical"/>
         <Slider x:Name="MySliderS" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Orientation="Vertical"/>
         <Slider x:Name="MySliderV" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Orientation="Vertical"/>
+        <Slider Value="{Binding ElementName=MyBorderColor, Path=Height}" Minimum="10" Maximum="200" SmallChange="20" TickFrequency="20" Orientation="Vertical"/>
+        <Slider Value="{Binding Marker.MarkerSize}" Minimum="10" Maximum="200" Orientation="Vertical"/>
         <!--<Button Content="test" Click="Button_Click"/>-->
       </StackPanel>
       <StackPanel>
-        <!--<TextBlock Text="{Binding Marker.X}"/>
-        <TextBlock Text="{Binding MyColor, StringFormat=mycolor \= {0}}"/>-->
+        <Slider Value="{Binding ElementName=MyBorderColor, Path=Width}" Minimum="10" Maximum="300" TickFrequency="20"/>        
+        <TextBlock Text="{Binding PickColor, StringFormat=mycolor \= {0}}"/>
         <!--<TextBlock Text="{Binding MyRGB, StringFormat=myrgb \= {0}}"/>-->
         <!--<TextBlock Text="{Binding MyHSV, StringFormat=myhsv \= {0}}"/>-->
         <!--<TextBlock Text="{Binding MyARGBHSV2, StringFormat=myargbhsv2 \= {0}}"/>-->
