@@ -131,23 +131,26 @@ namespace _20230415
             MarkerThumb.DragCompleted += (s, e) => { DiffPoint = new(); };
         }
 
+        //
         private void SetMyCanvas()
         {
             MyCanvas.Background = Brushes.Transparent;
             MyCanvas.MouseLeftButtonDown += MyCanvas_MouseLeftButtonDown;
             MyCanvas.Children.Add(MarkerThumb);
-            MyCanvas.SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(WidthProperty) });
-            MyCanvas.SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(HeightProperty) });
+            MyCanvas.SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(ActualWidthProperty) });
+            MyCanvas.SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(ActualHeightProperty) });
         }
 
-        
+        //SaturationとValueをクリック座標に相当する値に更新＋
+        //更新前後の座標差を記録、これは
+        //続けてドラッグ移動した場合に使う
         private void MyCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var pp = Mouse.GetPosition(MyCanvas);
-            var dx = pp.X - Canvas.GetLeft(MarkerThumb) - (MarkerSize / 2.0);
-            var dy = pp.Y - Canvas.GetTop(MarkerThumb) - (MarkerSize / 2.0);
+            Point pp = Mouse.GetPosition(MyCanvas);
+            double dx = pp.X - Canvas.GetLeft(MarkerThumb) - (MarkerSize / 2.0);
+            double dy = pp.Y - Canvas.GetTop(MarkerThumb) - (MarkerSize / 2.0);
             DiffPoint = new Point(dx, dy);
-            
+
             double xx = pp.X / TargetElement.Width;
             if (xx < 0) xx = 0; if (xx > 1.0) xx = 1.0;
             Saturation = xx;
@@ -179,7 +182,7 @@ namespace _20230415
         }
         private void SetMarkerTemplate()
         {
-            FrameworkElementFactory factory = new(typeof(Grid), "nemo");
+            FrameworkElementFactory factory = new(typeof(Grid));
             FrameworkElementFactory e1 = new(typeof(Ellipse));
             e1.SetValue(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
             e1.SetValue(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
@@ -212,7 +215,7 @@ namespace _20230415
             var h = e.HorizontalChange;
             var v = e.VerticalChange;
             // ドラッグ移動ではtopleftを指定ではなく、saturation,Valueを計算して指定
-            var dx = DiffPoint.X + (MarkerSize/2.0);
+            var dx = DiffPoint.X + (MarkerSize / 2.0);
             var dy = DiffPoint.Y + (MarkerSize / 2.0);
             double ll = left + h + dx;
             double xx = ll / TargetElement.Width;
@@ -233,7 +236,7 @@ namespace _20230415
     }
 
 
-  
+
     public class ConverterTopLeft2XY : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

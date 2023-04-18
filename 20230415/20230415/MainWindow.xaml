@@ -10,7 +10,7 @@
   <Grid>
     <StackPanel>
       <StackPanel Orientation="Horizontal" Height="200">
-        <Border x:Name="MyBorderColor" Width="200" Height="200"/>
+        <Image x:Name="MySVImage" Width="200" Height="200"/>
         <Button x:Name="MyButtonOpen" Content="open" Click="MyButtonOpen_Click"/>
         <Button Content="test" Click="Button_Click"/>
       </StackPanel>

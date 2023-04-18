@@ -34,233 +34,54 @@ namespace _20230415
         {
             InitializeComponent();
             DataContext = this;
+            //this.Picker = new(Colors.AliceBlue);
             this.Picker = new();
             Left = 100;
             Top = 100;
+            //MySVImage.Source = GetSVImage2(10, 100);
+
         }
-
-        //private void SetMyBindings3()
-        //{
-        //    SetBinding(AProperty, new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
-        //    SetBinding(RProperty, new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
-        //    SetBinding(GProperty, new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
-        //    SetBinding(BProperty, new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
-        //    SetBinding(HProperty, new Binding(nameof(MyARGBHSV2.H)) { Source = MyARGBHSV2 });
-        //    SetBinding(SProperty, new Binding(nameof(MyARGBHSV2.S)) { Source = MyARGBHSV2 });
-        //    SetBinding(VProperty, new Binding(nameof(MyARGBHSV2.V)) { Source = MyARGBHSV2 });
-
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
-        //    mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
-        //    mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
-        //    mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
-        //    mb.Converter = new ConverterARGB2Color();
-        //    SetBinding(MyColorProperty, mb);
-
-        //    mb = new();
-        //    mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.A)) { Source = MyARGBHSV2 });
-        //    mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.R)) { Source = MyARGBHSV2 });
-        //    mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.G)) { Source = MyARGBHSV2 });
-        //    mb.Bindings.Add(new Binding(nameof(MyARGBHSV2.B)) { Source = MyARGBHSV2 });
-        //    mb.Converter = new ConverterARGB2SolidColorBrush();
-        //    MyBorderColor.SetBinding(BackgroundProperty, mb);
-        //}
-        //private void SetMyBindings2()
-        //{
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(HProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(SProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(VProperty) });
-        //    mb.Converter = new ConverterHSV2HSV();
-        //    SetBinding(MyHSVProperty, mb);
-
-        //    SetBinding(MyRGBProperty, new Binding() { Source = this, Path = new PropertyPath(MyHSVProperty), Converter = new ConverterHSV2RGB() });
-
-        //    //MySliderR.ValueChanged += MySliderR_ValueChanged;
-        //    SetBinding(RProperty, new Binding() { Source = this, Path = new PropertyPath(MyRGBProperty), Converter = new ConverterRR(), Mode = BindingMode.OneWay });
-        //    SetBinding(GProperty, new Binding() { Source = this, Path = new PropertyPath(MyRGBProperty), Converter = new ConverterGG(), Mode = BindingMode.OneWay });
-        //    SetBinding(BProperty, new Binding() { Source = this, Path = new PropertyPath(MyRGBProperty), Converter = new ConverterBB(), Mode = BindingMode.OneWay });
-        //}
-        //private void SetMybindings0()
-        //{
-        //    SetBinding(HProperty, new Binding()
-        //    {
-        //        Source = this,
-        //        Path = new PropertyPath(MyRGBProperty),
-        //        Mode = BindingMode.OneWay,
-        //        Converter = new ConverterH()
-        //    });
-        //    SetBinding(SProperty, new Binding()
-        //    {
-        //        Source = this,
-        //        Path = new PropertyPath(MyRGBProperty),
-        //        Mode = BindingMode.OneWay,
-        //        Converter = new ConverterS()
-        //    });
-        //    SetBinding(VProperty, new Binding()
-        //    {
-        //        Source = this,
-        //        Path = new PropertyPath(MyRGBProperty),
-        //        Mode = BindingMode.OneWay,
-        //        Converter = new ConverterV()
-        //    });
-
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(HProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(SProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(VProperty) });
-        //    mb.Converter = new ConverterHSV2HSV();
-
-        //    SetBinding(MyHSVProperty, mb);
-
-        //    SetBinding(RProperty, new Binding()
-        //    {
-        //        Source = this,
-        //        Path = new PropertyPath(MyHSVProperty),
-        //        Mode = BindingMode.OneWay,
-        //        Converter = new ConverterR()
-        //    });
-        //    SetBinding(GProperty, new Binding()
-        //    {
-        //        Source = this,
-        //        Path = new PropertyPath(MyHSVProperty),
-        //        Mode = BindingMode.OneWay,
-        //        Converter = new ConverterG()
-        //    });
-        //    SetBinding(BProperty, new Binding()
-        //    {
-        //        Source = this,
-        //        Path = new PropertyPath(MyHSVProperty),
-        //        Mode = BindingMode.OneWay,
-        //        Converter = new ConverterB()
-        //    });
-
-        //    mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(GProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(BProperty) });
-        //    mb.Converter = new ConverterRGB2RGB();
-
-        //    SetBinding(MyRGBProperty, mb);
-
-        //}
-        //private void SetMyBindings1()
-        //{
-        //    MultiBinding mb;
-        //    mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(GProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(BProperty) });
-        //    mb.Converter = new ConverterRGB2HSV();
-        //    SetBinding(MyHSVProperty, mb);
-
-        //    SetBinding(HProperty, new Binding() { Source = this, Path = new PropertyPath(MyHSVProperty), Converter = new ConverterHH(), Mode = BindingMode.OneWay });
-        //    SetBinding(SProperty, new Binding() { Source = this, Path = new PropertyPath(MyHSVProperty), Converter = new ConverterSS(), Mode = BindingMode.OneWay });
-        //    SetBinding(VProperty, new Binding() { Source = this, Path = new PropertyPath(MyHSVProperty), Converter = new ConverterVV(), Mode = BindingMode.OneWay });
-
-        //    mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(HProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(SProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(VProperty) });
-        //    mb.Converter = new ConverterHsv2RGB();
-        //    SetBinding(MyRGBProperty, mb);
-
-        //    SetBinding(RProperty, new Binding() { Source = this, Path = new PropertyPath(MyRGBProperty), Converter = new ConverterRR(), Mode = BindingMode.OneWay });
-        //    SetBinding(GProperty, new Binding() { Source = this, Path = new PropertyPath(MyRGBProperty), Converter = new ConverterGG(), Mode = BindingMode.OneWay });
-        //    SetBinding(BProperty, new Binding() { Source = this, Path = new PropertyPath(MyRGBProperty), Converter = new ConverterBB(), Mode = BindingMode.OneWay });
-
-        //}
-
-
-
-        //private void MySetARGBHSVBindings3()
-        //{
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(AProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MyRGBProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MyHSVProperty) });
-        //    mb.Converter = new ConverterARGB2Color();
-        //    SetBinding(MyARGBHSVProperty, mb);
-
-        //}
-        //private void MySetARGBHSVBindings2()
-        //{
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(AProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(GProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(BProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(HProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(SProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(VProperty) });
-        //    mb.Converter = new ConverterARGBHSV();
-        //    SetBinding(MyARGBHSVProperty, mb);
-
-        //}
-
-        //private void MySetARGBHSVBindings1()
-        //{
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MyColorProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MyHSVProperty) });
-        //    mb.Converter = new ConverterColorHSV2ARGBHSV();
-        //    SetBinding(MyARGBHSVProperty, mb);
-
-        //}
-        //private void MyRGBFromHSVBindings()
-        //{
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(HProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(SProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(VProperty) });
-        //    mb.Converter = new ConverterHsv2RGB();
-        //    SetBinding(MyRGBProperty, mb);
-        //}
-
-        //private void MyHSVFromRGBBindings()
-        //{
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(GProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(BProperty) });
-        //    mb.Converter = new ConverterRGB2HSV();
-        //    SetBinding(MyHSVProperty, mb);
-        //}
-        //private void MySetMyHSVBindings()
-        //{
-        //    MultiBinding mb = new();
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(HProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(SProperty) });
-        //    mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(VProperty) });
-        //    mb.Converter = new ConverterHSV2HSV();
-        //    SetBinding(MyHSVProperty, mb);
-        //}
-
-
-        //private void SetSliderBindings()
-        //{
-        //    MySliderA.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.A)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-        //    MySliderR.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.R)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-        //    MySliderG.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.G)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-        //    MySliderB.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.B)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-        //    MySliderH.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.H)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-        //    MySliderS.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.S)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-        //    MySliderV.SetBinding(Slider.ValueProperty, new Binding(nameof(ARGBHSV2.V)) { Source = MyARGBHSV2, Mode = BindingMode.TwoWay });
-
-        //}
-
-
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-           var mx= Picker.Marker.Saturation;
+            var mx = Picker.Marker.Saturation;
+            var www = Picker.Marker.Width;
+            var ww = Picker.MyImageSV.Width;
+            var str = Picker.MyImageSV.Stretch;
+            Picker.SetColor(Color.FromArgb(200, 200, 2, 0));
         }
 
         private void MyButtonOpen_Click(object sender, RoutedEventArgs e)
         {
             Picker.Show();
             Picker.Owner = this;
-            
+
+        }
+        private BitmapSource GetSVImage2(double hue, int size)
+        {
+            var wb = new WriteableBitmap(size, size, 96, 96, PixelFormats.Rgb24, null);
+            int stride = (size * wb.Format.BitsPerPixel + 7) / 8;
+            var pixels = new byte[size * stride];
+            wb.CopyPixels(pixels, stride, 0);
+            int p = 0;
+            Parallel.For(0, size, y =>
+            {
+                ParallelImageSV(p, y, stride, pixels, hue, size, size);
+            });
+
+            wb.WritePixels(new Int32Rect(0, 0, size, size), pixels, stride, 0);
+            return wb;
+        }
+        private void ParallelImageSV(int p, int y, int stride, byte[] pixels, double hue, int w, int h)
+        {
+            for (int x = 0; x < w; ++x)
+            {
+                p = y * stride + (x * 3);
+                Color svColor = MathHSV.HSV2Color(hue, x / (double)w, y / (double)h);
+                pixels[p] = svColor.R;
+                pixels[p + 1] = svColor.G;
+                pixels[p + 2] = svColor.B;
+            }
         }
     }
 

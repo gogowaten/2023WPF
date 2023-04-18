@@ -9,7 +9,7 @@
   <Grid>
     <StackPanel>
       <StackPanel Orientation="Horizontal" Height="200">
-        <Border x:Name="MyBorderColor" Width="200" Height="200"/>
+        <Image x:Name="MyImageSV" Width="200" Height="200"/>
         <Slider x:Name="MySliderA" Maximum="255" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical" Value="255"/>
         <Slider x:Name="MySliderR" Maximum="255" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical"/>
         <Slider x:Name="MySliderG" Maximum="255" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical"/>
@@ -17,12 +17,13 @@
         <Slider x:Name="MySliderH" Maximum="360" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical"/>
         <Slider x:Name="MySliderS" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Orientation="Vertical"/>
         <Slider x:Name="MySliderV" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Orientation="Vertical"/>
-        <Slider Value="{Binding ElementName=MyBorderColor, Path=Height}" Minimum="10" Maximum="200" SmallChange="20" TickFrequency="20" Orientation="Vertical"/>
+        <Slider Value="{Binding ElementName=MyImageSV, Path=Height}" Minimum="10" Maximum="200" SmallChange="20" TickFrequency="20" Orientation="Vertical"/>
         <Slider Value="{Binding Marker.MarkerSize}" Minimum="10" Maximum="200" Orientation="Vertical"/>
+        <Border x:Name="MyBorderPickColorSample" Width="100" Height="50"/>
         <!--<Button Content="test" Click="Button_Click"/>-->
       </StackPanel>
       <StackPanel>
-        <Slider Value="{Binding ElementName=MyBorderColor, Path=Width}" Minimum="10" Maximum="300" TickFrequency="20"/>        
+        <Slider Value="{Binding ElementName=MyImageSV, Path=Width}" Minimum="10" Maximum="300" TickFrequency="20"/>        
         <TextBlock Text="{Binding PickColor, StringFormat=mycolor \= {0}}"/>
         <!--<TextBlock Text="{Binding MyRGB, StringFormat=myrgb \= {0}}"/>-->
         <!--<TextBlock Text="{Binding MyHSV, StringFormat=myhsv \= {0}}"/>-->
