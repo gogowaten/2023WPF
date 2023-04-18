@@ -29,202 +29,14 @@ namespace _20230415
     /// </summary>
     public partial class MainWindow : Window
     {
-        #region 依存関係プロパティ
-
-        //public ARGBHSV2 MyARGBHSV2
-        //{
-        //    get { return (ARGBHSV2)GetValue(MyARGBHSV2Property); }
-        //    set { SetValue(MyARGBHSV2Property, value); }
-        //}
-        //public static readonly DependencyProperty MyARGBHSV2Property =
-        //    DependencyProperty.Register(nameof(MyARGBHSV2), typeof(ARGBHSV2), typeof(MainWindow),
-        //        new FrameworkPropertyMetadata(new ARGBHSV2(),
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-    
-        //public ARGBHSV MyARGBHSV
-        //{
-        //    get { return (ARGBHSV)GetValue(MyARGBHSVProperty); }
-        //    set { SetValue(MyARGBHSVProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyARGBHSVProperty =
-        //    DependencyProperty.Register(nameof(MyARGBHSV), typeof(ARGBHSV), typeof(MainWindow),
-        //        new FrameworkPropertyMetadata(new ARGBHSV(),
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        public Color MyColor
-        {
-            get { return (Color)GetValue(MyColorProperty); }
-            set { SetValue(MyColorProperty, value); }
-        }
-        public static readonly DependencyProperty MyColorProperty =
-            DependencyProperty.Register(nameof(MyColor), typeof(Color), typeof(MainWindow),
-                new FrameworkPropertyMetadata(Color.FromArgb(0, 0, 0, 0),
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        //public RGB MyRGB
-        //{
-        //    get { return (RGB)GetValue(MyRGBProperty); }
-        //    set { SetValue(MyRGBProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyRGBProperty =
-        //    DependencyProperty.Register(nameof(MyRGB), typeof(RGB), typeof(MainWindow),
-        //        new FrameworkPropertyMetadata(new RGB(),
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        //public HSV MyHSV
-        //{
-        //    get { return (HSV)GetValue(MyHSVProperty); }
-        //    set { SetValue(MyHSVProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyHSVProperty =
-        //    DependencyProperty.Register(nameof(MyHSV), typeof(HSV), typeof(MainWindow),
-        //        new FrameworkPropertyMetadata(new HSV(),
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        /// <summary>
-        /// HSVを再計算、RGB変更時に使用
-        /// </summary>
-        /// <param name="d"></param>
-        /// <param name="e"></param>
-        private static void OnRGB(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is MainWindow mw)
-            {
-                if (mw.isHSVChangNow) return;
-                mw.isRGBChangNow = true;
-                (mw.H, mw.S, mw.V) = MathHSV.RGB2hsv(mw.R, mw.G, mw.B);
-                mw.isRGBChangNow = false;
-            }
-        }
-
-        /// <summary>
-        /// RGBを再計算、HSV変更時に使用
-        /// </summary>
-        /// <param name="d"></param>
-        /// <param name="e"></param>
-        private static void OnHSV(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is MainWindow mw)
-            {
-                if (mw.isRGBChangNow) return;
-                mw.isHSVChangNow = true;
-                (mw.R, mw.G, mw.B) = MathHSV.Hsv2rgb(mw.H, mw.S, mw.V);
-                mw.isHSVChangNow = false;
-            }
-        }
-        public byte R
-        {
-            get { return (byte)GetValue(RProperty); }
-            set { SetValue(RProperty, value); }
-        }
-        public static readonly DependencyProperty RProperty =
-            DependencyProperty.Register(nameof(R), typeof(byte), typeof(MainWindow),
-                new FrameworkPropertyMetadata(byte.MinValue,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    new PropertyChangedCallback(OnRGB)));
-
-
-        public byte G
-        {
-            get { return (byte)GetValue(GProperty); }
-            set { SetValue(GProperty, value); }
-        }
-        public static readonly DependencyProperty GProperty =
-            DependencyProperty.Register(nameof(G), typeof(byte), typeof(MainWindow),
-                new FrameworkPropertyMetadata(byte.MinValue,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    new PropertyChangedCallback(OnRGB)));
-
-        public byte B
-        {
-            get { return (byte)GetValue(BProperty); }
-            set { SetValue(BProperty, value); }
-        }
-        public static readonly DependencyProperty BProperty =
-            DependencyProperty.Register(nameof(B), typeof(byte), typeof(MainWindow),
-                new FrameworkPropertyMetadata(byte.MinValue,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    new PropertyChangedCallback(OnRGB)));
-
-        public byte A
-        {
-            get { return (byte)GetValue(AProperty); }
-            set { SetValue(AProperty, value); }
-        }
-        public static readonly DependencyProperty AProperty =
-            DependencyProperty.Register(nameof(A), typeof(byte), typeof(MainWindow),
-                new FrameworkPropertyMetadata(byte.MinValue,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        public double H
-        {
-            get { return (double)GetValue(HProperty); }
-            set { SetValue(HProperty, value); }
-        }
-        public static readonly DependencyProperty HProperty =
-            DependencyProperty.Register(nameof(H), typeof(double), typeof(MainWindow),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    new PropertyChangedCallback(OnHSV)));
-        public double S
-        {
-            get { return (double)GetValue(SProperty); }
-            set { SetValue(SProperty, value); }
-        }
-        public static readonly DependencyProperty SProperty =
-            DependencyProperty.Register(nameof(S), typeof(double), typeof(MainWindow),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    new PropertyChangedCallback(OnHSV)));
-
-        public double V
-        {
-            get { return (double)GetValue(VProperty); }
-            set { SetValue(VProperty, value); }
-        }
-        public static readonly DependencyProperty VProperty =
-            DependencyProperty.Register(nameof(V), typeof(double), typeof(MainWindow),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
-                    new PropertyChangedCallback(OnHSV)));
-        #endregion 依存関係プロパティ
-
-        ////無限ループ防止用フラグ
-        private bool isRGBChangNow;
-        private bool isHSVChangNow;
+        private Picker Picker;
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-
-            SetSliderBindings();
-
-            SetMyBindings();
-            Loaded += (s, e) => { A = 255; };
+            this.Picker = new();
+            Left = 100;
+            Top = 100;
         }
 
         //private void SetMyBindings3()
@@ -359,18 +171,6 @@ namespace _20230415
 
         //}
 
-        private void SetMyBindings()
-        {
-            MultiBinding mb = new();
-            mb.Bindings.Add(new Binding() { Source=this,Path = new PropertyPath(AProperty) });
-            mb.Bindings.Add(new Binding() { Source=this,Path = new PropertyPath(RProperty) });
-            mb.Bindings.Add(new Binding() { Source=this,Path = new PropertyPath(GProperty) });
-            mb.Bindings.Add(new Binding() { Source=this,Path = new PropertyPath(BProperty) });
-            mb.Converter=new ConverterARGB2Color();
-            SetBinding(MyColorProperty, mb);
-
-            MyBorderColor.SetBinding(BackgroundProperty, new Binding() { Source = this, Path = new PropertyPath(MyColorProperty), Converter = new ConverterColor2Brush() });
-        }
 
 
         //private void MySetARGBHSVBindings3()
@@ -449,24 +249,18 @@ namespace _20230415
 
         //}
 
-        private void SetSliderBindings()
-        {
-            MySliderA.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(AProperty) });
-            MySliderR.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(RProperty) });
-            MySliderG.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(GProperty) });
-            MySliderB.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(BProperty) });
-            MySliderH.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(HProperty) });
-            MySliderS.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(SProperty) });
-            MySliderV.SetBinding(Slider.ValueProperty, new Binding() { Source = this, Path = new PropertyPath(VProperty) });
 
-        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var myc = MyColor;
-            //var all = MyARGBHSV2;
-            //MyARGBHSV2.V = 0.5;
-            R = 200;
+           var mx= Picker.Marker.Saturation;
+        }
+
+        private void MyButtonOpen_Click(object sender, RoutedEventArgs e)
+        {
+            Picker.Show();
+            Picker.Owner = this;
+            
         }
     }
 
