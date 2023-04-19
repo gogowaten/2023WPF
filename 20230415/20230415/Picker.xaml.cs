@@ -230,7 +230,7 @@ namespace _20230415
             MyImageSV.Stretch = Stretch.Fill;
             
             //PickColor = Color.FromArgb(200, 100, 202, 52);
-
+            PickColor = Color.FromArgb(255, 255, 0, 0);
             Loaded += Picker_Loaded;
             Closing += Picker_Closing;
             
