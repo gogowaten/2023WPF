@@ -30,16 +30,26 @@ namespace _20230415
     public partial class MainWindow : Window
     {
         private Picker Picker;
+        private Color MyColor1 = Colors.MediumAquamarine;
+        private Color MyColor2 = Colors.DarkMagenta;
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            //this.Picker = new(Colors.AliceBlue);
-            this.Picker = new();
+            //this.Picker = new(Colors.MediumAquamarine);
+            Picker = new();
+            
             Left = 100;
             Top = 100;
             //MySVImage.Source = GetSVImage2(10, 100);
+            Picker.Closing += Picker_Closing;
+            Loaded += (s, e) => { Picker.Owner = this; };
+        }
 
+        private void Picker_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var neko = Picker.PickColor;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -82,6 +92,23 @@ namespace _20230415
                 pixels[p + 1] = svColor.G;
                 pixels[p + 2] = svColor.B;
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            SolidColorBrush solid =(SolidColorBrush) MyBorder1.Background;
+            Picker.SetColor(solid.Color);
+            Picker.Show();
+            
+            //最前面表示
+            //Picker.Topmost = true;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            SolidColorBrush solid = (SolidColorBrush)MyBorder2.Background;
+            Picker.SetColor(solid.Color);
+            Picker.Show();
         }
     }
 

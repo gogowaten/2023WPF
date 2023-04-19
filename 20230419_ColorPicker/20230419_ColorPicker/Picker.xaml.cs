@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace _20230415
+namespace _20230419_ColorPicker
 {
     /// <summary>
     /// Picker.xaml の相互作用ロジック
@@ -221,30 +221,25 @@ namespace _20230415
         {
             InitializeComponent();
 
-            Marker = new Marker(MyImageSV);
             DataContext = this;
             SetSliderBindings();
 
             SetMyBindings();
-            SetMarkerBinding();
+            Marker = new Marker(MyImageSV);
             MyImageSV.Stretch = Stretch.Fill;
-            
-            //PickColor = Color.FromArgb(200, 100, 202, 52);
+            MultiBinding mb = new();
+            PickColor = Color.FromArgb(200, 100, 202, 52);
 
             Loaded += Picker_Loaded;
             Closing += Picker_Closing;
-            
+
         }
-        
+
 
         //色指定あり
         public Picker(Color color) : this()
         {
-            //Color指定だけだとAとHueしか反映されないので
-            //Markerコンストラクタで彩度と輝度を指定
             PickColor = color;
-            var (h, s, v) = MathHSV.Color2HSV(color);
-            Marker = new Marker(MyImageSV, s, v);
             //A = color.A; R = color.R; G = color.G; B = color.B;
             //(H, S, V) = MathHSV.Color2HSV(color);
         }
@@ -273,7 +268,7 @@ namespace _20230415
             }
             //PickColor = Color.FromArgb(255, 255, 255, 255);
             //
-            //SetMarkerBinding();
+            SetMarkerBinding();
         }
 
         private void SetMarkerBinding()
@@ -341,5 +336,40 @@ namespace _20230415
 
     }
 
+    public class ConverterColor2Brush : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Color c = (Color)value;
+            return new SolidColorBrush(c);
+        }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class ConverterARGB2Color : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            byte a = (byte)values[0];
+            byte r = (byte)values[1];
+            byte g = (byte)values[2];
+            byte b = (byte)values[3];
+            return Color.FromArgb(a, r, g, b);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            Color cb = (Color)value;
+            object[] result = new object[4];
+            result[0] = cb.A;
+            result[1] = cb.R;
+            result[2] = cb.G;
+            result[3] = cb.B;
+            return result;
+        }
+    }
 }

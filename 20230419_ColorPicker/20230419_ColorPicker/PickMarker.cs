@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Globalization;
-using System.Net.WebSockets;
+using System.Windows;
 
-namespace _20230415
+namespace _20230419_ColorPicker
 {
     public class Marker : Adorner
     {
@@ -116,10 +115,6 @@ namespace _20230415
         public FrameworkElement TargetElement;
 
         private Point DiffPoint;
-
-        #region コンストラクタ
-        
-        //通常
         public Marker(FrameworkElement adornedElement) : base(adornedElement)
         {
             TargetElement = adornedElement;
@@ -134,16 +129,6 @@ namespace _20230415
             MarkerThumb.DragDelta += Marker_DragDelta;
             MarkerThumb.DragCompleted += (s, e) => { DiffPoint = new(); };
         }
-
-        //色指定で開くとき、彩度と輝度の指定が必要
-        public Marker(FrameworkElement adornedElement,double saturation,double value):this(adornedElement)
-        {
-            Saturation = saturation;
-            Value = value;
-        }
-
-        #endregion コンストラクタ
-
 
         //
         private void SetMyCanvas()
@@ -283,5 +268,4 @@ namespace _20230415
             throw new NotImplementedException();
         }
     }
-
 }

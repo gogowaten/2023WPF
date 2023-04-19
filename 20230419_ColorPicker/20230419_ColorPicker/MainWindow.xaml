@@ -1,30 +1,20 @@
-﻿<Window x:Class="_20230415.MainWindow"
+﻿<Window x:Class="_20230419_ColorPicker.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:_20230415"
+        xmlns:local="clr-namespace:_20230419_ColorPicker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="600"
-        >
+        Title="MainWindow" Height="450" Width="600">
   <Grid>
     <StackPanel>
       <StackPanel Orientation="Horizontal" Height="200">
         <Image x:Name="MySVImage" Width="200" Height="200"/>
         <Button x:Name="MyButtonOpen" Content="open" Click="MyButtonOpen_Click"/>
         <Button Content="test" Click="Button_Click"/>
-        <UniformGrid Rows="1" Margin="5">
-          <Border x:Name="MyBorder1" Background="Red"/>
-          <Button Content="color1" Click="Button_Click_1"/>
-        </UniformGrid>
-        <UniformGrid Rows="1" Margin="5">
-          <Border x:Name="MyBorder2" Background="ForestGreen"/>
-          <Button Content="color2" Click="Button_Click_2"/>
-        </UniformGrid>
-        
       </StackPanel>
       <StackPanel>
-        
+
         <!--<TextBlock Text="{Binding MyColor, StringFormat=mycolor \= {0}}"/>-->
         <!--<TextBlock Text="{Binding MyRGB, StringFormat=myrgb \= {0}}"/>-->
         <!--<TextBlock Text="{Binding MyHSV, StringFormat=myhsv \= {0}}"/>-->
