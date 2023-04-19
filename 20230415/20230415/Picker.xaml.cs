@@ -217,8 +217,8 @@ namespace _20230415
         //SVimageのBitmapSourceのサイズは32あれば十分？
         private readonly int SVBitmapSize = 32;
         public WriteableBitmap MySVWriteableBitmap { get; private set; }
-        public byte[] MySVPixels { get; private set; }
-        private readonly int MyStride;
+        public byte[] SVPixels { get; private set; }
+        private readonly int SVStride;
 
 
         #region コンストラクタ
@@ -229,9 +229,9 @@ namespace _20230415
 
             //SV画像のSourceはWriterableBitmap、これのPixelsを書き換えるようにした
             //PixelFormats.Rgb24の1ピクセルあたりのbyte数は24/8=3
-            MyStride = SVBitmapSize * 3;
+            SVStride = SVBitmapSize * 3;
             Marker = new Marker(MyImageSV);
-            MySVPixels = new byte[SVBitmapSize * MyStride];
+            SVPixels = new byte[SVBitmapSize * SVStride];
             MySVWriteableBitmap = new(SVBitmapSize, SVBitmapSize, 96, 96, PixelFormats.Rgb24, null);
             MyImageSV.Source = MySVWriteableBitmap;
 
@@ -302,9 +302,9 @@ namespace _20230415
             int p = 0;
             Parallel.For(0, SVBitmapSize, y =>
             {
-                ParallelImageSV(p, y, MyStride, MySVPixels, hue, SVBitmapSize, SVBitmapSize);
+                ParallelImageSV(p, y, SVStride, SVPixels, hue, SVBitmapSize, SVBitmapSize);
             });
-            MySVWriteableBitmap.WritePixels(new Int32Rect(0, 0, SVBitmapSize, SVBitmapSize), MySVPixels, MyStride, 0);
+            MySVWriteableBitmap.WritePixels(new Int32Rect(0, 0, SVBitmapSize, SVBitmapSize), SVPixels, SVStride, 0);
         }
 
         private BitmapSource GetSVImage2(double hue, int size)
