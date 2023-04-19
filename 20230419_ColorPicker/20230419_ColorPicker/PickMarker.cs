@@ -115,6 +115,10 @@ namespace _20230419_ColorPicker
         public FrameworkElement TargetElement;
 
         private Point DiffPoint;
+
+        #region コンストラクタ
+
+        //通常
         public Marker(FrameworkElement adornedElement) : base(adornedElement)
         {
             TargetElement = adornedElement;
@@ -129,6 +133,16 @@ namespace _20230419_ColorPicker
             MarkerThumb.DragDelta += Marker_DragDelta;
             MarkerThumb.DragCompleted += (s, e) => { DiffPoint = new(); };
         }
+
+        //色指定で開くとき、彩度と輝度の指定が必要
+        public Marker(FrameworkElement adornedElement, double saturation, double value) : this(adornedElement)
+        {
+            Saturation = saturation;
+            Value = value;
+        }
+
+        #endregion コンストラクタ
+
 
         //
         private void SetMyCanvas()

@@ -221,17 +221,20 @@ namespace _20230419_ColorPicker
         {
             InitializeComponent();
 
+            
+            Marker = new Marker(MyImageSV);
             DataContext = this;
             SetSliderBindings();
 
             SetMyBindings();
-            Marker = new Marker(MyImageSV);
+            SetMarkerBinding();
             MyImageSV.Stretch = Stretch.Fill;
-            MultiBinding mb = new();
-            PickColor = Color.FromArgb(200, 100, 202, 52);
 
+            //PickColor = Color.FromArgb(200, 100, 202, 52);
+            PickColor = Color.FromArgb(255, 255, 0, 0);
             Loaded += Picker_Loaded;
             Closing += Picker_Closing;
+            //this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
         }
 
@@ -239,7 +242,11 @@ namespace _20230419_ColorPicker
         //色指定あり
         public Picker(Color color) : this()
         {
+            //Color指定だけだとAとHueしか反映されないので
+            //Markerコンストラクタで彩度と輝度を指定
             PickColor = color;
+            var (h, s, v) = MathHSV.Color2HSV(color);
+            Marker = new Marker(MyImageSV, s, v);
             //A = color.A; R = color.R; G = color.G; B = color.B;
             //(H, S, V) = MathHSV.Color2HSV(color);
         }
@@ -268,7 +275,7 @@ namespace _20230419_ColorPicker
             }
             //PickColor = Color.FromArgb(255, 255, 255, 255);
             //
-            SetMarkerBinding();
+            //SetMarkerBinding();
         }
 
         private void SetMarkerBinding()

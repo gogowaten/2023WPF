@@ -5,27 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230419_ColorPicker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="600">
+        Title="MainWindow" Height="250" Width="300">
   <Grid>
     <StackPanel>
       <StackPanel Orientation="Horizontal" Height="200">
-        <Image x:Name="MySVImage" Width="200" Height="200"/>
         <Button x:Name="MyButtonOpen" Content="open" Click="MyButtonOpen_Click"/>
         <Button Content="test" Click="Button_Click"/>
-      </StackPanel>
-      <StackPanel>
-
-        <!--<TextBlock Text="{Binding MyColor, StringFormat=mycolor \= {0}}"/>-->
-        <!--<TextBlock Text="{Binding MyRGB, StringFormat=myrgb \= {0}}"/>-->
-        <!--<TextBlock Text="{Binding MyHSV, StringFormat=myhsv \= {0}}"/>-->
-        <!--<TextBlock Text="{Binding MyARGBHSV2, StringFormat=myargbhsv2 \= {0}}"/>-->
-        <!--<TextBlock Text="{Binding A, StringFormat=a 000}"/>
-        <TextBlock Text="{Binding R, StringFormat=r 000}"/>
-        <TextBlock Text="{Binding G, StringFormat=g 000}"/>
-        <TextBlock Text="{Binding B, StringFormat=b 000}"/>
-        <TextBlock Text="{Binding H, StringFormat=h 000}"/>
-        <TextBlock Text="{Binding S, StringFormat=s 0.00}"/>
-        <TextBlock Text="{Binding V, StringFormat=v 0.00}"/>-->
+        <UniformGrid Rows="1" Margin="5">
+          <Border x:Name="MyBorder1" Background="Crimson"/>
+          <Button Content="color1" Click="Button_Click_1"/>
+        </UniformGrid>
+        <UniformGrid Rows="1" Margin="5">
+          <Border x:Name="MyBorder2" Background="ForestGreen"/>
+          <Button Content="color2" Click="Button_Click_2"/>
+        </UniformGrid>
       </StackPanel>
     </StackPanel>
   </Grid>

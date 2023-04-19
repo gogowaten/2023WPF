@@ -21,16 +21,27 @@ namespace _20230419_ColorPicker
     public partial class MainWindow : Window
     {
         private Picker Picker;
+
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            //this.Picker = new(Colors.AliceBlue);
-            this.Picker = new();
+            
+            //色指定で作成
+            //Picker = new(Colors.MediumAquamarine);
+
+            //色指定無しで作成
+            Picker = new();
+
             Left = 100;
             Top = 100;
-            //MySVImage.Source = GetSVImage2(10, 100);
+            Picker.Closing += Picker_Closing;
+            Loaded += (s, e) => { Picker.Owner = this; };
+        }
 
+        private void Picker_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var neko = Picker.PickColor;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -44,35 +55,26 @@ namespace _20230419_ColorPicker
 
         private void MyButtonOpen_Click(object sender, RoutedEventArgs e)
         {
+            Picker.Top = this.Top + 150;
             Picker.Show();
-            Picker.Owner = this;
-
         }
-        private BitmapSource GetSVImage2(double hue, int size)
-        {
-            var wb = new WriteableBitmap(size, size, 96, 96, PixelFormats.Rgb24, null);
-            int stride = (size * wb.Format.BitsPerPixel + 7) / 8;
-            var pixels = new byte[size * stride];
-            wb.CopyPixels(pixels, stride, 0);
-            int p = 0;
-            Parallel.For(0, size, y =>
-            {
-                ParallelImageSV(p, y, stride, pixels, hue, size, size);
-            });
 
-            wb.WritePixels(new Int32Rect(0, 0, size, size), pixels, stride, 0);
-            return wb;
-        }
-        private void ParallelImageSV(int p, int y, int stride, byte[] pixels, double hue, int w, int h)
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            for (int x = 0; x < w; ++x)
-            {
-                p = y * stride + (x * 3);
-                Color svColor = MathHSV.HSV2Color(hue, x / (double)w, y / (double)h);
-                pixels[p] = svColor.R;
-                pixels[p + 1] = svColor.G;
-                pixels[p + 2] = svColor.B;
-            }
+            SolidColorBrush solid = (SolidColorBrush)MyBorder1.Background;
+            Picker.SetColor(solid.Color);
+            Picker.Show();
+
+            //最前面表示
+            //Picker.Topmost = true;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            SolidColorBrush solid = (SolidColorBrush)MyBorder2.Background;
+            Picker.SetColor(solid.Color);
+            Picker.Show();
         }
     }
 }
