@@ -71,7 +71,8 @@ namespace _20230415
                 if (mw.IsHSVChangNow) return;
                 mw.IsRGBChangNow = true;
                 (mw.H, mw.S, mw.V) = MathHSV.RGB2hsv(mw.R, mw.G, mw.B);
-                mw.MyImageSV.Source = mw.GetSVImage2(mw.H, mw.SVBitmapSize);
+                //mw.MyImageSV.Source = mw.GetSVImage2(mw.H, mw.SVBitmapSize);
+                mw.UpdateSVWriteableBitmap(mw.H);
                 mw.IsRGBChangNow = false;
             }
         }
@@ -98,7 +99,8 @@ namespace _20230415
                 if (mw.IsRGBChangNow) return;
                 mw.IsHSVChangNow = true;
                 (mw.R, mw.G, mw.B) = MathHSV.Hsv2rgb(mw.H, mw.S, mw.V);
-                mw.MyImageSV.Source = mw.GetSVImage2(mw.H, mw.SVBitmapSize);
+                mw.UpdateSVWriteableBitmap(mw.H);
+                //mw.MyImageSV.Source = mw.GetSVImage2(mw.H, mw.SVBitmapSize);
                 mw.IsHSVChangNow = false;
             }
         }
@@ -211,9 +213,13 @@ namespace _20230415
         ////無限ループ防止用フラグ
         private bool IsRGBChangNow;
         private bool IsHSVChangNow;
+        public Marker Marker { get; set; }
         //SVimageのBitmapSourceのサイズは32あれば十分？
         private readonly int SVBitmapSize = 32;
-        public Marker Marker { get; set; }
+        public WriteableBitmap MySVWriteableBitmap { get; private set; }
+        public byte[] MySVPixels { get; private set; }
+        private readonly int MyStride;
+
 
         #region コンストラクタ
 
@@ -221,21 +227,27 @@ namespace _20230415
         {
             InitializeComponent();
 
+            //SV画像のSourceはWriterableBitmap、これのPixelsを書き換えるようにした
+            //PixelFormats.Rgb24の1ピクセルあたりのbyte数は24/8=3
+            MyStride = SVBitmapSize * 3;
             Marker = new Marker(MyImageSV);
+            MySVPixels = new byte[SVBitmapSize * MyStride];
+            MySVWriteableBitmap = new(SVBitmapSize, SVBitmapSize, 96, 96, PixelFormats.Rgb24, null);
+            MyImageSV.Source = MySVWriteableBitmap;
+
             DataContext = this;
             SetSliderBindings();
-
             SetMyBindings();
             SetMarkerBinding();
             MyImageSV.Stretch = Stretch.Fill;
-            
+
             //PickColor = Color.FromArgb(200, 100, 202, 52);
             PickColor = Color.FromArgb(255, 255, 0, 0);
             Loaded += Picker_Loaded;
             Closing += Picker_Closing;
-            
+
         }
-        
+
 
         //色指定あり
         public Picker(Color color) : this()
@@ -283,6 +295,16 @@ namespace _20230415
 
             Marker.SetBinding(Marker.MarkerSizeProperty, new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
             MarkerSize = 40;
+        }
+
+        private void UpdateSVWriteableBitmap(double hue)
+        {
+            int p = 0;
+            Parallel.For(0, SVBitmapSize, y =>
+            {
+                ParallelImageSV(p, y, MyStride, MySVPixels, hue, SVBitmapSize, SVBitmapSize);
+            });
+            MySVWriteableBitmap.WritePixels(new Int32Rect(0, 0, SVBitmapSize, SVBitmapSize), MySVPixels, MyStride, 0);
         }
 
         private BitmapSource GetSVImage2(double hue, int size)
