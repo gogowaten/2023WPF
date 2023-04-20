@@ -24,5 +24,14 @@ namespace _20230420_ColorPicker
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var neko = MyPicker.V;
+            var mh = MyPicker.Height;
+            var picc = MyPicker.PickColor;
+            var picb = MyPicker.PickColorBrush;
+            MyPicker.SetColor(Colors.MediumAquamarine);
+        }
     }
 }
