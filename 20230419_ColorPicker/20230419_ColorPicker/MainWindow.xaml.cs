@@ -14,6 +14,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+//WPF、カラーピッカーの土台できた - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/04/20/164232
+
 namespace _20230419_ColorPicker
 {
     /// <summary>
