@@ -14,18 +14,20 @@ WPF、右クリックメニューの表示、非表示切り替えはnullとIsOp
 https://gogowaten.hatenablog.com/entry/2023/04/08/154552<br>
 20230408_ContextMemu<br>
 ![Animation20230408_132659](https://user-images.githubusercontent.com/19729086/230760356-f9e017e6-0f9f-4fc3-9e2d-5314024c13cf.gif)<br>
-
-<br>
+<br><br>
 
 
 WPF、Binding＋ConverterでRGBとHSVの相互変換したかったけど、できなかったのでこうなった - 午後わてんのブログ<br>
 https://gogowaten.hatenablog.com/entry/2023/04/17/135557<br>
 2023041710_ARGBHSV<br>
 ![Animation20230417_125415](https://user-images.githubusercontent.com/19729086/232383173-a621a34c-d0e1-4c87-bb26-fd83806c9576.gif)<br>
-<br>
+<br><br>
+
+
 WPF、カラーピッカーの土台できた - 午後わてんのブログ<br>
 https://gogowaten.hatenablog.com/entry/2023/04/20/164232<br>
 _20230419_ColorPicker<br>
-![20230420_カラーピッカー_00](https://user-images.githubusercontent.com/19729086/233332659-cd019104-06e8-4683-8eeb-3cf7e1dfec0b.png)
+![Animation20230420_115253](https://user-images.githubusercontent.com/19729086/233333470-4c9381f9-f430-4258-827a-176c5bb9eaba.gif)<br>
+
 <br>
 
