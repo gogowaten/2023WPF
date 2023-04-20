@@ -35,30 +35,6 @@ namespace _20230419_ColorPicker
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        //public RGB MyRGB
-        //{
-        //    get { return (RGB)GetValue(MyRGBProperty); }
-        //    set { SetValue(MyRGBProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyRGBProperty =
-        //    DependencyProperty.Register(nameof(MyRGB), typeof(RGB), typeof(Picker),
-        //        new FrameworkPropertyMetadata(new RGB(),
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        //public HSV MyHSV
-        //{
-        //    get { return (HSV)GetValue(MyHSVProperty); }
-        //    set { SetValue(MyHSVProperty, value); }
-        //}
-        //public static readonly DependencyProperty MyHSVProperty =
-        //    DependencyProperty.Register(nameof(MyHSV), typeof(HSV), typeof(Picker),
-        //        new FrameworkPropertyMetadata(new HSV(),
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
         /// <summary>
         /// HSVを再計算、RGB変更時に使用
         /// </summary>
@@ -72,13 +48,12 @@ namespace _20230419_ColorPicker
                 mw.IsRGBChangNow = true;
                 (mw.H, mw.S, mw.V) = MathHSV.RGB2hsv(mw.R, mw.G, mw.B);
                 mw.UpdateSVWriteableBitmap(mw.H);
-                //mw.MyImageSV.Source = mw.GetSVImage2(mw.H, mw.SVBitmapSize);
                 mw.IsRGBChangNow = false;
             }
         }
 
         /// <summary>
-        /// RGBを再計算、HSV変更時に使用
+        /// RGBを再計算、SV変更時に使用
         /// </summary>
         /// <param name="d"></param>
         /// <param name="e"></param>
@@ -100,7 +75,6 @@ namespace _20230419_ColorPicker
                 mw.IsHSVChangNow = true;
                 (mw.R, mw.G, mw.B) = MathHSV.Hsv2rgb(mw.H, mw.S, mw.V);
                 mw.UpdateSVWriteableBitmap(mw.H);
-                //mw.MyImageSV.Source = mw.GetSVImage2(mw.H, mw.SVBitmapSize);
                 mw.IsHSVChangNow = false;
             }
         }
@@ -214,9 +188,9 @@ namespace _20230419_ColorPicker
         private bool IsRGBChangNow;
         private bool IsHSVChangNow;
         public Marker Marker { get; set; }
-        //SVimageのBitmapSourceのサイズは32あれば十分？
-        private readonly int SVBitmapSize = 32;
-        public WriteableBitmap MySVWriteableBitmap { get; private set; }
+        //SVimageのBitmapSourceのサイズは16あれば十分？
+        private readonly int SVBitmapSize = 16;
+        public WriteableBitmap SVWriteableBitmap { get; private set; }
         public byte[] SVPixels { get; private set; }
         private readonly int SVStride;
 
@@ -233,8 +207,8 @@ namespace _20230419_ColorPicker
             SVStride = SVBitmapSize * 3;
             Marker = new Marker(MyImageSV);
             SVPixels = new byte[SVBitmapSize * SVStride];
-            MySVWriteableBitmap = new(SVBitmapSize, SVBitmapSize, 96, 96, PixelFormats.Rgb24, null);
-            MyImageSV.Source = MySVWriteableBitmap;
+            SVWriteableBitmap = new(SVBitmapSize, SVBitmapSize, 96, 96, PixelFormats.Rgb24, null);
+            MyImageSV.Source = SVWriteableBitmap;
 
             DataContext = this;
             SetSliderBindings();
@@ -305,35 +279,21 @@ namespace _20230419_ColorPicker
             {
                 ParallelImageSV(p, y, SVStride, SVPixels, hue, SVBitmapSize, SVBitmapSize);
             });
-            MySVWriteableBitmap.WritePixels(new Int32Rect(0, 0, SVBitmapSize, SVBitmapSize), SVPixels, SVStride, 0);
+            SVWriteableBitmap.WritePixels(new Int32Rect(0, 0, SVBitmapSize, SVBitmapSize), SVPixels, SVStride, 0);
         }
 
-        private BitmapSource GetSVImage2(double hue, int size)
-        {
-            var wb = new WriteableBitmap(size, size, 96, 96, PixelFormats.Rgb24, null);
-            int stride = (size * wb.Format.BitsPerPixel + 7) / 8;
-            var pixels = new byte[size * stride];
-            wb.CopyPixels(pixels, stride, 0);
-            int p = 0;
-            Parallel.For(0, size, y =>
-            {
-                ParallelImageSV(p, y, stride, pixels, hue, size, size);
-            });
 
-            wb.WritePixels(new Int32Rect(0, 0, size, size), pixels, stride, 0);
-            return wb;
-        }
         private void ParallelImageSV(int p, int y, int stride, byte[] pixels, double hue, int w, int h)
         {
+            double v = y / (h - 1.0);
+            double ww = w - 1;
             for (int x = 0; x < w; ++x)
             {
                 p = y * stride + (x * 3);
-                Color svColor = MathHSV.HSV2Color(hue, x / (double)w, y / (double)h);
-                pixels[p] = svColor.R;
-                pixels[p + 1] = svColor.G;
-                pixels[p + 2] = svColor.B;
+                (pixels[p], pixels[p + 1], pixels[p + 2]) = MathHSV.Hsv2rgb(hue, x / ww, v);
             }
         }
+
 
         private void SetMyBindings()
         {
@@ -346,7 +306,6 @@ namespace _20230419_ColorPicker
             SetBinding(PickColorProperty, mb);
 
             MyBorderPickColorSample.SetBinding(BackgroundProperty, new Binding() { Source = this, Path = new PropertyPath(PickColorProperty), Converter = new ConverterColor2Brush() }); ;
-            //MyImageSV.SetBinding(BackgroundProperty, new Binding() { Source = this, Path = new PropertyPath(PickColorProperty), Converter = new ConverterColor2Brush() });
         }
 
         private void SetSliderBindings()

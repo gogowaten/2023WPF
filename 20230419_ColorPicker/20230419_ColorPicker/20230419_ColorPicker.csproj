@@ -6,6 +6,7 @@
     <RootNamespace>_20230419_ColorPicker</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
 
 </Project>

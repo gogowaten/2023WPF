@@ -23,7 +23,12 @@
       <StackPanel>
         <Slider Value="{Binding ElementName=MyImageSV, Path=Width}" Minimum="10" Maximum="300" LargeChange="50"/>
         <StackPanel  Orientation="Horizontal">
-          <Border x:Name="MyBorderPickColorSample" Width="100" Background="DodgerBlue"/>
+          <Grid>
+            <Viewbox>
+              <TextBlock Text="透明度"/>
+            </Viewbox>
+            <Border x:Name="MyBorderPickColorSample" Width="100" Background="DodgerBlue"/>
+          </Grid>
           <StackPanel>
             <TextBlock Text="{Binding PickColor, StringFormat=pickcolor \= {0}}"/>
             <TextBlock Text="{Binding A, StringFormat=a 000}"/>

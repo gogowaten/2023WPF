@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,42 +21,31 @@ namespace _20230419_ColorPicker
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Picker Picker;
+        private readonly Picker Picker;
 
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = this;
-            
+
             //色指定で作成
             //Picker = new(Colors.MediumAquamarine);
 
             //色指定無しで作成
             Picker = new();
 
+            DataContext = this;
             Left = 100;
             Top = 100;
-            Picker.Closing += Picker_Closing;
             Loaded += (s, e) => { Picker.Owner = this; };
+
         }
 
-        private void Picker_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
-        {
-            var neko = Picker.PickColor;
-        }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var mx = Picker.Marker.Saturation;
-            var www = Picker.Marker.Width;
-            var ww = Picker.MyImageSV.Width;
-            var str = Picker.MyImageSV.Stretch;
-            Picker.SetColor(Color.FromArgb(200, 200, 2, 0));
-        }
-
+        
         private void MyButtonOpen_Click(object sender, RoutedEventArgs e)
         {
             Picker.Top = this.Top + 150;
+            Picker.Left = this.Left;
             Picker.Show();
         }
 
@@ -77,4 +67,5 @@ namespace _20230419_ColorPicker
             Picker.Show();
         }
     }
+
 }

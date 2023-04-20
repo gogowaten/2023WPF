@@ -43,30 +43,6 @@ namespace _20230419_ColorPicker
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        //public double MarkLeft
-        //{
-        //    get { return (double)GetValue(MarkLeftProperty); }
-        //    set { SetValue(MarkLeftProperty, value); }
-        //}
-        //public static readonly DependencyProperty MarkLeftProperty =
-        //    DependencyProperty.Register(nameof(MarkLeft), typeof(double), typeof(Marker),
-        //        new FrameworkPropertyMetadata(0.0,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        //public double MarkTop
-        //{
-        //    get { return (double)GetValue(MarkTopProperty); }
-        //    set { SetValue(MarkTopProperty, value); }
-        //}
-        //public static readonly DependencyProperty MarkTopProperty =
-        //    DependencyProperty.Register(nameof(MarkTop), typeof(double), typeof(Marker),
-        //        new FrameworkPropertyMetadata(0.0,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
         public double MarkerSize
         {
             get { return (double)GetValue(MarkerSizeProperty); }

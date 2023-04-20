@@ -10,13 +10,12 @@
     <StackPanel>
       <StackPanel Orientation="Horizontal" Height="200">
         <Button x:Name="MyButtonOpen" Content="open" Click="MyButtonOpen_Click"/>
-        <Button Content="test" Click="Button_Click"/>
         <UniformGrid Rows="1" Margin="5">
-          <Border x:Name="MyBorder1" Background="Crimson"/>
+          <Border x:Name="MyBorder1" Background="DarkSeaGreen"/>
           <Button Content="color1" Click="Button_Click_1"/>
         </UniformGrid>
         <UniformGrid Rows="1" Margin="5">
-          <Border x:Name="MyBorder2" Background="ForestGreen"/>
+          <Border x:Name="MyBorder2" Background="Orchid"/>
           <Button Content="color2" Click="Button_Click_2"/>
         </UniformGrid>
       </StackPanel>
