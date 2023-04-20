@@ -214,9 +214,9 @@ namespace _20230415
         private bool IsRGBChangNow;
         private bool IsHSVChangNow;
         public Marker Marker { get; set; }
-        //SVimageのBitmapSourceのサイズは32あれば十分？
-        private readonly int SVBitmapSize = 32;
-        public WriteableBitmap MySVWriteableBitmap { get; private set; }
+        //SVimageのBitmapSourceのサイズは16あれば十分？
+        private readonly int SVBitmapSize = 16;
+        public WriteableBitmap SVWriteableBitmap { get; private set; }
         public byte[] SVPixels { get; private set; }
         private readonly int SVStride;
 
@@ -232,8 +232,8 @@ namespace _20230415
             SVStride = SVBitmapSize * 3;
             Marker = new Marker(MyImageSV);
             SVPixels = new byte[SVBitmapSize * SVStride];
-            MySVWriteableBitmap = new(SVBitmapSize, SVBitmapSize, 96, 96, PixelFormats.Rgb24, null);
-            MyImageSV.Source = MySVWriteableBitmap;
+            SVWriteableBitmap = new(SVBitmapSize, SVBitmapSize, 96, 96, PixelFormats.Rgb24, null);
+            MyImageSV.Source = SVWriteableBitmap;
 
             DataContext = this;
             SetSliderBindings();
@@ -304,7 +304,7 @@ namespace _20230415
             {
                 ParallelImageSV(p, y, SVStride, SVPixels, hue, SVBitmapSize, SVBitmapSize);
             });
-            MySVWriteableBitmap.WritePixels(new Int32Rect(0, 0, SVBitmapSize, SVBitmapSize), SVPixels, SVStride, 0);
+            SVWriteableBitmap.WritePixels(new Int32Rect(0, 0, SVBitmapSize, SVBitmapSize), SVPixels, SVStride, 0);
         }
 
         private BitmapSource GetSVImage2(double hue, int size)
@@ -322,15 +322,25 @@ namespace _20230415
             wb.WritePixels(new Int32Rect(0, 0, size, size), pixels, stride, 0);
             return wb;
         }
+        //private void ParallelImageSV(int p, int y, int stride, byte[] pixels, double hue, int w, int h)
+        //{
+        //    for (int x = 0; x < w; ++x)
+        //    {
+        //        p = y * stride + (x * 3);
+        //        Color svColor = MathHSV.HSV2Color(hue, x / (double)w, y / (double)h);
+        //        pixels[p] = svColor.R;
+        //        pixels[p + 1] = svColor.G;
+        //        pixels[p + 2] = svColor.B;
+        //    }
+        //}
         private void ParallelImageSV(int p, int y, int stride, byte[] pixels, double hue, int w, int h)
         {
+            double v = y / (h - 1.0);
+            double ww = w - 1;
             for (int x = 0; x < w; ++x)
             {
                 p = y * stride + (x * 3);
-                Color svColor = MathHSV.HSV2Color(hue, x / (double)w, y / (double)h);
-                pixels[p] = svColor.R;
-                pixels[p + 1] = svColor.G;
-                pixels[p + 2] = svColor.B;
+                (pixels[p], pixels[p + 1], pixels[p + 2]) = MathHSV.Hsv2rgb(hue, x / ww, v);
             }
         }
 

@@ -30,8 +30,6 @@ namespace _20230415
     public partial class MainWindow : Window
     {
         private Picker Picker;
-        private Color MyColor1 = Colors.MediumAquamarine;
-        private Color MyColor2 = Colors.DarkMagenta;
 
         public MainWindow()
         {
@@ -43,15 +41,11 @@ namespace _20230415
             Left = 100;
             Top = 100;
             //MySVImage.Source = GetSVImage2(10, 100);
-            Picker.Closing += Picker_Closing;
+            
             Loaded += (s, e) => { Picker.Owner = this; };
         }
 
-        private void Picker_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
-        {
-            var neko = Picker.PickColor;
-        }
-
+        
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var mx = Picker.Marker.Saturation;
@@ -63,8 +57,10 @@ namespace _20230415
 
         private void MyButtonOpen_Click(object sender, RoutedEventArgs e)
         {
+            Picker.Top = this.Top + 150;
+            Picker.Left = this.Left;
             Picker.Show();
-            Picker.Owner = this;
+            
 
         }
         private BitmapSource GetSVImage2(double hue, int size)
