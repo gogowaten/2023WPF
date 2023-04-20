@@ -140,11 +140,11 @@ namespace _20230419_ColorPicker
             double dy = pp.Y - Canvas.GetTop(MarkerThumb) - (MarkerSize / 2.0);
             DiffPoint = new Point(dx, dy);
 
-            double xx = pp.X / TargetElement.Width;
+            double xx = pp.X / TargetElement.ActualWidth;
             if (xx < 0) xx = 0; if (xx > 1.0) xx = 1.0;
             Saturation = xx;
 
-            double yy = pp.Y / TargetElement.Height;
+            double yy = pp.Y / TargetElement.ActualHeight;
             if (yy < 0) yy = 0; if (yy > 1.0) yy = 1.0;
             Value = yy;
 
@@ -157,14 +157,14 @@ namespace _20230419_ColorPicker
             MultiBinding mb = new();
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(SaturationProperty) });
-            mb.Bindings.Add(new Binding() { Source = TargetElement, Path = new PropertyPath(WidthProperty) });
+            mb.Bindings.Add(new Binding() { Source = TargetElement, Path = new PropertyPath(ActualWidthProperty) });
             mb.Converter = new ConverterTopLeft2XY();
             MarkerThumb.SetBinding(Canvas.LeftProperty, mb);
 
             mb = new();
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MarkerSizeProperty) });
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(ValueProperty) });
-            mb.Bindings.Add(new Binding() { Source = TargetElement, Path = new PropertyPath(HeightProperty) });
+            mb.Bindings.Add(new Binding() { Source = TargetElement, Path = new PropertyPath(ActualHeightProperty) });
             mb.Converter = new ConverterTopLeft2XY();
             MarkerThumb.SetBinding(Canvas.TopProperty, mb);
 
@@ -207,11 +207,11 @@ namespace _20230419_ColorPicker
             var dx = DiffPoint.X + (MarkerSize / 2.0);
             var dy = DiffPoint.Y + (MarkerSize / 2.0);
             double ll = left + h + dx;
-            double xx = ll / TargetElement.Width;
+            double xx = ll / TargetElement.ActualWidth;
             if (xx < 0) xx = 0; if (xx > 1.0) xx = 1.0;
             Saturation = xx;
             double tt = top + v + dy;
-            double yy = tt / TargetElement.Height;
+            double yy = tt / TargetElement.ActualHeight;
             if (yy < 0) yy = 0; if (yy > 1.0) yy = 1.0;
             Value = yy;
         }
