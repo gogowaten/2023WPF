@@ -5,21 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230420_ColorPicker"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="600">
+        Title="MainWindow" Height="450" Width="500">
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition/>
-      <ColumnDefinition Width="150"/>
+      <ColumnDefinition Width="0.6*" MinWidth="100"/>
+      <ColumnDefinition Width="0.4*" MinWidth="150"/>
     </Grid.ColumnDefinitions>
-      <local:Picker x:Name="MyPicker"/>
+    <local:Picker x:Name="MyPicker"/>
     <StackPanel Grid.Column="1">
-      <Slider x:Name="MySliderA" Value="{Binding ElementName=MyPicker, Path=A}" Minimum="0" Maximum="255"/>
-      <Slider x:Name="MySliderR" Value="{Binding ElementName=MyPicker, Path=R}" Minimum="0" Maximum="255"/>
-      <Slider x:Name="MySliderG" Value="{Binding ElementName=MyPicker, Path=G}" Minimum="0" Maximum="255"/>
-      <Slider x:Name="MySliderB" Value="{Binding ElementName=MyPicker, Path=B}" Minimum="0" Maximum="255"/>
-      <Slider x:Name="MySliderH" Value="{Binding ElementName=MyPicker, Path=H}" Minimum="0" Maximum="360"/>
-      <Slider x:Name="MySliderS" Value="{Binding ElementName=MyPicker, Path=S}" Minimum="0" Maximum="1" LargeChange="0.1"/>
-      <Slider x:Name="MySliderV" Value="{Binding ElementName=MyPicker, Path=V}" Minimum="0" Maximum="1" LargeChange="0.1"/>
+      <Slider Value="{Binding ElementName=MyPicker, Path=A}" Minimum="0" Maximum="255"/>
+      <Slider Value="{Binding ElementName=MyPicker, Path=R}" Minimum="0" Maximum="255"/>
+      <Slider Value="{Binding ElementName=MyPicker, Path=G}" Minimum="0" Maximum="255"/>
+      <Slider Value="{Binding ElementName=MyPicker, Path=B}" Minimum="0" Maximum="255"/>
+      <Slider Value="{Binding ElementName=MyPicker, Path=H}" Minimum="0" Maximum="360"/>
+      <Slider Value="{Binding ElementName=MyPicker, Path=S}" Minimum="0" Maximum="1" LargeChange="0.1"/>
+      <Slider Value="{Binding ElementName=MyPicker, Path=V}" Minimum="0" Maximum="1" LargeChange="0.1"/>
       <Border x:Name="MYBorderColor" Height="20" Background="{Binding ElementName=MyPicker,Path=PickColorBrush}"/>
       <Button Content="test" Click="Button_Click"/>
       <Slider x:Name="MySliderMarkerSize" Value="{Binding ElementName=MyPicker, Path=MarkerSize}" Minimum="0" Maximum="100"/>

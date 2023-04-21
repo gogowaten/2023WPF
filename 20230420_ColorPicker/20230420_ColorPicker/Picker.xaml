@@ -7,41 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
-    <Image x:Name="MyImageSV"/>
-    <!--<StackPanel>
-      <StackPanel Orientation="Horizontal" Height="200">
-        <Image x:Name="MyImageSV" Width="200" Height="200"/>
-        <Slider x:Name="MySliderA" Maximum="255" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical" Value="255"/>
-        <Slider x:Name="MySliderR" Maximum="255" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical"/>
-        <Slider x:Name="MySliderG" Maximum="255" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical"/>
-        <Slider x:Name="MySliderB" Maximum="255" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical"/>
-        <Slider x:Name="MySliderH" Maximum="360" Minimum="0" SmallChange="1" LargeChange="10" Orientation="Vertical"/>
-        <Slider x:Name="MySliderS" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Orientation="Vertical"/>
-        <Slider x:Name="MySliderV" Maximum="1" Minimum="0" SmallChange="0.01" LargeChange="0.1" Orientation="Vertical"/>
-        <Slider Value="{Binding ElementName=MyImageSV, Path=Height}" Minimum="10" Maximum="200" LargeChange="20" TickFrequency="20" Orientation="Vertical"/>
-        <Slider Value="{Binding Marker.MarkerSize}" Minimum="10" Maximum="200" Orientation="Vertical" LargeChange="20"/>
-      </StackPanel>
-      <StackPanel>
-        <Slider Value="{Binding ElementName=MyImageSV, Path=Width}" Minimum="10" Maximum="300" LargeChange="50"/>
-        <StackPanel  Orientation="Horizontal">
-          <Grid>
-            <Viewbox>
-              <TextBlock Text="透明度"/>
-            </Viewbox>
-            <Border x:Name="MyBorderPickColorSample" Width="100" Background="DodgerBlue"/>
-          </Grid>
-          <StackPanel>
-            <TextBlock Text="{Binding PickColor, StringFormat=pickcolor \= {0}}"/>
-            <TextBlock Text="{Binding A, StringFormat=a 000}"/>
-            <TextBlock Text="{Binding R, StringFormat=r 000}"/>
-            <TextBlock Text="{Binding G, StringFormat=g 000}"/>
-            <TextBlock Text="{Binding B, StringFormat=b 000}"/>
-            <TextBlock Text="{Binding H, StringFormat=h 000}"/>
-            <TextBlock Text="{Binding S, StringFormat=s 0.00}"/>
-            <TextBlock Text="{Binding V, StringFormat=v 0.00}"/>
-          </StackPanel>
-        </StackPanel>
-      </StackPanel>
-    </StackPanel>-->
+    <Image x:Name="MyImageSV"/>  
   </Grid>
 </UserControl>

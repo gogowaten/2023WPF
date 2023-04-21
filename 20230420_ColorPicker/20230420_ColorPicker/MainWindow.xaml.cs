@@ -13,6 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
+//ユーザーコントロールでカラーピッカー
+
 namespace _20230420_ColorPicker
 {
     /// <summary>

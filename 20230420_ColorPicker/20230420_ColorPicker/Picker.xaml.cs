@@ -323,10 +323,11 @@ namespace _20230420_ColorPicker
             SetBinding(PickColorBrushProperty, new Binding() { Source = this, Path = new PropertyPath(PickColorProperty), Converter = new ConverterColor2Brush() });
 
         }
-
-
     }
 
+
+    #region コンバーター
+    
     public class ConverterColor2Brush : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -363,6 +364,12 @@ namespace _20230420_ColorPicker
             return result;
         }
     }
+    #endregion コンバーター
+
+
+    /// <summary>
+    /// ピックアップマーカー
+    /// </summary>
     public class Marker : Adorner
     {
         #region 依存関係プロパティ
@@ -434,9 +441,9 @@ namespace _20230420_ColorPicker
         protected override int VisualChildrenCount => MyVisuals.Count;
         protected override Visual GetVisualChild(int index) => MyVisuals[index];
 
-        public Thumb MarkerThumb;
-        public Canvas MyCanvas;
-        public FrameworkElement TargetElement;
+        private readonly Thumb MarkerThumb;
+        private readonly Canvas MyCanvas;
+        private readonly FrameworkElement TargetElement;
 
         private Point DiffPoint;
 
