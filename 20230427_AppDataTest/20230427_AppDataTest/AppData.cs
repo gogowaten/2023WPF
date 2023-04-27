@@ -9,11 +9,12 @@ using System.Windows;
 
 namespace _20230427_AppDataTest
 {
-    [DataContract]
+    //[DataContract]//これはいらない、というかあるとDependencyObjectはシリアル化できないって言われる
     public class AppDatas : DependencyObject
     {
         [DataMember] public ObservableCollection<AppData> Datas { get; set; }
-        public AppDatas() {
+        public AppDatas()
+        {
             Datas = new ObservableCollection<AppData>();
             for (int i = 0; i < 10; i++)
             {
@@ -23,7 +24,7 @@ namespace _20230427_AppDataTest
     }
 
 
-    [DataContract]
+
     public class AppData : DependencyObject, IExtensibleDataObject
     {
         public AppData()
@@ -31,9 +32,9 @@ namespace _20230427_AppDataTest
 
         }
 
-        public ExtensionDataObject? ExtensionData { get; set; }// => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public ExtensionDataObject? ExtensionData { get; set; }
 
-        public string Name { get; set; } = "nemo";
+        [DataMember] public string Name { get; set; } = "nemo";
 
         [DataMember]
         public double AppLeft
