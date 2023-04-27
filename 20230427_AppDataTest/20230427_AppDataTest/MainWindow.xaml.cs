@@ -35,20 +35,27 @@ namespace _20230427_AppDataTest
             SetMyComboBox();
         }
 
+        //【WPF】ComboBoxの使い方と実装方法を解説（バインド）｜○NAKA BLOG
+        //        https://marunaka-blog.com/wpf-combobox/3223/
+
         private void SetMyComboBox()
-        {            
-            MyComboBoxAppDatas.DataContext= MyAppDatas;
+        {
+            //MyComboBoxAppDatas.DisplayMemberPath = nameof(AppData.AppLeft);// "AppLeft";
+            MyComboBoxAppDatas.DisplayMemberPath = nameof(AppData.Name);
+            MyComboBoxAppDatas.SelectedValuePath = "AppLeft";
+            MyComboBoxAppDatas.DataContext = MyAppDatas;
             MyComboBoxAppDatas.SetBinding(ComboBox.ItemsSourceProperty, new Binding(nameof(MyAppDatas.Datas)));
+            MyComboBoxAppDatas.SetBinding(ComboBox.SelectedItemProperty, new Binding(nameof(MyAppDatas.SelectData)));
         }
         private void SetMyBindings()
         {
-            
+
             SetBinding(LeftProperty, new Binding() { Path = new PropertyPath(AppData.AppLeftProperty) });
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
+            var value = MyComboBoxAppDatas.SelectedValue;
         }
 
         //保存
@@ -58,9 +65,9 @@ namespace _20230427_AppDataTest
             SaveAppDatas<AppDatas>(fileName, MyAppDatas);
         }
 
-        
 
-    
+
+
 
         private void SaveAppDatas<T>(string fileName, T data)
         {
@@ -93,8 +100,8 @@ namespace _20230427_AppDataTest
             DataContractSerializer serializer = new(typeof(T));
             try
             {
-                using XmlReader reader=XmlReader.Create(fileName);
-                if(serializer.ReadObject(reader) is T t)
+                using XmlReader reader = XmlReader.Create(fileName);
+                if (serializer.ReadObject(reader) is T t)
                 {
                     return t;
                 }
@@ -107,9 +114,16 @@ namespace _20230427_AppDataTest
 
         }
 
+        //Dataの変更
         private void Button_Click_Data01Change(object sender, RoutedEventArgs e)
         {
-            MyAppDatas.Datas[1].AppLeft = 123;
+            //Data自体をNewして入れ替えると、表示も変更される
+            AppData data = new() { AppLeft = 123, Name = "DataSlot1" };
+            MyAppDatas.Datas[1] = data;
+
+            //Dataの中の値を変更、これでは表示は変更されない(通知されない)
+            //MyAppDatas.Datas[1].AppLeft = 123;
+            //MyAppDatas.Datas[1].Name = "DataSlot1";
         }
 
         private void Button_Click_data01tekiyou(object sender, RoutedEventArgs e)

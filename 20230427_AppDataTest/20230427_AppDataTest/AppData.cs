@@ -13,6 +13,8 @@ namespace _20230427_AppDataTest
     public class AppDatas : DependencyObject
     {
         [DataMember] public ObservableCollection<AppData> Datas { get; set; }
+        public AppData? SelectData { get; set; }
+
         public AppDatas()
         {
             Datas = new ObservableCollection<AppData>();
@@ -31,6 +33,12 @@ namespace _20230427_AppDataTest
         {
 
         }
+
+        //public override string ToString()
+        //{
+        //    return Name;
+        //    //return base.ToString();
+        //}
 
         public ExtensionDataObject? ExtensionData { get; set; }
 
