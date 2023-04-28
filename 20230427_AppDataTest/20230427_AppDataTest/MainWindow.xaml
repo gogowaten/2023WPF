@@ -5,15 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230427_AppDataTest"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="600">
-    <Grid>
+        Title="MainWindow" Height="450" Width="600"
+        x:Name="MyMain">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="150"/>
+    </Grid.ColumnDefinitions>
     <StackPanel>
       <Button Content="Test" Click="Button_Click"/>
-      <ComboBox x:Name="MyComboBoxAppDatas"/>
+      <!--<ComboBox x:Name="MyComboBoxAppDatas"/>-->
       <Button Content="Sava" Click="Button_Click_Save"/>
       <Button Content="Load" Click="Button_Click_Load"/>
-      <Button Content="data01_Change" Click="Button_Click_Data01Change"/>
-      <Button Content="data01_tekiyou" Click="Button_Click_data01tekiyou"/>
+      <Button Content="Left 100" Click="Button_Click_Data01Change"/>
+      <Button Content="change data" Click="Button_Click_ChangeData"/>
+      <TextBox x:Name="MyTextBox" Text="XAML text"/>
+      <TextBox x:Name="MyTextBox2" Text="XAML text22222222"/>
     </StackPanel>
-    </Grid>
+    <StackPanel x:Name="MyStackPanel" Grid.Column="1" d:DataContext="{d:DesignInstance Type=local:AppData}">
+      <TextBlock Text="{Binding AppLeft}"/>
+      <TextBlock Text="{Binding AppTop}"/>
+      <TextBlock Text="{Binding Name}"/>
+      <TextBlock x:Name="MyTextBlockLeft"/>
+      <TextBlock x:Name="MyTextBlockTop"/>
+      <TextBlock x:Name="MyTextBlockWindowLeft"/>
+      <TextBlock Text="aaa"/>
+    </StackPanel>
+  </Grid>
 </Window>

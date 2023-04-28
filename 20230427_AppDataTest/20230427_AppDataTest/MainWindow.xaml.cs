@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -22,17 +23,57 @@ namespace _20230427_AppDataTest
     /// </summary>
     public partial class MainWindow : Window
     {
-        public AppDatas MyAppDatas { get; set; }
-        //public AppData MyAppData { get; set; }
+        private AppData MyAppData = new();
+        public AppData AppDataDP
+        {
+            get { return (AppData)GetValue(AppDataDPProperty); }
+            set { SetValue(AppDataDPProperty, value); }
+        }
+        public static readonly DependencyProperty AppDataDPProperty =
+            DependencyProperty.Register(nameof(AppDataDP), typeof(AppData), typeof(MainWindow),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        private DataNotify MyDataNotify { get; set; } = new();
+
         public MainWindow()
         {
             InitializeComponent();
 
-            MyAppDatas = new();
-            //DataContextを変更してからBinding設定
-            DataContext = MyAppDatas.Datas[0];
+            //Sourceを変更してからBindingする
+            MyAppData = new AppData();
+            MyBinding2();
+
+            //MyInitia1();
+
+        }
+
+        private void MyInitia1()
+        {
+            //Sourceを変更してからBindingする
+            AppDataDP = new();
+
+            SetBinding(LeftProperty, new Binding() { Source = AppDataDP, Path = new PropertyPath(AppData.AppLeftProperty), Mode = BindingMode.TwoWay });
+            SetBinding(TopProperty, new Binding() { Source = AppDataDP, Path = new PropertyPath(AppData.AppTopProperty), Mode = BindingMode.TwoWay });
+            MyTextBlockLeft.SetBinding(TextBlock.TextProperty, new Binding() { Source = AppDataDP, Path = new PropertyPath(AppData.AppLeftProperty), Mode = BindingMode.TwoWay });
+            MyTextBlockTop.SetBinding(TextBlock.TextProperty, new Binding() { Source = AppDataDP, Path = new PropertyPath(AppData.AppTopProperty), Mode = BindingMode.TwoWay });
+        }
+        private void MyBinding2()
+        {
+            //Twoway必須、なんで？
+            SetBinding(LeftProperty, new Binding() { Source = MyAppData, Path = new PropertyPath(AppData.AppLeftProperty), Mode = BindingMode.TwoWay });
+            SetBinding(TopProperty, new Binding() { Source = MyAppData, Path = new PropertyPath(AppData.AppTopProperty), Mode = BindingMode.TwoWay });
+
+            //以下は確認用
+            MyTextBlockLeft.SetBinding(TextBlock.TextProperty, new Binding() { Source = MyAppData, Path = new PropertyPath(AppData.AppLeftProperty), Mode = BindingMode.TwoWay, StringFormat = $"left = 0.00" });
+            MyTextBlockTop.SetBinding(TextBlock.TextProperty, new Binding() { Source = MyAppData, Path = new PropertyPath(AppData.AppTopProperty), Mode = BindingMode.TwoWay, StringFormat = $"top = 0.00" });
+        }
+
+        private void MainWindow_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
             SetMyBindings();
-            SetMyComboBox();
         }
 
         //【WPF】ComboBoxの使い方と実装方法を解説（バインド）｜○NAKA BLOG
@@ -41,33 +82,44 @@ namespace _20230427_AppDataTest
         private void SetMyComboBox()
         {
             //MyComboBoxAppDatas.DisplayMemberPath = nameof(AppData.AppLeft);// "AppLeft";
-            MyComboBoxAppDatas.DisplayMemberPath = nameof(AppData.Name);
-            MyComboBoxAppDatas.SelectedValuePath = "AppLeft";
-            MyComboBoxAppDatas.DataContext = MyAppDatas;
-            MyComboBoxAppDatas.SetBinding(ComboBox.ItemsSourceProperty, new Binding(nameof(MyAppDatas.Datas)));
-            MyComboBoxAppDatas.SetBinding(ComboBox.SelectedItemProperty, new Binding(nameof(MyAppDatas.SelectData)));
+            //MyComboBoxAppDatas.DisplayMemberPath = nameof(AppData.Name);
+            //MyComboBoxAppDatas.SelectedValuePath = "AppLeft";
+            //MyComboBoxAppDatas.DataContext = MyAppDatas;
+            //MyComboBoxAppDatas.SetBinding(ComboBox.ItemsSourceProperty, new Binding(nameof(MyAppDatas.Datas)));
+            //MyComboBoxAppDatas.SetBinding(ComboBox.SelectedItemProperty, new Binding(nameof(MyAppDatas.SelectData)));
         }
         private void SetMyBindings()
         {
+            //ModeTwoway必須、なんで？
+            SetBinding(LeftProperty, new Binding() { Source = MyAppData, Path = new PropertyPath(AppData.AppLeftProperty), Mode = BindingMode.TwoWay });
+            SetBinding(TopProperty, new Binding() { Source = MyAppData, Path = new PropertyPath(AppData.AppTopProperty), Mode = BindingMode.TwoWay });
 
-            SetBinding(LeftProperty, new Binding() { Path = new PropertyPath(AppData.AppLeftProperty) });
+            //TextBox -> AppData    AppData優先
+            MyTextBox.SetBinding(TextBox.TextProperty, new Binding() { Source = MyAppData, Path = new PropertyPath(AppData.AppTextProperty) });
+
+            ////AppData -> TextBox    XAML優先
+            //BindingOperations.SetBinding(MyAppData, AppData.AppTextProperty, new Binding() { Source = MyTextBox, Path = new PropertyPath(TextBox.TextProperty) });
+
+            MyTextBox2.SetBinding(TextBox.TextProperty, new Binding() { Source = MyAppData, Path = new PropertyPath(AppData.AppText2Property) });
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var value = MyComboBoxAppDatas.SelectedValue;
+            var dc = DataContext;
+            var mad = MyAppData;
+            var stack = MyStackPanel.DataContext;
+            var appdp = AppDataDP;
         }
 
         //保存
         private void Button_Click_Save(object sender, RoutedEventArgs e)
         {
             string fileName = $"E:\\appDatasTest.xml";
-            SaveAppDatas<AppDatas>(fileName, MyAppDatas);
+            SaveAppDatas<AppData>(fileName, MyAppData);
+            fileName = $"E:\\20230428_appDatasTest.xml";
+            SaveAppDatas<DataNotify>(fileName, MyDataNotify);
         }
-
-
-
-
 
         private void SaveAppDatas<T>(string fileName, T data)
         {
@@ -90,8 +142,8 @@ namespace _20230427_AppDataTest
         private void Button_Click_Load(object sender, RoutedEventArgs e)
         {
             string fileName = $"E:\\appDatasTest.xml";
-            var data = DataLoad<AppDatas>(fileName);
-            MyAppDatas = data;
+            var data = DataLoad<AppData>(fileName);
+            MyAppData = data;
 
         }
 
@@ -117,19 +169,15 @@ namespace _20230427_AppDataTest
         //Dataの変更
         private void Button_Click_Data01Change(object sender, RoutedEventArgs e)
         {
-            //Data自体をNewして入れ替えると、表示も変更される
-            AppData data = new() { AppLeft = 123, Name = "DataSlot1" };
-            MyAppDatas.Datas[1] = data;
-
-            //Dataの中の値を変更、これでは表示は変更されない(通知されない)
-            //MyAppDatas.Datas[1].AppLeft = 123;
-            //MyAppDatas.Datas[1].Name = "DataSlot1";
+            MyAppData.AppLeft = 100;
         }
 
-        private void Button_Click_data01tekiyou(object sender, RoutedEventArgs e)
+        private void Button_Click_ChangeData(object sender, RoutedEventArgs e)
         {
-            DataContext = MyAppDatas.Datas[1];
-            SetMyBindings();
+            AppData data = new();
+            data.AppLeft = 500;
+            MyAppData = data;
+            MyBinding2();
         }
     }
 }
