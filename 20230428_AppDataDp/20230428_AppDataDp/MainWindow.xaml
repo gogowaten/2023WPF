@@ -5,8 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230428_AppDataDp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="250" Width="400">
+  <UniformGrid Columns="3">
 
-    </Grid>
+    <StackPanel>
+      <Button Content="Check" Click="Button_Click"/>
+      <Button x:Name="MyButtonSave" Content="SAVE" Click="MyButtonSave_Click"/>
+      <Button x:Name="MyButtonLoad" Content="LOAD" Click="MyButtonLoad_Click"/>
+    </StackPanel>
+    <GroupBox Header="Data確認用">
+      <StackPanel>
+        <TextBlock x:Name="MyTextBlock0" Text="dataleft"/>
+        <TextBlock x:Name="MyTextBlock1" Text="text1"/>
+      </StackPanel>
+    </GroupBox>
+    <GroupBox Header="Target確認用">
+      <StackPanel>
+        <TextBox x:Name="MyTextBoxTarget" Text="依存関係プロパティ"/>
+      </StackPanel>
+    </GroupBox>
+  </UniformGrid>
 </Window>
