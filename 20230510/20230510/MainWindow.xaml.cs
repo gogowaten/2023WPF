@@ -26,56 +26,36 @@ namespace _20230510
     public partial class MainWindow : Window
     {
 
-        public PointCollection MyProperty
-        {
-            get { return (PointCollection)GetValue(MyPropertyProperty); }
-            set { SetValue(MyPropertyProperty, value); }
-        }
-        public static readonly DependencyProperty MyPropertyProperty =
-            DependencyProperty.Register(nameof(MyProperty), typeof(PointCollection), typeof(MainWindow),
-                new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
+       
         public MainWindow()
         {
             InitializeComponent();
-            //MyProperty -> GeoLineにする場合
-            //SetBinding(MyPropertyProperty, new Binding() { Source = MyGeoLine1, Path = new PropertyPath(GeoLine.AnchorsProperty), Mode = BindingMode.TwoWay });
-
-            //GeoLine -> MyPropertyにする場合
-            if (MyProperty == null || MyProperty.Count < 2)
-            {
-                MyProperty = MyGeoLine1.Anchors;
-            }
-            MyGeoLine1.SetBinding(GeoLine.AnchorsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPropertyProperty), Mode = BindingMode.TwoWay });
+          
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyGeoLine1.Anchors.Add(new Point(0, 100));
+            MyTestContent.Data.AnchorPoints[0] = new Point(20, 100);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var neko = MyProperty;
-            var inu = MyGeoLine1.Anchors;
+           
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            MyProperty.Add(new Point(50, 70));
+           
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            MyProperty = new PointCollection() { new Point(21, 200), new Point(100, 100) };
+            
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            MyGeoLine1.Anchors = new PointCollection() { new Point(21, 200), new Point(100, 100) };
+         
         }
     }
 }

@@ -9,26 +9,13 @@ using System.Windows;
 using System.Collections.ObjectModel;
 using System.Windows.Ink;
 using System.Windows.Markup;
+using System.Windows.Controls;
 
 namespace _20230510
 {
     [ContentProperty(nameof(Anchors))]
-    class GeoLine : Shape
+    public class GeoShape : Shape
     {
-
-
-        //public ObservableCollection<Point> PPP
-        //{
-        //    get { return (ObservableCollection<Point>)GetValue(PPPProperty); }
-        //    set { SetValue(PPPProperty, value); }
-        //}
-        //public static readonly DependencyProperty PPPProperty =
-        //    DependencyProperty.Register(nameof(PPP), typeof(ObservableCollection<Point>), typeof(GeoLine),
-        //        new FrameworkPropertyMetadata(new ObservableCollection<Point>(),
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
 
         public PointCollection Anchors
         {
@@ -36,8 +23,8 @@ namespace _20230510
             set { SetValue(AnchorsProperty, value); }
         }
         public static readonly DependencyProperty AnchorsProperty =
-            DependencyProperty.Register(nameof(Anchors), typeof(PointCollection), typeof(GeoLine),
-                new FrameworkPropertyMetadata(new PointCollection() { new Point(0, 0), new Point(100, 100) },
+            DependencyProperty.Register(nameof(Anchors), typeof(PointCollection), typeof(GeoShape),
+                new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
@@ -47,6 +34,8 @@ namespace _20230510
         {
             get
             {
+                StrokeThickness = 10;Stroke = Brushes.Black;
+                if (Anchors==null|| Anchors.Count < 2) return Geometry.Empty;
                 StreamGeometry geometry = new();
                 using (var context = geometry.Open())
                 {

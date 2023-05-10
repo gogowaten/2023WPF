@@ -12,8 +12,9 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas>
-      <local:GeoLine x:Name="MyGeoLine1" Anchors="0,0 200,20 100,100" Stroke="Red"
-                     StrokeThickness="10"/>
+      <local:GeoThumb x:Name="MyTestContent" ThumbAnchors="0,0 200,20"/>
+
+
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="test1" Click="Button_Click"/>
