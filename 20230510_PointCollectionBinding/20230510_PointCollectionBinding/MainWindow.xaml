@@ -6,7 +6,21 @@
         xmlns:local="clr-namespace:_20230510_PointCollectionBinding"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="150"/>
+    </Grid.ColumnDefinitions>
+    <Canvas>
+      <local:GeoLine x:Name="MyGeoLine1" Anchors="0,0 200,20 100,100" Stroke="Red"
+                     StrokeThickness="10"/>
+    </Canvas>
+    <StackPanel Grid.Column="1">
+      <Button Content="test1" Click="Button_Click"/>
+      <Button Content="test2" Click="Button_Click_2"/>
+      <Button Content="test3" Click="Button_Click_3"/>
+      <Button Content="test4" Click="Button_Click_4"/>
+      <Button Content="check" Click="Button_Click_1"/>
+    </StackPanel>
+  </Grid>
 </Window>
