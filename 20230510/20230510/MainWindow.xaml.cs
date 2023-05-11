@@ -25,13 +25,46 @@ namespace _20230510
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ControlTemplate MyControlTemplate;
 
-       
         public MainWindow()
         {
             InitializeComponent();
-          
+
+            MyControlTemplate = new ControlTemplate();
+            FrameworkElementFactory eBorder = new(typeof(Border));
+            FrameworkElementFactory eTextb = new(typeof(TextBlock));
+
+            eBorder.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(BackgroundProperty));
+            //↑と↓は同じ結果
+            //eBorder.SetValue(Border.BackgroundProperty, new Binding() { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent), Path = new PropertyPath(BackgroundProperty) });
+
+            eBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(30.0));
+            eBorder.SetValue(Border.PaddingProperty, new Thickness(10.0));
+            eTextb.SetValue(TextBlock.TextProperty, new TemplateBindingExtension(ContentProperty));
+            eTextb.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+            eTextb.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            eBorder.AppendChild(eTextb);
+            MyControlTemplate.VisualTree = eBorder;
+            Button myb = new()
+            {
+                Template = MyControlTemplate,
+                Content = "button1",
+                Background = Brushes.LightBlue,
+                Margin = new Thickness(30)
+            };
+            MyStackPanel.Children.Add(myb);
+
+            ControlTemplate template = new();
+            eBorder = new(typeof(Border));
+            eBorder.SetValue(Border.BackgroundProperty, new Binding() { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent), Path = new PropertyPath(BackgroundProperty) });
         }
+
+
+
+
+
+        #region click
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -40,22 +73,23 @@ namespace _20230510
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-         
+
         }
+        #endregion click
     }
 }
