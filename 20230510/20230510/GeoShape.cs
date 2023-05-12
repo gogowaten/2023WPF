@@ -13,34 +13,46 @@ using System.Windows.Controls;
 
 namespace _20230510
 {
-    [ContentProperty(nameof(Anchors))]
+//    [ContentProperty(nameof(AnchorPoints))]
     public class GeoShape : Shape
     {
+        //public ObservableCollection<Point> AnchorPoints
+        //{
+        //    get { return (ObservableCollection<Point>)GetValue(AnchorPointsProperty); }
+        //    set { SetValue(AnchorPointsProperty, value); }
+        //}
+        //public static readonly DependencyProperty AnchorPointsProperty =
+        //    DependencyProperty.Register(nameof(AnchorPoints), typeof(ObservableCollection<Point>), typeof(GeoShape),
+        //        new FrameworkPropertyMetadata(new ObservableCollection<Point>(),
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public PointCollection Anchors
+        public PointCollection AnchorPoints
         {
-            get { return (PointCollection)GetValue(AnchorsProperty); }
-            set { SetValue(AnchorsProperty, value); }
+            get { return (PointCollection)GetValue(AnchorPointsProperty); }
+            set { SetValue(AnchorPointsProperty, value); }
         }
-        public static readonly DependencyProperty AnchorsProperty =
-            DependencyProperty.Register(nameof(Anchors), typeof(PointCollection), typeof(GeoShape),
+        public static readonly DependencyProperty AnchorPointsProperty =
+            DependencyProperty.Register(nameof(AnchorPoints), typeof(PointCollection), typeof(GeoShape),
                 new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
+
         protected override Geometry DefiningGeometry
         {
             get
             {
-                StrokeThickness = 10;Stroke = Brushes.Black;
-                if (Anchors==null|| Anchors.Count < 2) return Geometry.Empty;
+                StrokeThickness = 10; Stroke = Brushes.Black;
+                if (AnchorPoints == null || AnchorPoints.Count < 2) return Geometry.Empty;
                 StreamGeometry geometry = new();
                 using (var context = geometry.Open())
                 {
-                    context.BeginFigure(Anchors[0], false, false);
-                    context.PolyLineTo(Anchors.Skip(1).ToList(), true, false);
+                    context.BeginFigure(AnchorPoints[0], false, false);
+                    context.PolyLineTo(AnchorPoints.Skip(1).ToList(), true, false);
                 }
                 geometry.Freeze();
                 return geometry;

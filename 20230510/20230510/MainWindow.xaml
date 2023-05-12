@@ -12,8 +12,8 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas>
-      <local:GeoThumb x:Name="MyTestContent" ThumbAnchors="0,0 200,20"/>
-
+      <local:GeoThumb x:Name="MyTestContent" TTAnchors="0,0 200,20"/>
+      <local:GeoShape x:Name="MyGeoShape" AnchorPoints="100,100 200,100"/>
 
     </Canvas>
     <StackPanel x:Name="MyStackPanel" Grid.Column="1">
@@ -21,7 +21,7 @@
       <Button Content="test2" Click="Button_Click_2"/>
       <Button Content="test3" Click="Button_Click_3"/>
       <Button Content="test4" Click="Button_Click_4"/>
-      <Button Content="check" Click="Button_Click_1"/>
+      <Button Content="check" Click="ButtonCheck_Click"/>
     </StackPanel>
   </Grid>
 </Window>

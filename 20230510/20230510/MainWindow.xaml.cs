@@ -68,12 +68,18 @@ namespace _20230510
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyTestContent.Data.AnchorPoints[0] = new Point(20, 100);
+            //MyTestContent.Data.AnchorPoints[0] = new Point(20, 100);
+            //MyTestContent.TTData.AnchorPoints.Add(new Point(20, 100));
+            MyTestContent.MyContentGeoShape.AnchorPoints.Add(new Point(20, 100));
+            MyGeoShape.AnchorPoints.Add(new Point(0, 0));
+
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void ButtonCheck_Click(object sender, RoutedEventArgs e)
         {
-
+            var data = MyTestContent.TTData;
+            var shapeanchor = MyTestContent.MyContentGeoShape.AnchorPoints;
+            var dataanchor = MyTestContent.TTData.AnchorPoints;
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)

@@ -42,7 +42,7 @@ namespace _20230510
         public ShapeCanvas()
         {
             CanvasContent = new GeoShape();
-            CanvasContent.SetBinding(GeoShape.AnchorsProperty, new Binding() { Source = this.Data, Path = new PropertyPath(Data.AnchorPointsProperty), Mode = BindingMode.TwoWay });
+            CanvasContent.SetBinding(GeoShape.AnchorPointsProperty, new Binding() { Source = this.Data, Path = new PropertyPath(Data.AnchorPointsProperty), Mode = BindingMode.TwoWay });
             CanvasContent.Stroke = Brushes.Gray;
             CanvasContent.StrokeThickness = 1;
             Children.Add(CanvasContent);
