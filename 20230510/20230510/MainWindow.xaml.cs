@@ -70,15 +70,18 @@ namespace _20230510
         {
             //MyTestContent.Data.AnchorPoints[0] = new Point(20, 100);
             //MyTestContent.TTData.AnchorPoints.Add(new Point(20, 100));
-            MyTestContent.MyContentGeoShape.AnchorPoints.Add(new Point(20, 100));
-            MyGeoShape.AnchorPoints.Add(new Point(0, 0));
 
+            //MyTestContent.MyShape.AnchorPoints.Add(new Point(20, 100));
+            //MyGeoShape.AnchorPoints.Add(new Point(0, 0));
+
+            MyTestContent.TTStrokeThickness = 1;
         }
 
         private void ButtonCheck_Click(object sender, RoutedEventArgs e)
         {
-            var data = MyTestContent.TTData;
-            var shapeanchor = MyTestContent.MyContentGeoShape.AnchorPoints;
+            var data = MyTestContent.TTData.StrokeWidth;
+            var ttstroke = MyTestContent.TTStrokeThickness;
+            var shapeanchor = MyTestContent.MyShape.AnchorPoints;
             var dataanchor = MyTestContent.TTData.AnchorPoints;
         }
 
