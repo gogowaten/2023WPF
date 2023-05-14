@@ -20,7 +20,10 @@
       <Button Content="test1" Click="Button_Click"/>
       <Button Content="test2" Click="Button_Click_2"/>
       <Button Content="test3" Click="Button_Click_3"/>
-      <Button Content="test4" Click="Button_Click_4"/>
+      <Button Content="change pointcollection1" Click="Button_change_pointcollection1_Click"/>
+      <Button Content="change pointcollection2" Click="Button_change_pointcollection2_Click"/>
+      <Button Content="change pointcollection3" Click="Button_change_pointcollection3_Click"/>
+      <Button Content="ChangeData" Click="Button_Click_1"/>
       <Button Content="check" Click="ButtonCheck_Click"/>
     </StackPanel>
   </Grid>

@@ -65,8 +65,7 @@ namespace _20230510
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public Canvas MyTemplateCanvas { get; private set; }
-        public GeoShape MyShape { get; private set; } = new();
-        //public Data TTData { get; private set; }
+        public GeoShape MyShape { get; private set; } = new() { Stroke = Brushes.MediumOrchid };
 
         public GeoThumb()
         {
@@ -75,10 +74,10 @@ namespace _20230510
             MyTemplateCanvas.Children.Add(MyShape);
 
             TTData = new();
-            Loaded += GeoThumb_Loaded;
-
-            var mydata = this.TTData;
+            //Loaded += GeoThumb_Loaded;
+            SetMyBinding4();
         }
+
         public GeoThumb(Data data) : this()
         {
             TTData = data;
@@ -86,15 +85,47 @@ namespace _20230510
 
         private void GeoThumb_Loaded(object sender, RoutedEventArgs e)
         {
-            SetMyBinding3();
+            SetMyBinding4();
         }
 
+        //4よりこっちのほうが自然な感じ
+        private void SetMyBinding5()
+        {
+            //Source      Target
+            //TTStroke <- MyShape.Stroke
+            //TTStroke <- TTData.Stroke
+            Binding b = new() { Source = this, Path = new PropertyPath(TTStrokeThicknessProperty), Mode = BindingMode.TwoWay };
+            MyShape.SetBinding(GeoShape.StrokeThicknessProperty, b);
+            BindingOperations.SetBinding(TTData, Data.StrokeWidthProperty, b);
+
+            b = new() { Source = this, Path = new PropertyPath(TTAnchorsProperty), Mode = BindingMode.TwoWay };
+            MyShape.SetBinding(GeoShape.AnchorPointsProperty, b);
+            BindingOperations.SetBinding(TTData, Data.AnchorPointsProperty, b);
+        }
+
+        private void SetMyBinding4()
+        {
+            //Source    Target
+            //TTData <- MyShape
+            //TTData <- TTStroke
+            Binding b = new() { Source = TTData, Path = new PropertyPath(Data.StrokeWidthProperty), Mode = BindingMode.TwoWay };
+            MyShape.SetBinding(GeoShape.StrokeThicknessProperty, b);
+            SetBinding(TTStrokeThicknessProperty, b);
+
+            if (TTAnchors != null) { TTData.AnchorPoints = TTAnchors; }
+            b = new() { Source = TTData, Path = new PropertyPath(Data.AnchorPointsProperty), Mode = BindingMode.TwoWay };
+            MyShape.SetBinding(GeoShape.AnchorPointsProperty, b);
+            SetBinding(TTAnchorsProperty, b);
+        }
         private void SetMyBinding3()
         {
-            //MyShape.SetBinding(GeoShape.StrokeThicknessProperty, new Binding() { Source = this, Path = new PropertyPath(TTStrokeThicknessProperty), Mode = BindingMode.TwoWay });
-            //MyShape.SetBinding(GeoShape.AnchorPointsProperty, new Binding() { Source = this, Path = new PropertyPath(TTAnchorsProperty), Mode = BindingMode.TwoWay });
+            Binding b = new() { Source = this, Path = new PropertyPath(TTStrokeThicknessProperty), Mode = BindingMode.TwoWay };
+            MyShape.SetBinding(GeoShape.StrokeThicknessProperty, b);
+            BindingOperations.SetBinding(TTData, Data.StrokeWidthProperty, b);
 
-            BindingOperations.SetBinding(TTData, Data.StrokeWidthProperty, new Binding() { Source = this, Path = new PropertyPath(TTStrokeThicknessProperty), Mode = BindingMode.TwoWay });
+            b = new() { Source = this, Path = new PropertyPath(TTAnchorsProperty), Mode = BindingMode.TwoWay };
+            MyShape.SetBinding(GeoShape.AnchorPointsProperty, b);
+            BindingOperations.SetBinding(TTData, Data.AnchorPointsProperty, b);
         }
 
         private void SetMyBinding2()

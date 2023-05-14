@@ -13,7 +13,7 @@ using System.Windows.Controls;
 
 namespace _20230510
 {
-//    [ContentProperty(nameof(AnchorPoints))]
+    //    [ContentProperty(nameof(AnchorPoints))]
     public class GeoShape : Shape
     {
         //public ObservableCollection<Point> AnchorPoints
@@ -46,7 +46,7 @@ namespace _20230510
         {
             get
             {
-                StrokeThickness = 10; Stroke = Brushes.Black;
+                //Stroke = Brushes.Black;
                 if (AnchorPoints == null || AnchorPoints.Count < 2) return Geometry.Empty;
                 StreamGeometry geometry = new();
                 using (var context = geometry.Open())
