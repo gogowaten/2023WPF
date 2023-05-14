@@ -10,31 +10,33 @@ using System.Collections.ObjectModel;
 using System.Windows.Ink;
 using System.Windows.Markup;
 using System.Windows.Controls;
+using System.ComponentModel;
 
 namespace _20230510
 {
-    //    [ContentProperty(nameof(AnchorPoints))]
     public class GeoShape : Shape
     {
-        //public ObservableCollection<Point> AnchorPoints
+
+        //public PointCollection AnchorPoints
         //{
-        //    get { return (ObservableCollection<Point>)GetValue(AnchorPointsProperty); }
+        //    get { return (PointCollection)GetValue(AnchorPointsProperty); }
         //    set { SetValue(AnchorPointsProperty, value); }
         //}
         //public static readonly DependencyProperty AnchorPointsProperty =
-        //    DependencyProperty.Register(nameof(AnchorPoints), typeof(ObservableCollection<Point>), typeof(GeoShape),
-        //        new FrameworkPropertyMetadata(new ObservableCollection<Point>(),
+        //    DependencyProperty.Register(nameof(AnchorPoints), typeof(PointCollection), typeof(GeoShape),
+        //        new FrameworkPropertyMetadata(null,
         //            FrameworkPropertyMetadataOptions.AffectsRender |
         //            FrameworkPropertyMetadataOptions.AffectsMeasure |
         //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public PointCollection AnchorPoints
+        [TypeConverter(typeof(MyTypeConverterPoints))]
+        public ObservableCollection<Point> AnchorPoints
         {
-            get { return (PointCollection)GetValue(AnchorPointsProperty); }
+            get { return (ObservableCollection<Point>)GetValue(AnchorPointsProperty); }
             set { SetValue(AnchorPointsProperty, value); }
         }
         public static readonly DependencyProperty AnchorPointsProperty =
-            DependencyProperty.Register(nameof(AnchorPoints), typeof(PointCollection), typeof(GeoShape),
+            DependencyProperty.Register(nameof(AnchorPoints), typeof(ObservableCollection<Point>), typeof(GeoShape),
                 new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -46,7 +48,6 @@ namespace _20230510
         {
             get
             {
-                //Stroke = Brushes.Black;
                 if (AnchorPoints == null || AnchorPoints.Count < 2) return Geometry.Empty;
                 StreamGeometry geometry = new();
                 using (var context = geometry.Open())
@@ -59,4 +60,6 @@ namespace _20230510
             }
         }
     }
+
+
 }

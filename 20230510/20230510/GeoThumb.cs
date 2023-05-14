@@ -16,18 +16,6 @@ namespace _20230510
     public class GeoThumb : Thumb
     {
 
-        //public ObservableCollection<Point> TTAnchors
-        //{
-        //    get { return (ObservableCollection<Point>)GetValue(TTAnchorsProperty); }
-        //    set { SetValue(TTAnchorsProperty, value); }
-        //}
-        //public static readonly DependencyProperty TTAnchorsProperty =
-        //    DependencyProperty.Register(nameof(TTAnchors), typeof(ObservableCollection<Point>), typeof(GeoThumb),
-        //        new FrameworkPropertyMetadata(null,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
         public PointCollection TTAnchors
         {
             get { return (PointCollection)GetValue(TTAnchorsProperty); }

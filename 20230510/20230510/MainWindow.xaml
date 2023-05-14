@@ -12,7 +12,7 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas>
-      <local:GeoThumb x:Name="MyTestContent" TTAnchors="0,0 200,20"/>
+      <local:ShapeCanvas x:Name="MyTestContent" Anchors="0,0 200,20"/>
       <local:GeoShape x:Name="MyGeoShape" AnchorPoints="100,100 200,100"/>
 
     </Canvas>

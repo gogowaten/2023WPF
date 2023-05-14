@@ -68,26 +68,26 @@ namespace _20230510
 
         private void ButtonCheck_Click(object sender, RoutedEventArgs e)
         {
-            var data = MyTestContent.TTData.StrokeWidth;
-            var ttstroke = MyTestContent.TTStrokeThickness;
+            //var data = MyTestContent.TTData.StrokeWidth;
+            var ttstroke = MyTestContent.StrokeThickness;
             var ttshapestroke = MyTestContent.MyShape.StrokeThickness;
 
             var shapeanchor = MyTestContent.MyShape.AnchorPoints;
-            var dataanchor = MyTestContent.TTData.AnchorPoints;
-            var thumbanchor = MyTestContent.TTAnchors;
+            //var dataanchor = MyTestContent.TTData.AnchorPoints;
+            var thumbanchor = MyTestContent.Anchors;
         }
 
         #region Binding維持できてる
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyTestContent.TTStrokeThickness = 1;
-            MyTestContent.TTAnchors.Add(new Point(20, 100));
+            MyTestContent.StrokeThickness = 1;
+            MyTestContent.Anchors.Add(new Point(20, 100));
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            MyTestContent.TTData.StrokeWidth = 10;
-            MyTestContent.TTData.AnchorPoints.Add(new Point(120, 100));
+            //MyTestContent.TTData.StrokeWidth = 10;
+            //MyTestContent.TTData.AnchorPoints.Add(new Point(120, 100));
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
@@ -98,18 +98,18 @@ namespace _20230510
 
         private void Button_change_pointcollection1_Click(object sender, RoutedEventArgs e)
         {
-            MyTestContent.TTAnchors = new PointCollection() { new Point(0, 0), new Point(100, 100) };
+            //MyTestContent.Anchors = new PointCollection() { new Point(0, 0), new Point(100, 100) };
         }
 
 
         private void Button_change_pointcollection2_Click(object sender, RoutedEventArgs e)
         {
-            MyTestContent.TTData.AnchorPoints = new PointCollection() { new Point(0, 0), new Point(10, 100) };
+            //MyTestContent.TTData.AnchorPoints = new PointCollection() { new Point(0, 0), new Point(10, 100) };
         }
 
         private void Button_change_pointcollection3_Click(object sender, RoutedEventArgs e)
         {
-            MyTestContent.MyShape.AnchorPoints = new PointCollection() { new Point(0, 0), new Point(100, 10) };
+            //MyTestContent.MyShape.AnchorPoints = new PointCollection() { new Point(0, 0), new Point(100, 10) };
         }
 
         #endregion Binding維持できてる
@@ -118,7 +118,7 @@ namespace _20230510
         //Dataを入れ替えはBindingがなくなる
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MyTestContent.TTData = new Data();
+            
         }
         #endregion Bindingなくなる
         #endregion click
