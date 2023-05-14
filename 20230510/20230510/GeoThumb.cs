@@ -69,13 +69,11 @@ namespace _20230510
 
         public GeoThumb()
         {
-            //TTData = new Data();
             MyTemplateCanvas = SetTemplate();
             MyTemplateCanvas.Children.Add(MyShape);
 
             TTData = new();
-            //Loaded += GeoThumb_Loaded;
-            SetMyBinding4();
+            SetMyBinding5();
         }
 
         public GeoThumb(Data data) : this()
@@ -83,10 +81,7 @@ namespace _20230510
             TTData = data;
         }
 
-        private void GeoThumb_Loaded(object sender, RoutedEventArgs e)
-        {
-            SetMyBinding4();
-        }
+      
 
         //4よりこっちのほうが自然な感じ
         private void SetMyBinding5()
