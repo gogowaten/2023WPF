@@ -1,0 +1,30 @@
+﻿<Window x:Class="_20230514_GeoShapeThumbDataBinding.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230514_GeoShapeThumbDataBinding"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="150"/>
+    </Grid.ColumnDefinitions>
+    <Canvas>
+      <local:GeoThumb x:Name="MyTestContent" TTAnchors="0,0 200,20"/>
+      <local:GeoShape x:Name="MyGeoShape" AnchorPoints="100,100 200,100"/>
+
+    </Canvas>
+    <StackPanel x:Name="MyStackPanel" Grid.Column="1">
+      <Button Content="test1" Click="Button_Click"/>
+      <Button Content="test2" Click="Button_Click_2"/>
+      <Button Content="test3" Click="Button_Click_3"/>
+      <Button Content="change pointcollection1" Click="Button_change_pointcollection1_Click"/>
+      <Button Content="change pointcollection2" Click="Button_change_pointcollection2_Click"/>
+      <Button Content="change pointcollection3" Click="Button_change_pointcollection3_Click"/>
+      <Button Content="ChangeData" Click="Button_Click_1"/>
+      <Button Content="check" Click="ButtonCheck_Click"/>
+    </StackPanel>
+  </Grid>
+</Window>
