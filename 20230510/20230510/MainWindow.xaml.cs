@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -25,39 +28,15 @@ namespace _20230510
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ControlTemplate MyControlTemplate;
-
+        
+        public ObservableCollection<Data> MyDatas { get; set; }
         public MainWindow()
         {
             InitializeComponent();
 
-            MyControlTemplate = new ControlTemplate();
-            FrameworkElementFactory eBorder = new(typeof(Border));
-            FrameworkElementFactory eTextb = new(typeof(TextBlock));
-
-            eBorder.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(BackgroundProperty));
-            //↑と↓は同じ結果
-            //eBorder.SetValue(Border.BackgroundProperty, new Binding() { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent), Path = new PropertyPath(BackgroundProperty) });
-
-            eBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(30.0));
-            eBorder.SetValue(Border.PaddingProperty, new Thickness(10.0));
-            eTextb.SetValue(TextBlock.TextProperty, new TemplateBindingExtension(ContentProperty));
-            eTextb.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
-            eTextb.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-            eBorder.AppendChild(eTextb);
-            MyControlTemplate.VisualTree = eBorder;
-            Button myb = new()
-            {
-                Template = MyControlTemplate,
-                Content = "button1",
-                Background = Brushes.LightBlue,
-                Margin = new Thickness(30)
-            };
-            MyStackPanel.Children.Add(myb);
-
-            ControlTemplate template = new();
-            eBorder = new(typeof(Border));
-            eBorder.SetValue(Border.BackgroundProperty, new Binding() { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent), Path = new PropertyPath(BackgroundProperty) });
+            MyDatas = new() { new Data() { TTX = 100, TTY = 20, }, new Data() { TTX = 200, TTY = 30, }};
+            DataContext = MyDatas;
+            GridThumb gt = new();
         }
 
 
@@ -69,19 +48,24 @@ namespace _20230510
         private void ButtonCheck_Click(object sender, RoutedEventArgs e)
         {
             //var data = MyTestContent.TTData.StrokeWidth;
-            var ttstroke = MyTestContent.StrokeThickness;
-            var ttshapestroke = MyTestContent.MyShape.StrokeThickness;
+            //var ttstroke = MyTestContent.StrokeThickness;
+            //var ttshapestroke = MyTestContent.MyShape.StrokeThickness;
 
-            var shapeanchor = MyTestContent.MyShape.AnchorPoints;
-            //var dataanchor = MyTestContent.TTData.AnchorPoints;
-            var thumbanchor = MyTestContent.Anchors;
+            //var shapeanchor = MyTestContent.MyShape.AnchorPoints;
+            ////var dataanchor = MyTestContent.TTData.AnchorPoints;
+            //var thumbanchor = MyTestContent.Anchors;
+            //var obpo = MyTThumb.MyObPoints;
+            var mypo = MyTThumb.MyPoints;
         }
 
         #region Binding維持できてる
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyTestContent.StrokeThickness = 1;
-            MyTestContent.Anchors.Add(new Point(20, 100));
+            //MyTestContent.StrokeThickness = 1;
+            MyShapeGridThumb.MyPoints.Add(new Point(20, 100));
+            //MyTThumb.MyObPoints.Add(new Point());
+            MyTThumb.MyPoints.Add(new Point());
+            
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -92,8 +76,8 @@ namespace _20230510
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            MyTestContent.MyShape.StrokeThickness = 20;
-            MyTestContent.MyShape.AnchorPoints.Add(new Point(0, 0));
+            //MyTestContent.MyShape.StrokeThickness = 20;
+            //MyTestContent.MyShape.AnchorPoints.Add(new Point(0, 0));
         }
 
         private void Button_change_pointcollection1_Click(object sender, RoutedEventArgs e)
@@ -121,6 +105,12 @@ namespace _20230510
             
         }
         #endregion Bindingなくなる
+
         #endregion click
+
+        private void Thumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        {
+          
+        }
     }
 }

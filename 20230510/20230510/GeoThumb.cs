@@ -13,6 +13,7 @@ using System.Windows.Media;
 
 namespace _20230510
 {
+    
     public class GeoThumb : Thumb
     {
 
@@ -54,7 +55,7 @@ namespace _20230510
 
         public Canvas MyTemplateCanvas { get; private set; }
         public GeoShape MyShape { get; private set; } = new() { Stroke = Brushes.MediumOrchid };
-
+        public PointCollection MyPoints { get; private set; } = new();
         public GeoThumb()
         {
             MyTemplateCanvas = SetTemplate();

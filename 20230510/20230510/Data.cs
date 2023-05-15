@@ -17,19 +17,6 @@ namespace _20230510
             
         }
 
-
-        //public ObservableCollection<Point> AnchorPoints
-        //{
-        //    get { return (ObservableCollection<Point>)GetValue(AnchorPointsProperty); }
-        //    set { SetValue(AnchorPointsProperty, value); }
-        //}
-        //public static readonly DependencyProperty AnchorPointsProperty =
-        //    DependencyProperty.Register(nameof(AnchorPoints), typeof(ObservableCollection<Point>), typeof(Data),
-        //        new FrameworkPropertyMetadata(new ObservableCollection<Point>(),
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
         public PointCollection AnchorPoints
         {
             get { return (PointCollection)GetValue(AnchorPointsProperty); }

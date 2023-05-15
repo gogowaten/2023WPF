@@ -16,31 +16,31 @@ namespace _20230510
 {
     public class GeoShape : Shape
     {
-
-        //public PointCollection AnchorPoints
-        //{
-        //    get { return (PointCollection)GetValue(AnchorPointsProperty); }
-        //    set { SetValue(AnchorPointsProperty, value); }
-        //}
-        //public static readonly DependencyProperty AnchorPointsProperty =
-        //    DependencyProperty.Register(nameof(AnchorPoints), typeof(PointCollection), typeof(GeoShape),
-        //        new FrameworkPropertyMetadata(null,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        [TypeConverter(typeof(MyTypeConverterPoints))]
-        public ObservableCollection<Point> AnchorPoints
+        //public GeoShape() { }
+        public PointCollection AnchorPoints
         {
-            get { return (ObservableCollection<Point>)GetValue(AnchorPointsProperty); }
+            get { return (PointCollection)GetValue(AnchorPointsProperty); }
             set { SetValue(AnchorPointsProperty, value); }
         }
         public static readonly DependencyProperty AnchorPointsProperty =
-            DependencyProperty.Register(nameof(AnchorPoints), typeof(ObservableCollection<Point>), typeof(GeoShape),
+            DependencyProperty.Register(nameof(AnchorPoints), typeof(PointCollection), typeof(GeoShape),
                 new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        //[TypeConverter(typeof(MyTypeConverterPoints))]
+        //public ObservableCollection<Point> AnchorPoints
+        //{
+        //    get { return (ObservableCollection<Point>)GetValue(AnchorPointsProperty); }
+        //    set { SetValue(AnchorPointsProperty, value); }
+        //}
+        //public static readonly DependencyProperty AnchorPointsProperty =
+        //    DependencyProperty.Register(nameof(AnchorPoints), typeof(ObservableCollection<Point>), typeof(GeoShape),
+        //        new FrameworkPropertyMetadata(null,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
 

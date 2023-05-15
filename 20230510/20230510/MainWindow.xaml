@@ -11,11 +11,13 @@
       <ColumnDefinition/>
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
-    <Canvas>
-      <local:ShapeCanvas x:Name="MyTestContent" Anchors="0,0 200,20"/>
-      <local:GeoShape x:Name="MyGeoShape" AnchorPoints="100,100 200,100"/>
-
+    <Canvas x:Name="MyCanvas">
+      <!--<local:ShapeCanvas x:Name="MyTestContent" Anchors="0,0 200,20"/>-->
+      <local:TestClassA x:Name="MyTThumb"/>
+      <local:ShapeGridThumb x:Name="MyShapeGridThumb" MyPoints="0,0 100,10"/>
+      <!--<local:TestClassA x:Name="MyTThumb" Points="0,0 100,100"/>-->
     </Canvas>
+    
     <StackPanel x:Name="MyStackPanel" Grid.Column="1">
       <Button Content="test1" Click="Button_Click"/>
       <Button Content="test2" Click="Button_Click_2"/>
