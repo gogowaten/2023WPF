@@ -20,21 +20,9 @@ namespace _20230510
     {
         public GeoShapeSize()
         {
-            //Canvas.SetLeft(this, 0);
-            //Canvas.SetTop(this, 0);
-
-            //SetBinding(Canvas.LeftProperty, new Binding(nameof(MyBounds))
-            //{
-            //    Source = this,
-            //    Converter = new MyConverterBounds2Left()
-            //});
-            //SetBinding(Canvas.TopProperty, new Binding(nameof(MyBounds))
-            //{
-            //    Source = this,
-            //    Converter = new MyConverterBounds2Top()
-            //});
-
+           
         }
+
         public PointCollection AnchorPoints
         {
             get { return (PointCollection)GetValue(AnchorPointsProperty); }
@@ -56,7 +44,6 @@ namespace _20230510
         public static readonly DependencyProperty MyBoundsProperty =
             DependencyProperty.Register(nameof(MyBounds), typeof(Rect), typeof(GeoShapeSize),
                 new FrameworkPropertyMetadata(new Rect()));
-        //public Rect MyBounds { get; private set; } = new Rect();
 
         protected override Size MeasureOverride(Size constraint)
         {
@@ -90,10 +77,6 @@ namespace _20230510
             Rect bounds = path.Bounds;
             MyBounds = bounds;
 
-            //Canvas.SetLeft(this, -bounds.Left);
-            //Canvas.SetTop(this, -bounds.Top);
-            //Width = bounds.Width;
-            //Height = bounds.Height;
             
             //return base.ArrangeOverride(bounds.Size);//サイズはいいけど、位置指定ができていないのでずれる
             return base.ArrangeOverride(finalSize);

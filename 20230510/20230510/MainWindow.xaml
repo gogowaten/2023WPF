@@ -16,7 +16,7 @@
       <local:TestClassA x:Name="MyTThumb"/>
       <local:ShapeGridThumb x:Name="MyShapeGridThumb" MyPoints="0,0 100,10"/>
       <local:ShapeCanvasThumb x:Name="MyShapeCanvasThumb" MyPoints="0,0 100,10" X="0" Y="100"/>
-      <local:ShapeSizeCanvasThumb x:Name="MyShapeSizeCanvasThumb" MyPoints="0,0 100,150 120,50" X="200" Y="0"/>
+      <local:ShapeSizeCanvasThumb2 x:Name="MyShapeSizeCanvasThumb" MyPoints="0,0 100,150 120,50" X="200" Y="0"/>
       <!--<local:TestClassA x:Name="MyTThumb" Points="0,0 100,100"/>-->
     </Canvas>
     
