@@ -47,15 +47,11 @@ namespace _20230510
 
         private void ButtonCheck_Click(object sender, RoutedEventArgs e)
         {
-            //var data = MyTestContent.TTData.StrokeWidth;
-            //var ttstroke = MyTestContent.StrokeThickness;
-            //var ttshapestroke = MyTestContent.MyShape.StrokeThickness;
-
-            //var shapeanchor = MyTestContent.MyShape.AnchorPoints;
-            ////var dataanchor = MyTestContent.TTData.AnchorPoints;
-            //var thumbanchor = MyTestContent.Anchors;
-            //var obpo = MyTThumb.MyObPoints;
             var mypo = MyTThumb.MyPoints;
+            var actw = MyShapeSizeCanvasThumb.ActualWidth;
+            var shapeah = MyShapeSizeCanvasThumb.MyGeoShape.ActualHeight;
+            var shapebounds = MyShapeSizeCanvasThumb.MyGeoShape.MyBounds;
+            var top = Canvas.GetTop(MyShapeSizeCanvasThumb.MyGeoShape);
         }
 
         #region Binding維持できてる

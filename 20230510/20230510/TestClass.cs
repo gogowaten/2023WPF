@@ -19,8 +19,211 @@ namespace _20230510
     {
     }
 
+
+    /// <summary>
+    /// CanvasベースのMoveThumbにShapeSize表示
+    /// Thumb自身のサイズをShapeのMyBoundsにバインド
+    /// Shapeの表示座標をMyBoundsを元にオフセット
+    /// </summary>
+    public class ShapeSizeCanvasThumb : CanvasThumb
+    {
+        #region 依存関係プロパティ
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(ShapeSizeCanvasThumb),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double MyStrokeThickness
+        {
+            get { return (double)GetValue(MyStrokeThicknessProperty); }
+            set { SetValue(MyStrokeThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeThicknessProperty =
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(ShapeSizeCanvasThumb),
+                new FrameworkPropertyMetadata(10.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public Brush MyStroke
+        {
+            get { return (Brush)GetValue(MyStrokeProperty); }
+            set { SetValue(MyStrokeProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeProperty =
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(ShapeSizeCanvasThumb),
+                new FrameworkPropertyMetadata(Brushes.MediumAquamarine,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public GeoShapeSize MyGeoShape
+        {
+            get { return (GeoShapeSize)GetValue(MyGeoShapeProperty); }
+            set { SetValue(MyGeoShapeProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeoShapeProperty =
+            DependencyProperty.Register(nameof(MyGeoShape), typeof(GeoShapeSize), typeof(ShapeSizeCanvasThumb),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        #endregion 依存関係プロパティ
+
+        public ShapeSizeCanvasThumb()
+        {
+
+            MyTemplate.Background = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
+            MyGeoShape = new();
+            MyTemplate.Children.Add(MyGeoShape);
+            SetMyBindings();
+        }
+
+        private void SetMyBindings()
+        {
+            MyGeoShape.SetBinding(GeoShapeSize.AnchorPointsProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyPointsProperty)
+            });
+            MyGeoShape.SetBinding(GeoShapeSize.StrokeProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeProperty)
+            });
+            MyGeoShape.SetBinding(GeoShapeSize.StrokeThicknessProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeThicknessProperty)
+            });
+
+            MyGeoShape.SetBinding(Canvas.LeftProperty, new Binding()
+            {
+                Source = MyGeoShape,                
+                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Converter=new MyConverterBounds2LeftOffset()
+            });
+            MyGeoShape.SetBinding(Canvas.TopProperty, new Binding()
+            {
+                Source = MyGeoShape,                
+                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Converter=new MyConverterBounds2TopOffset()
+            });
+
+
+
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
+
+        }
+    }
+
+    /// <summary>
+    /// CanvasベースのMoveThumbにShape表示
+    /// Gridとの違いはサイズがNaNになること
+    /// </summary>
+    public class ShapeCanvasThumb : CanvasThumb
+    {
+        #region 依存関係プロパティ
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(ShapeCanvasThumb),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double MyStrokeThickness
+        {
+            get { return (double)GetValue(MyStrokeThicknessProperty); }
+            set { SetValue(MyStrokeThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeThicknessProperty =
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(ShapeCanvasThumb),
+                new FrameworkPropertyMetadata(10.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public Brush MyStroke
+        {
+            get { return (Brush)GetValue(MyStrokeProperty); }
+            set { SetValue(MyStrokeProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeProperty =
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(ShapeCanvasThumb),
+                new FrameworkPropertyMetadata(Brushes.MediumAquamarine,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public GeoShape MyGeoShape
+        {
+            get { return (GeoShape)GetValue(MyGeoShapeProperty); }
+            set { SetValue(MyGeoShapeProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeoShapeProperty =
+            DependencyProperty.Register(nameof(MyGeoShape), typeof(GeoShape), typeof(ShapeCanvasThumb),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        #endregion 依存関係プロパティ
+
+        public ShapeCanvasThumb()
+        {
+            MyGeoShape = new();
+            MyTemplate.Children.Add(MyGeoShape);
+            SetMyBindings();
+        }
+
+        private void SetMyBindings()
+        {
+            MyGeoShape.SetBinding(GeoShape.AnchorPointsProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyPointsProperty)
+            });
+            MyGeoShape.SetBinding(GeoShape.StrokeProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeProperty)
+            });
+            MyGeoShape.SetBinding(GeoShape.StrokeThicknessProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeThicknessProperty)
+            });
+        }
+    }
+
+    /// <summary>
+    /// GridベースのMoveThumbにShape表示
+    /// </summary>
     public class ShapeGridThumb : GridThumb
     {
+        #region 依存関係プロパティ
 
         public PointCollection MyPoints
         {
@@ -70,11 +273,17 @@ namespace _20230510
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        #endregion 依存関係プロパティ
 
         public ShapeGridThumb()
         {
             MyGeoShape = new();
             MyTemplate.Children.Add(MyGeoShape);
+            SetMyBindings();
+        }
+
+        private void SetMyBindings()
+        {
             MyGeoShape.SetBinding(GeoShape.AnchorPointsProperty, new Binding()
             {
                 Source = this,
@@ -93,17 +302,33 @@ namespace _20230510
                 Mode = BindingMode.TwoWay,
                 Path = new PropertyPath(MyStrokeThicknessProperty)
             });
-
         }
     }
 
+    public class CanvasThumb : MoveThumb
+    {
+        public Canvas MyTemplate { get; set; } = new();
+        public CanvasThumb()
+        {
+            MyTemplate = SetMyTemplate<Canvas>(MyTemplate.GetType());
+
+        }
+
+        private T SetMyTemplate<T>(Type type)
+        {
+            FrameworkElementFactory factory = new(type, "nemo");
+            this.Template = new ControlTemplate() { VisualTree = factory };
+            ApplyTemplate();
+            return (T)this.Template.FindName("nemo", this);
+        }
+    }
     public class GridThumb : MoveThumb
     {
         public Grid MyTemplate { get; set; } = new();
         public GridThumb()
         {
             MyTemplate = SetMyTemplate<Grid>(MyTemplate.GetType());
-            
+
         }
 
         private T SetMyTemplate<T>(Type type)
@@ -151,7 +376,7 @@ namespace _20230510
         private void GridThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             X += e.HorizontalChange;
-            Y+= e.VerticalChange;
+            Y += e.VerticalChange;
         }
     }
 
