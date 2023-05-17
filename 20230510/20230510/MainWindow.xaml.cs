@@ -52,7 +52,7 @@ namespace _20230510
             var shapeah = MyShapeSizeCanvasThumb.MyGeoShape.ActualHeight;
             var shapebounds = MyShapeSizeCanvasThumb.MyGeoShape.MyBounds;
             var top = Canvas.GetTop(MyShapeSizeCanvasThumb.MyGeoShape);
-            var points = MyShapeSizeCanvasThumb.MyPoints;
+            var points = MyShapeSizeCanvasThumb.MyAnchorPoints;
         }
 
         #region Binding維持できてる

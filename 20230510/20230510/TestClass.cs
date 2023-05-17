@@ -22,6 +22,8 @@ namespace _20230510
     /// CanvasベースのMoveThumbにShapeSize表示
     /// Thumb自身のサイズをShapeのMyBoundsにバインド
     /// Shapeの表示座標をMyBoundsを元にオフセット
+    /// AnchorにThumbを表示、マウスでAnchor移動で図形変化、自身のサイズも変化
+    /// 
     /// </summary>
     public class ShapeSizeCanvasThumb2 : ShapeSizeCanvasThumb
     {
@@ -78,51 +80,79 @@ namespace _20230510
 
         #endregion 依存関係プロパティ
 
-        public ObservableCollection<Thumb> AnchorThumb { get; private set; } = new();
+        public ObservableCollection<Thumb> AnchorThumbs { get; private set; } = new();
         public ShapeSizeCanvasThumb2()
         {
-            //MyTemplate.Background = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
-            //MyGeoShape = new();
-            //MyTemplate.Children.Add(MyGeoShape);
-            //SetMyBindings();
             Loaded += ShapeSizeCanvasThumb2_Loaded;
         }
 
         private void ShapeSizeCanvasThumb2_Loaded(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < MyPoints.Count; i++)
+            for (int i = 0; i < MyAnchorPoints.Count; i++)
             {
                 Thumb t = new() { Width = 20, Height = 20 };
-                AnchorThumb.Add(t);
+                AnchorThumbs.Add(t);
                 MyTemplate.Children.Add(t);
-                Canvas.SetLeft(t, MyPoints[i].X);
-                Canvas.SetTop(t, MyPoints[i].Y);
-                t.DragDelta += T_DragDelta;
+                Canvas.SetLeft(t, MyAnchorPoints[i].X);
+                Canvas.SetTop(t, MyAnchorPoints[i].Y);
+                t.DragDelta += TT_DragDelta;
             }
         }
 
-        private void T_DragDelta(object sender, DragDeltaEventArgs e)
+        private void TT_DragDelta(object sender, DragDeltaEventArgs e)
         {
             if (sender is Thumb t)
             {
-                int ii = AnchorThumb.IndexOf(t);
+                int ii = AnchorThumbs.IndexOf(t);
                 double x = Canvas.GetLeft(t) + e.HorizontalChange;
                 double y = Canvas.GetTop(t) + e.VerticalChange;
-                if (x < 0)
+                MyAnchorPoints[ii] = new Point(x, y);
+                Rect pointsRect = GetPointsRect();
+                //全体(Thumb自身)が移動になる状況は
+                //PointsRect座標が0,0以外になる場合、このときは
+                //Pointsをオフセット＋自身を移動
+                if (pointsRect.Top != 0 || pointsRect.Left != 0)
                 {
-                    for (int i = 0; i < MyPoints.Count; i++)
+                    for (int i = 0; i < MyAnchorPoints.Count; i++)
                     {
-                        Point p = MyPoints[i];
-                        MyPoints[i] = new Point(p.X + x, p.Y);
+                        Point pp = MyAnchorPoints[i];
+                        SetLocatePointAndAnchorThumb(i, pp.X - pointsRect.X, pp.Y - pointsRect.Y);
                     }
+                    this.X += pointsRect.X;
+                    this.Y += pointsRect.Y;
                 }
-                else { MyPoints[ii] = new Point(x, y); }
-                Canvas.SetLeft(t, x);
-                Canvas.SetTop(t, y);
-                
+                else
+                {
+                    Canvas.SetLeft(t, x);
+                    Canvas.SetTop(t, y);
+                }
+
             }
         }
 
+        private Rect GetPointsRect()
+        {
+            double minx = double.MaxValue;
+            double miny = double.MaxValue;
+            double maxX = double.MinValue;
+            double maxY = double.MinValue;
+            for (int i = 0; i < MyAnchorPoints.Count; i++)
+            {
+                Point pp = MyAnchorPoints[i];
+                if (pp.X < minx) minx = pp.X;
+                if (pp.Y < miny) miny = pp.Y;
+                if (pp.X > maxX) maxX = pp.X;
+                if (pp.Y > maxY) maxY = pp.Y;
+            }
+            return new Rect(minx, miny, maxX, maxY);
+        }
+
+        private void SetLocatePointAndAnchorThumb(int idx, double x, double y)
+        {
+            MyAnchorPoints[idx] = new Point(x, y);
+            Canvas.SetLeft(AnchorThumbs[idx], x);
+            Canvas.SetTop(AnchorThumbs[idx], y);
+        }
         private void SetMyBindings()
         {
             MyGeoShape.SetBinding(GeoShapeSize.AnchorPointsProperty, new Binding()
@@ -173,15 +203,15 @@ namespace _20230510
     /// </summary>
     public class ShapeSizeCanvasThumb : CanvasThumb
     {
-        //#region 依存関係プロパティ
+        #region 依存関係プロパティ
 
-        public PointCollection MyPoints
+        public PointCollection MyAnchorPoints
         {
             get { return (PointCollection)GetValue(MyPointsProperty); }
             set { SetValue(MyPointsProperty, value); }
         }
         public static readonly DependencyProperty MyPointsProperty =
-            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(ShapeSizeCanvasThumb),
+            DependencyProperty.Register(nameof(MyAnchorPoints), typeof(PointCollection), typeof(ShapeSizeCanvasThumb),
                 new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -224,7 +254,7 @@ namespace _20230510
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        //#endregion 依存関係プロパティ
+        #endregion 依存関係プロパティ
 
         public ShapeSizeCanvasThumb()
         {
@@ -527,7 +557,7 @@ namespace _20230510
                 X += e.HorizontalChange;
                 Y += e.VerticalChange;
             }
-            
+
         }
     }
 
