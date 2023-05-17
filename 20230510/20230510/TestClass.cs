@@ -484,7 +484,7 @@ namespace _20230510
 
     public class CanvasThumb : MoveThumb
     {
-        public Canvas MyTemplate { get; set; } = new();
+        public Canvas MyTemplate { get; set; }
         public CanvasThumb()
         {
             MyTemplateCanvas = SetMyTemplate<Canvas>();
@@ -501,7 +501,7 @@ namespace _20230510
 
     public class GridThumb : MoveThumb
     {
-        public Grid MyTemplate { get; set; } = new();
+        public Grid MyTemplate { get; set; }
         public GridThumb()
         {
             MyTemplateCanvas = SetMyTemplate<Canvas>();
