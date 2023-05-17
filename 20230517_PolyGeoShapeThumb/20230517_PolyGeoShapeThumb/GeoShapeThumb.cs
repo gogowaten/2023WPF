@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,12 @@ using System.Windows.Media;
 
 namespace _20230517_PolyGeoShapeThumb
 {
+    /// <summary>
+    /// CanvasベースのMoveThumbにShapeSize表示
+    /// Thumb自身のサイズをShapeのMyBoundsにバインド
+    /// Shapeの表示座標をMyBoundsを元にオフセット
+    /// AnchorにThumbを表示、マウスでAnchor移動で図形変化、自身のサイズも変化
+    /// </summary>
     class GeoShapeThumb : Thumb
     {
         #region 依存関係プロパティ
@@ -89,9 +96,48 @@ namespace _20230517_PolyGeoShapeThumb
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+
+        public double MyAnchorThumbSize
+        {
+            get { return (double)GetValue(MyAnchorThumbSizeProperty); }
+            set { SetValue(MyAnchorThumbSizeProperty, value); }
+        }
+        public static readonly DependencyProperty MyAnchorThumbSizeProperty =
+            DependencyProperty.Register(nameof(MyAnchorThumbSize), typeof(double), typeof(GeoShapeThumb),
+                new FrameworkPropertyMetadata(20.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public Visibility MyVisibleAnchorThumb
+        {
+            get { return (Visibility)GetValue(MyVisibleAnchorThumbProperty); }
+            set { SetValue(MyVisibleAnchorThumbProperty, value); }
+        }
+        public static readonly DependencyProperty MyVisibleAnchorThumbProperty =
+            DependencyProperty.Register(nameof(MyVisibleAnchorThumb), typeof(Visibility), typeof(GeoShapeThumb),
+                new FrameworkPropertyMetadata(Visibility.Collapsed,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        //public Rect MyBounts
+        //{
+        //    get { return (Rect)GetValue(MyBountsProperty); }
+        //    set { SetValue(MyBountsProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyBountsProperty =
+        //    DependencyProperty.Register(nameof(MyBounts), typeof(Rect), typeof(GeoShapeThumb),
+        //        new FrameworkPropertyMetadata(new Rect(),
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
         #endregion 依存関係プロパティ
 
-        public Canvas MyTemplateCanvas { get; private set; } = new();
+        public Canvas MyTemplateCanvas { get; private set; }
 
         public ObservableCollection<Thumb> MyAnchorThumbs { get; private set; } = new();
 
@@ -100,7 +146,6 @@ namespace _20230517_PolyGeoShapeThumb
         public GeoShapeThumb()
         {
             MyTemplateCanvas = SetMyTemplate<Canvas>();
-            //MyTemplateCanvas = SetMyTemplate<Canvas>(MyTemplateCanvas.GetType());
             MyGeoShape = new();
             MyTemplateCanvas.Children.Add(MyGeoShape);
             MyTemplateCanvas.Background = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
@@ -109,10 +154,9 @@ namespace _20230517_PolyGeoShapeThumb
             Loaded += GeoShapeThumb_Loaded;
             SetMyBindings();
         }
-
-
         #endregion コンストラクタ
 
+        #region privateメソッド
         private T SetMyTemplate<T>()
         {
             FrameworkElementFactory factory = new(typeof(T), "nemo");
@@ -123,15 +167,25 @@ namespace _20230517_PolyGeoShapeThumb
 
         private void GeoShapeThumb_Loaded(object sender, RoutedEventArgs e)
         {
+            //Anchorの数だけAnchorThumbを追加
             for (int i = 0; i < MyAnchorPoints.Count; i++)
             {
-                Thumb t = new() { Width = 20, Height = 20 };
-                MyAnchorThumbs.Add(t);
-                MyTemplateCanvas.Children.Add(t);
-                Canvas.SetLeft(t, MyAnchorPoints[i].X);
-                Canvas.SetTop(t, MyAnchorPoints[i].Y);
-                t.DragDelta += TT_DragDelta;
+                AddAnchorThumb(MyAnchorPoints[i]);
             }
+        }
+
+        private void AddAnchorThumb(Point pp)
+        {
+            Thumb t = new() { Opacity = 0.5 };
+            t.SetBinding(VisibilityProperty, new Binding() { Source = this, Path = new PropertyPath(MyVisibleAnchorThumbProperty) });
+            t.SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorThumbSizeProperty) });
+            t.SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorThumbSizeProperty) });
+
+            MyAnchorThumbs.Add(t);
+            MyTemplateCanvas.Children.Add(t);
+            Canvas.SetLeft(t, pp.X);
+            Canvas.SetTop(t, pp.Y);
+            t.DragDelta += TT_DragDelta;
         }
 
         private void TT_DragDelta(object sender, DragDeltaEventArgs e)
@@ -244,9 +298,79 @@ namespace _20230517_PolyGeoShapeThumb
                 if (pp.Y < miny) miny = pp.Y;
                 if (pp.X > maxX) maxX = pp.X;
                 if (pp.Y > maxY) maxY = pp.Y;
-            }            
+            }
             return new Rect(minx, miny, maxX, maxY);
         }
 
+
+        #endregion privateメソッド
+        #region publicメソッド
+        public void AddAnchorPoint(Point pp)
+        {
+            MyAnchorPoints.Add(pp);
+            AddAnchorThumb(pp);
+        }
+
+        #endregion publicメソッド
+
     }
+
+    #region コンバーター
+    
+    public class MyConverterBounds2LeftOffset : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Rect r = (Rect)value;
+            return -r.Left;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyConverterBounds2TopOffset : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Rect r = (Rect)value;
+            return -r.Top;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyConverterBounds2Width : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Rect r = (Rect)value;
+            return r.Width;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyConverterBounds2Height : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Rect r = (Rect)value;
+            return r.Height;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    #endregion コンバーター
 }

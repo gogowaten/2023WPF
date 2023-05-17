@@ -6,9 +6,24 @@
         xmlns:local="clr-namespace:_20230517_PolyGeoShapeThumb"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="600">
-    <Grid>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="200"/>
+    </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      <local:GeoShapeThumb MyAnchorPoints="10,10 100,100" MyStrokeThickness="50"/>
+      <local:GeoShapeThumb x:Name="MyGeoShapeThumb" 
+                           MyAnchorPoints="10,10 100,100" MyStrokeThickness="5" MyStroke="DodgerBlue"/>
     </Canvas>
-    </Grid>
+    <StackPanel Grid.Column="1">
+      <Button Content="AnchorThumb" Click="Button_Click"/>
+      <Button Content="AddAnchor" Click="Button_Click_1"/>
+      <Slider Minimum="1" Maximum="50" Value="{Binding ElementName=MyGeoShapeThumb, Path=MyGeoShape.StrokeThickness}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb, Path=X, StringFormat=x : {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb, Path=Y, StringFormat=y : {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb, Path=MyAnchorPoints[0], StringFormat=p0 : {0:0 }}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb, Path=MyAnchorPoints[1], StringFormat=p1 : {0:0 }}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShapeThumb, Path=MyGeoShape.MyBounds, StringFormat=図形Rect : {0:0.0 }}"/>
+    </StackPanel>
+  </Grid>
 </Window>

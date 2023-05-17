@@ -24,5 +24,22 @@ namespace _20230517_PolyGeoShapeThumb
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyGeoShapeThumb.MyVisibleAnchorThumb != Visibility.Visible)
+            {
+                MyGeoShapeThumb.MyVisibleAnchorThumb = Visibility.Visible;
+            }
+            else
+            {
+                MyGeoShapeThumb.MyVisibleAnchorThumb = Visibility.Collapsed;
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MyGeoShapeThumb.AddAnchorPoint(new Point(200, 0));
+        }
     }
 }
