@@ -487,12 +487,12 @@ namespace _20230510
         public Canvas MyTemplate { get; set; } = new();
         public CanvasThumb()
         {
-            MyTemplate = SetMyTemplate<Canvas>(MyTemplate.GetType());
+            MyTemplateCanvas = SetMyTemplate<Canvas>();
         }
 
-        private T SetMyTemplate<T>(Type type)
+         private T SetMyTemplate<T>()
         {
-            FrameworkElementFactory factory = new(type, "nemo");
+            FrameworkElementFactory factory = new(typeof(T), "nemo");
             this.Template = new ControlTemplate() { VisualTree = factory };
             ApplyTemplate();
             return (T)this.Template.FindName("nemo", this);
@@ -504,13 +504,12 @@ namespace _20230510
         public Grid MyTemplate { get; set; } = new();
         public GridThumb()
         {
-            MyTemplate = SetMyTemplate<Grid>(MyTemplate.GetType());
-
+            MyTemplateCanvas = SetMyTemplate<Canvas>();
         }
 
-        private T SetMyTemplate<T>(Type type)
+        private T SetMyTemplate<T>()
         {
-            FrameworkElementFactory factory = new(type, "nemo");
+            FrameworkElementFactory factory = new(typeof(T), "nemo");
             this.Template = new ControlTemplate() { VisualTree = factory };
             ApplyTemplate();
             return (T)this.Template.FindName("nemo", this);
