@@ -47,7 +47,7 @@ namespace _20230510
 
         private void ButtonCheck_Click(object sender, RoutedEventArgs e)
         {
-            var mypo = MyTThumb.MyPoints;
+            
             var actw = MyShapeSizeCanvasThumb.ActualWidth;
             var shapeah = MyShapeSizeCanvasThumb.MyGeoShape.ActualHeight;
             var shapebounds = MyShapeSizeCanvasThumb.MyGeoShape.MyBounds;
@@ -59,9 +59,9 @@ namespace _20230510
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //MyTestContent.StrokeThickness = 1;
-            MyShapeGridThumb.MyPoints.Add(new Point(20, 100));
+            
             //MyTThumb.MyObPoints.Add(new Point());
-            MyTThumb.MyPoints.Add(new Point());
+            
             
         }
 
