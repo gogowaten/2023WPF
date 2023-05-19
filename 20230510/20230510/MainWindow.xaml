@@ -22,6 +22,7 @@
                                                Canvas.Top="130" Canvas.Left="30"/>
       <local:ShapeSizeGridThumb3 x:Name="MyThumb3" MyAnchorPoints="0,0 100,100" MyStroke="Gold"
                                  Canvas.Left="200" Canvas.Top="130"/>
+      <local:ShapeCanvas2 x:Name="MyShapeCanvas2" MyAnchorPoints="-10,0 100,100" Canvas.Left="50"/>
       <!--<local:TestClassA x:Name="MyTThumb" Points="0,0 100,100"/>-->
     </Canvas>
     

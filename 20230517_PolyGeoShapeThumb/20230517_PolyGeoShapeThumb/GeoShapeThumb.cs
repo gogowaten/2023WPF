@@ -299,7 +299,7 @@ namespace _20230517_PolyGeoShapeThumb
                 if (pp.X > maxX) maxX = pp.X;
                 if (pp.Y > maxY) maxY = pp.Y;
             }
-            return new Rect(minx, miny, maxX, maxY);
+            return new Rect(minx, miny, maxX - minx, maxY - miny);
         }
 
 
@@ -316,7 +316,7 @@ namespace _20230517_PolyGeoShapeThumb
     }
 
     #region コンバーター
-    
+
     public class MyConverterBounds2LeftOffset : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

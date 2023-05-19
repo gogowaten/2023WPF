@@ -50,7 +50,9 @@ namespace _20230510
 
             var ap0 = MyThumb3.MyAnchorPoints;
             var ap1 = MyThumb3.MyShapeCanvas.MyAnchorPoints;
-            var ap2 = MyThumb3.MyShapeCanvas.MyGeoShape.AnchorPoints;
+            var ap2 = MyThumb3.MyShapeCanvas.MyGeoShape.MyAnchorPoints;
+           var re1= MyShapeCanvas2.MyPointRect;
+            var re2 = MyShapeCanvas2.MyGeoShape.MyBounds;
         }
 
         #region Binding維持できてる

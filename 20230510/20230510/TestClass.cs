@@ -16,6 +16,127 @@ using System.CodeDom;
 namespace _20230510
 {
 
+    public class ShapeCanvas2 : Canvas
+    {
+        #region 依存関係プロパティ
+
+        public PointCollection MyAnchorPoints
+        {
+            get { return (PointCollection)GetValue(MyAnchorPointsProperty); }
+            set { SetValue(MyAnchorPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyAnchorPointsProperty =
+            DependencyProperty.Register(nameof(MyAnchorPoints), typeof(PointCollection), typeof(ShapeCanvas2),
+                new FrameworkPropertyMetadata(new PointCollection(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double MyStrokeThickness
+        {
+            get { return (double)GetValue(MyStrokeThicknessProperty); }
+            set { SetValue(MyStrokeThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeThicknessProperty =
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(ShapeCanvas2),
+                new FrameworkPropertyMetadata(10.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public Brush MyStroke
+        {
+            get { return (Brush)GetValue(MyStrokeProperty); }
+            set { SetValue(MyStrokeProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeProperty =
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(ShapeCanvas2),
+                new FrameworkPropertyMetadata(Brushes.MediumAquamarine,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public GeoShapeSize MyGeoShape
+        {
+            get { return (GeoShapeSize)GetValue(MyGeoShapeProperty); }
+            set { SetValue(MyGeoShapeProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeoShapeProperty =
+            DependencyProperty.Register(nameof(MyGeoShape), typeof(GeoShapeSize), typeof(ShapeCanvas2),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public Rect MyPointRect
+        {
+            get { return (Rect)GetValue(MyPointRectProperty); }
+            set { SetValue(MyPointRectProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointRectProperty =
+            DependencyProperty.Register(nameof(MyPointRect), typeof(Rect), typeof(ShapeCanvas2),
+                new FrameworkPropertyMetadata(new Rect(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        #endregion 依存関係プロパティ
+
+        public ShapeCanvas2()
+        {
+            MyGeoShape = new GeoShapeSize();
+            Children.Add(MyGeoShape);
+            SetMyBindings();
+        }
+
+        private void SetMyBindings()
+        {
+            MyGeoShape.SetBinding(GeoShapeSize.MyAnchorPointsProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyAnchorPointsProperty)
+            });
+            MyGeoShape.SetBinding(GeoShapeSize.StrokeProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeProperty)
+            });
+            MyGeoShape.SetBinding(GeoShapeSize.StrokeThicknessProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeThicknessProperty)
+            });
+
+            //Shapeの表示座標オフセット
+            MyGeoShape.SetBinding(Canvas.LeftProperty, new Binding()
+            {
+                Source = MyGeoShape,
+                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Converter = new MyConverterBounds2LeftOffset()
+            });
+            MyGeoShape.SetBinding(Canvas.TopProperty, new Binding()
+            {
+                Source = MyGeoShape,
+                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Converter = new MyConverterBounds2TopOffset()
+            });
+
+
+            //自身のサイズをShapeのサイズにバインド
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
+            SetBinding(MyPointRectProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorPointsProperty), Converter = new MyConverterPoint2Rect() });
+
+        }
+
+
+    }
+
     /// <summary>
     /// いいね
     /// GridのTemplateを使ったThumbに
@@ -162,7 +283,7 @@ namespace _20230510
                 if (pp.X > maxX) maxX = pp.X;
                 if (pp.Y > maxY) maxY = pp.Y;
             }
-            return new Rect(minx, miny, maxX, maxY);
+            return new Rect(minx, miny, maxX - minx, maxY - miny);
         }
 
 
@@ -187,7 +308,7 @@ namespace _20230510
                 Path = new PropertyPath(MyStrokeThicknessProperty)
             });
 
-            
+
 
             //Shapeの表示座標オフセット
             MyShapeCanvas.SetBinding(Canvas.LeftProperty, new Binding()
@@ -426,7 +547,7 @@ namespace _20230510
         {
 
             //Shapeと自身のバインド
-            MyGeoShape.SetBinding(GeoShapeSize.AnchorPointsProperty, new Binding()
+            MyGeoShape.SetBinding(GeoShapeSize.MyAnchorPointsProperty, new Binding()
             {
                 Source = this,
                 Mode = BindingMode.TwoWay,
@@ -502,7 +623,7 @@ namespace _20230510
                 if (pp.X > maxX) maxX = pp.X;
                 if (pp.Y > maxY) maxY = pp.Y;
             }
-            return new Rect(minx, miny, maxX, maxY);
+            return new Rect(minx, miny, maxX - minx, maxY - miny);
         }
 
 
@@ -586,7 +707,7 @@ namespace _20230510
 
         private void SetMyBindings()
         {
-            MyGeoShape.SetBinding(GeoShapeSize.AnchorPointsProperty, new Binding()
+            MyGeoShape.SetBinding(GeoShapeSize.MyAnchorPointsProperty, new Binding()
             {
                 Source = this,
                 Mode = BindingMode.TwoWay,
@@ -619,7 +740,7 @@ namespace _20230510
                 Converter = new MyConverterBounds2TopOffset()
             });
 
-            
+
             //自身のサイズをShapeのサイズにバインド
             SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
             SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
@@ -781,7 +902,7 @@ namespace _20230510
                 if (pp.X > maxX) maxX = pp.X;
                 if (pp.Y > maxY) maxY = pp.Y;
             }
-            return new Rect(minx, miny, maxX, maxY);
+            return new Rect(minx, miny, maxX - minx, maxY - miny);
         }
 
         private void SetLocatePointAndAnchorThumb(int idx, double x, double y)
@@ -793,7 +914,7 @@ namespace _20230510
 
         private void SetMyBindings()
         {
-            MyGeoShape.SetBinding(GeoShapeSize.AnchorPointsProperty, new Binding()
+            MyGeoShape.SetBinding(GeoShapeSize.MyAnchorPointsProperty, new Binding()
             {
                 Source = this,
                 Mode = BindingMode.TwoWay,
@@ -914,7 +1035,7 @@ namespace _20230510
                 if (pp.X > maxX) maxX = pp.X;
                 if (pp.Y > maxY) maxY = pp.Y;
             }
-            return new Rect(minx, miny, maxX, maxY);
+            return new Rect(minx, miny, maxX - minx, maxY - miny);
         }
 
         private void SetLocatePointAndAnchorThumb(int idx, double x, double y)
@@ -995,7 +1116,7 @@ namespace _20230510
 
         private void SetMyBindings()
         {
-            MyGeoShape.SetBinding(GeoShapeSize.AnchorPointsProperty, new Binding()
+            MyGeoShape.SetBinding(GeoShapeSize.MyAnchorPointsProperty, new Binding()
             {
                 Source = this,
                 Mode = BindingMode.TwoWay,

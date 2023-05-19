@@ -20,16 +20,16 @@ namespace _20230510
     {
         public GeoShapeSize()
         {
-           
+
         }
 
-        public PointCollection AnchorPoints
+        public PointCollection MyAnchorPoints
         {
-            get { return (PointCollection)GetValue(AnchorPointsProperty); }
-            set { SetValue(AnchorPointsProperty, value); }
+            get { return (PointCollection)GetValue(MyAnchorPointsProperty); }
+            set { SetValue(MyAnchorPointsProperty, value); }
         }
-        public static readonly DependencyProperty AnchorPointsProperty =
-            DependencyProperty.Register(nameof(AnchorPoints), typeof(PointCollection), typeof(GeoShapeSize),
+        public static readonly DependencyProperty MyAnchorPointsProperty =
+            DependencyProperty.Register(nameof(MyAnchorPoints), typeof(PointCollection), typeof(GeoShapeSize),
                 new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -63,7 +63,7 @@ namespace _20230510
             //{
             //    context.DrawGeometry(Stroke, null, path);
             //}
-            
+
             //return base.MeasureOverride(bounds.Size);//変化なし
             return base.MeasureOverride(constraint);
 
@@ -77,7 +77,7 @@ namespace _20230510
             Rect bounds = path.Bounds;
             MyBounds = bounds;
 
-            
+
             //return base.ArrangeOverride(bounds.Size);//サイズはいいけど、位置指定ができていないのでずれる
             return base.ArrangeOverride(finalSize);
         }
@@ -86,12 +86,12 @@ namespace _20230510
         {
             get
             {
-                if (AnchorPoints == null || AnchorPoints.Count < 2) return Geometry.Empty;
+                if (MyAnchorPoints == null || MyAnchorPoints.Count < 2) return Geometry.Empty;
                 StreamGeometry geometry = new();
                 using (var context = geometry.Open())
                 {
-                    context.BeginFigure(AnchorPoints[0], false, false);
-                    context.PolyLineTo(AnchorPoints.Skip(1).ToList(), true, false);
+                    context.BeginFigure(MyAnchorPoints[0], false, false);
+                    context.PolyLineTo(MyAnchorPoints.Skip(1).ToList(), true, false);
                 }
                 geometry.Freeze();
                 return geometry;
@@ -173,7 +173,7 @@ namespace _20230510
             throw new NotImplementedException();
         }
     }
-    
+
     public class MyConverterBounds2Width : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -187,7 +187,7 @@ namespace _20230510
             throw new NotImplementedException();
         }
     }
-    
+
     public class MyConverterBounds2Height : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -202,4 +202,32 @@ namespace _20230510
         }
     }
 
+    public class MyConverterPoint2Rect : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Rect r = new();
+            if (value is PointCollection pc && pc.Count >= 2)
+            {
+                double minx = double.MaxValue;
+                double miny = double.MaxValue;
+                double maxX = double.MinValue;
+                double maxY = double.MinValue;
+                foreach (Point pp in pc)
+                {
+                    if (pp.X < minx) minx = pp.X;
+                    if (pp.Y < miny) miny = pp.Y;
+                    if (pp.X > maxX) maxX = pp.X;
+                    if (pp.Y > maxY) maxY = pp.Y;
+                }
+                r = new(minx, miny, maxX - minx, maxY - miny);
+            }
+            return r;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
