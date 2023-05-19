@@ -329,7 +329,7 @@ namespace _20230510
             set { SetValue(XProperty, value); }
         }
         public static readonly DependencyProperty XProperty =
-            DependencyProperty.Register(nameof(X), typeof(double), typeof(ShapeSizeCanvas),
+            DependencyProperty.Register(nameof(X), typeof(double), typeof(ShapeSizeCanvasWithoutAnchorThumb),
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -341,7 +341,7 @@ namespace _20230510
             set { SetValue(YProperty, value); }
         }
         public static readonly DependencyProperty YProperty =
-            DependencyProperty.Register(nameof(Y), typeof(double), typeof(ShapeSizeCanvas),
+            DependencyProperty.Register(nameof(Y), typeof(double), typeof(ShapeSizeCanvasWithoutAnchorThumb),
                 new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -352,7 +352,7 @@ namespace _20230510
             set { SetValue(MyPointsProperty, value); }
         }
         public static readonly DependencyProperty MyPointsProperty =
-            DependencyProperty.Register(nameof(MyAnchorPoints), typeof(PointCollection), typeof(ShapeSizeCanvas),
+            DependencyProperty.Register(nameof(MyAnchorPoints), typeof(PointCollection), typeof(ShapeSizeCanvasWithoutAnchorThumb),
                 new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -364,7 +364,7 @@ namespace _20230510
             set { SetValue(MyStrokeThicknessProperty, value); }
         }
         public static readonly DependencyProperty MyStrokeThicknessProperty =
-            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(ShapeSizeCanvas),
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(ShapeSizeCanvasWithoutAnchorThumb),
                 new FrameworkPropertyMetadata(10.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -376,7 +376,7 @@ namespace _20230510
             set { SetValue(MyStrokeProperty, value); }
         }
         public static readonly DependencyProperty MyStrokeProperty =
-            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(ShapeSizeCanvas),
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(ShapeSizeCanvasWithoutAnchorThumb),
                 new FrameworkPropertyMetadata(Brushes.MediumAquamarine,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -389,7 +389,7 @@ namespace _20230510
             set { SetValue(MyGeoShapeProperty, value); }
         }
         public static readonly DependencyProperty MyGeoShapeProperty =
-            DependencyProperty.Register(nameof(MyGeoShape), typeof(GeoShapeSize), typeof(ShapeSizeCanvas),
+            DependencyProperty.Register(nameof(MyGeoShape), typeof(GeoShapeSize), typeof(ShapeSizeCanvasWithoutAnchorThumb),
                 new FrameworkPropertyMetadata(null,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
