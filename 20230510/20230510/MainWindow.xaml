@@ -17,9 +17,9 @@
       <!--<local:ShapeGridThumb x:Name="MyShapeGridThumb" MyPoints="0,0 100,10"/>
       <local:ShapeCanvasThumb x:Name="MyShapeCanvasThumb" MyPoints="0,0 100,10" X="0" Y="100"/>-->
       <local:ShapeSizeCanvasThumb2 x:Name="MyShapeSizeCanvasThumb" MyAnchorPoints="0,0 100,150 120,50" X="200" Y="0"/>
+      <local:ShapeSizeCanvas MyAnchorPoints="0,0 100,100"/>
       <!--<local:TestClassA x:Name="MyTThumb" Points="0,0 100,100"/>-->
     </Canvas>
-      <local:ShapeSizeCanvas MyAnchorPoints="0,0 100,100"/>
     
     <StackPanel x:Name="MyStackPanel" Grid.Column="1">
       <Button Content="test1" Click="Button_Click"/>

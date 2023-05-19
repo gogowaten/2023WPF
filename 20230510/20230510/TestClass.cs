@@ -22,7 +22,7 @@ namespace _20230510
     ///         ┗Canvas(ShapeSizeCanvas)
     ///             ┗Shape
     /// </summary>
-    public class ShapeSizeGridThumb2:Thumb
+    public class ShapeSizeGridThumb2 : Thumb
     {
         #region 依存関係プロパティ
 
@@ -315,6 +315,143 @@ namespace _20230510
 
         #endregion publicメソッド
     }
+
+    /// <summary>
+    /// Shapeを持つCanvas
+    /// アンカー点のThumbは無し
+    /// </summary>
+    public class ShapeSizeCanvasWithoutAnchorThumb : Canvas
+    {
+        #region 依存関係プロパティ
+        public double X
+        {
+            get { return (double)GetValue(XProperty); }
+            set { SetValue(XProperty, value); }
+        }
+        public static readonly DependencyProperty XProperty =
+            DependencyProperty.Register(nameof(X), typeof(double), typeof(ShapeSizeCanvas),
+                new FrameworkPropertyMetadata(0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double Y
+        {
+            get { return (double)GetValue(YProperty); }
+            set { SetValue(YProperty, value); }
+        }
+        public static readonly DependencyProperty YProperty =
+            DependencyProperty.Register(nameof(Y), typeof(double), typeof(ShapeSizeCanvas),
+                new FrameworkPropertyMetadata(0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        public PointCollection MyAnchorPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyAnchorPoints), typeof(PointCollection), typeof(ShapeSizeCanvas),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double MyStrokeThickness
+        {
+            get { return (double)GetValue(MyStrokeThicknessProperty); }
+            set { SetValue(MyStrokeThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeThicknessProperty =
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(ShapeSizeCanvas),
+                new FrameworkPropertyMetadata(10.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public Brush MyStroke
+        {
+            get { return (Brush)GetValue(MyStrokeProperty); }
+            set { SetValue(MyStrokeProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeProperty =
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(ShapeSizeCanvas),
+                new FrameworkPropertyMetadata(Brushes.MediumAquamarine,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public GeoShapeSize MyGeoShape
+        {
+            get { return (GeoShapeSize)GetValue(MyGeoShapeProperty); }
+            set { SetValue(MyGeoShapeProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeoShapeProperty =
+            DependencyProperty.Register(nameof(MyGeoShape), typeof(GeoShapeSize), typeof(ShapeSizeCanvas),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        #endregion 依存関係プロパティ
+
+        public ShapeSizeCanvasWithoutAnchorThumb()
+        {
+            this.Background = Brushes.AliceBlue;
+            MyGeoShape = new();
+            Children.Add(MyGeoShape);
+            SetMyBindings();            
+        }
+
+        private void SetMyBindings()
+        {
+            MyGeoShape.SetBinding(GeoShapeSize.AnchorPointsProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyPointsProperty)
+            });
+            MyGeoShape.SetBinding(GeoShapeSize.StrokeProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeProperty)
+            });
+            MyGeoShape.SetBinding(GeoShapeSize.StrokeThicknessProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeThicknessProperty)
+            });
+
+            //Shapeの表示座標オフセット
+            MyGeoShape.SetBinding(Canvas.LeftProperty, new Binding()
+            {
+                Source = MyGeoShape,
+                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Converter = new MyConverterBounds2LeftOffset()
+            });
+            MyGeoShape.SetBinding(Canvas.TopProperty, new Binding()
+            {
+                Source = MyGeoShape,
+                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Converter = new MyConverterBounds2TopOffset()
+            });
+
+            ////自身の座標
+            //SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay, Path = new PropertyPath(XProperty) });
+            //SetBinding(Canvas.TopProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay, Path = new PropertyPath(YProperty) });
+
+            //自身のサイズをShapeのサイズにバインド
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
+
+        }
+
+    }
+
 
     /// <summary>
     /// Shapeを持つCanvas
@@ -906,7 +1043,7 @@ namespace _20230510
             MyTemplate = SetMyTemplate<Canvas>();
         }
 
-         private T SetMyTemplate<T>()
+        private T SetMyTemplate<T>()
         {
             FrameworkElementFactory factory = new(typeof(T), "nemo");
             this.Template = new ControlTemplate() { VisualTree = factory };
