@@ -16,6 +16,9 @@ using System.CodeDom;
 namespace _20230510
 {
 
+    /// <summary>
+    /// 依存関係プロパティにAnchorPointsのRectを追加したShapeCanvas
+    /// </summary>
     public class ShapeCanvas2 : Canvas
     {
         #region 依存関係プロパティ
@@ -116,20 +119,20 @@ namespace _20230510
             MyGeoShape.SetBinding(Canvas.LeftProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2LeftOffset()
             });
             MyGeoShape.SetBinding(Canvas.TopProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2TopOffset()
             });
 
 
             //自身のサイズをShapeのサイズにバインド
-            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
-            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Height() });
             SetBinding(MyPointRectProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorPointsProperty), Converter = new MyConverterPoint2Rect() });
 
         }
@@ -314,13 +317,13 @@ namespace _20230510
             MyShapeCanvas.SetBinding(Canvas.LeftProperty, new Binding()
             {
                 Source = MyShapeCanvas.MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2LeftOffset()
             });
             MyShapeCanvas.SetBinding(Canvas.TopProperty, new Binding()
             {
                 Source = MyShapeCanvas.MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2TopOffset()
             });
 
@@ -570,13 +573,13 @@ namespace _20230510
             MyGeoShape.SetBinding(Canvas.LeftProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2LeftOffset()
             });
             MyGeoShape.SetBinding(Canvas.TopProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2TopOffset()
             });
 
@@ -585,8 +588,8 @@ namespace _20230510
             SetBinding(Canvas.TopProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay, Path = new PropertyPath(YProperty) });
 
             //自身のサイズをShapeのサイズにバインド
-            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
-            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Height() });
 
         }
 
@@ -730,20 +733,20 @@ namespace _20230510
             MyGeoShape.SetBinding(Canvas.LeftProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2LeftOffset()
             });
             MyGeoShape.SetBinding(Canvas.TopProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2TopOffset()
             });
 
 
             //自身のサイズをShapeのサイズにバインド
-            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
-            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Height() });
 
         }
 
@@ -937,13 +940,13 @@ namespace _20230510
             MyGeoShape.SetBinding(Canvas.LeftProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2LeftOffset()
             });
             MyGeoShape.SetBinding(Canvas.TopProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2TopOffset()
             });
 
@@ -952,8 +955,8 @@ namespace _20230510
             SetBinding(Canvas.TopProperty, new Binding() { Source = this, Mode = BindingMode.TwoWay, Path = new PropertyPath(YProperty) });
 
             //自身のサイズをShapeのサイズにバインド
-            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
-            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Height() });
 
         }
 
@@ -1139,20 +1142,20 @@ namespace _20230510
             MyGeoShape.SetBinding(Canvas.LeftProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2LeftOffset()
             });
             MyGeoShape.SetBinding(Canvas.TopProperty, new Binding()
             {
                 Source = MyGeoShape,
-                Path = new PropertyPath(GeoShapeSize.MyBoundsProperty),
+                Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty),
                 Converter = new MyConverterBounds2TopOffset()
             });
 
 
             //自身のサイズをShapeのサイズにバインド
-            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Width() });
-            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyBoundsProperty), Converter = new MyConverterBounds2Height() });
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoShape, Path = new PropertyPath(GeoShapeSize.MyRenderBoundsProperty), Converter = new MyConverterBounds2Height() });
 
         }
     }

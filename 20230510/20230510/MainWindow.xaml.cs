@@ -52,16 +52,13 @@ namespace _20230510
             var ap1 = MyThumb3.MyShapeCanvas.MyAnchorPoints;
             var ap2 = MyThumb3.MyShapeCanvas.MyGeoShape.MyAnchorPoints;
            var re1= MyShapeCanvas2.MyPointRect;
-            var re2 = MyShapeCanvas2.MyGeoShape.MyBounds;
+            var re2 = MyShapeCanvas2.MyGeoShape.MyRnderBounds;
         }
 
         #region Binding維持できてる
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //MyTestContent.StrokeThickness = 1;
-            
-            //MyTThumb.MyObPoints.Add(new Point());
-            
+            MyShapeCanvas2.MyAnchorPoints.Add(new Point(0, 120));
             
         }
 

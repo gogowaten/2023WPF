@@ -35,39 +35,41 @@ namespace _20230510
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-
-        public Rect MyBounds
+        /// <summary>
+        /// 描画Rect、StrokeThicknessも考慮したもの
+        /// </summary>
+        public Rect MyRnderBounds
         {
-            get { return (Rect)GetValue(MyBoundsProperty); }
-            set { SetValue(MyBoundsProperty, value); }
+            get { return (Rect)GetValue(MyRenderBoundsProperty); }
+            set { SetValue(MyRenderBoundsProperty, value); }
         }
-        public static readonly DependencyProperty MyBoundsProperty =
-            DependencyProperty.Register(nameof(MyBounds), typeof(Rect), typeof(GeoShapeSize),
+        public static readonly DependencyProperty MyRenderBoundsProperty =
+            DependencyProperty.Register(nameof(MyRnderBounds), typeof(Rect), typeof(GeoShapeSize),
                 new FrameworkPropertyMetadata(new Rect()));
 
-        protected override Size MeasureOverride(Size constraint)
-        {
-            var geo = this.DefiningGeometry.Clone();
-            geo.Transform = RenderTransform;
-            var path = geo.GetWidenedPathGeometry(new Pen(Stroke, StrokeThickness));
-            Rect bounds = path.Bounds;
+        //protected override Size MeasureOverride(Size constraint)
+        //{
+        //    var geo = this.DefiningGeometry.Clone();
+        //    geo.Transform = RenderTransform;
+        //    var path = geo.GetWidenedPathGeometry(new Pen(Stroke, StrokeThickness));
+        //    Rect bounds = path.Bounds;
 
-            //MyBounds = bounds;
-            //Canvas.SetLeft(this, -bounds.Left);
-            //Canvas.SetTop(this, -bounds.Top);
-            //Width = bounds.Width;
-            //Height = bounds.Height;
+        //    //MyBounds = bounds;
+        //    //Canvas.SetLeft(this, -bounds.Left);
+        //    //Canvas.SetTop(this, -bounds.Top);
+        //    //Width = bounds.Width;
+        //    //Height = bounds.Height;
 
-            //DrawingVisual dv = new() { Offset = new Vector(-r.X, -r.Y) };
-            //using (var context = dv.RenderOpen())
-            //{
-            //    context.DrawGeometry(Stroke, null, path);
-            //}
+        //    //DrawingVisual dv = new() { Offset = new Vector(-r.X, -r.Y) };
+        //    //using (var context = dv.RenderOpen())
+        //    //{
+        //    //    context.DrawGeometry(Stroke, null, path);
+        //    //}
 
-            //return base.MeasureOverride(bounds.Size);//変化なし
-            return base.MeasureOverride(constraint);
+        //    //return base.MeasureOverride(bounds.Size);//変化なし
+        //    return base.MeasureOverride(constraint);
 
-        }
+        //}
 
         protected override Size ArrangeOverride(Size finalSize)
         {
@@ -75,7 +77,7 @@ namespace _20230510
             geo.Transform = RenderTransform;
             var path = geo.GetWidenedPathGeometry(new Pen(Stroke, StrokeThickness));
             Rect bounds = path.Bounds;
-            MyBounds = bounds;
+            MyRnderBounds = bounds;
 
 
             //return base.ArrangeOverride(bounds.Size);//サイズはいいけど、位置指定ができていないのでずれる
