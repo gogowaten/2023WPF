@@ -47,12 +47,10 @@ namespace _20230510
 
         private void ButtonCheck_Click(object sender, RoutedEventArgs e)
         {
-            
-            var actw = MyShapeSizeCanvasThumb.ActualWidth;
-            var shapeah = MyShapeSizeCanvasThumb.MyGeoShape.ActualHeight;
-            var shapebounds = MyShapeSizeCanvasThumb.MyGeoShape.MyBounds;
-            var top = Canvas.GetTop(MyShapeSizeCanvasThumb.MyGeoShape);
-            var points = MyShapeSizeCanvasThumb.MyAnchorPoints;
+
+            var ap0 = MyThumb3.MyAnchorPoints;
+            var ap1 = MyThumb3.MyShapeCanvas.MyAnchorPoints;
+            var ap2 = MyThumb3.MyShapeCanvas.MyGeoShape.AnchorPoints;
         }
 
         #region Binding維持できてる
