@@ -16,9 +16,161 @@ using System.Windows.Documents;
 
 namespace _20230510
 {
+    /// <summary>
+    /// リサイズAdornerを付けたCanvasにShapeとアンカー点表示と移動
+    /// 左上要素のリサイズでShapeが移動してしまう不具合
+    /// </summary>
+    public class ShapeCanvas3 : Canvas
+    {
+        #region 依存関係プロパティ
+        public PointCollection MyAnchorPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyAnchorPoints), typeof(PointCollection), typeof(ShapeCanvas3),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double MyStrokeThickness
+        {
+            get { return (double)GetValue(MyStrokeThicknessProperty); }
+            set { SetValue(MyStrokeThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeThicknessProperty =
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(ShapeCanvas3),
+                new FrameworkPropertyMetadata(30.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public Brush MyStroke
+        {
+            get { return (Brush)GetValue(MyStrokeProperty); }
+            set { SetValue(MyStrokeProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeProperty =
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(ShapeCanvas3),
+                new FrameworkPropertyMetadata(Brushes.MediumAquamarine,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public GeoShapeSize MyGeoShape
+        {
+            get { return (GeoShapeSize)GetValue(MyGeoShapeProperty); }
+            set { SetValue(MyGeoShapeProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeoShapeProperty =
+            DependencyProperty.Register(nameof(MyGeoShape), typeof(GeoShapeSize), typeof(ShapeCanvas3),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        #endregion 依存関係プロパティ
+        public ObservableCollection<Thumb> MyAnchorThumbs { get; private set; } = new();
+
+        public ShapeCanvas3()
+        {
+            MyGeoShape = new();
+            Children.Add(MyGeoShape);
+            SetMyBindings();
+            Loaded += ShapeCanvas_Loaded;
+        }
+
+        private void ShapeCanvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < MyAnchorPoints.Count; i++)
+            {
+                Thumb tt = new() { Width = 20, Height = 20 };
+                MyAnchorThumbs.Add(tt);
+                Children.Add(tt);
+                Canvas.SetLeft(tt, MyAnchorPoints[i].X);
+                Canvas.SetTop(tt, MyAnchorPoints[i].Y);
+                tt.DragDelta += Tt_DragDelta;
+            }
+            AdornerLayer layer = AdornerLayer.GetAdornerLayer(this);
+            ResizeAdorner adorner = new(this) { ThumbSize = 20.0 };
+            layer.Add(adorner);
+        }
+
+        private void Tt_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+
+            if (sender is Thumb t)
+            {
+                int ii = MyAnchorThumbs.IndexOf(t);
+                double x = Canvas.GetLeft(t) + e.HorizontalChange;
+                double y = Canvas.GetTop(t) + e.VerticalChange;
+                MyAnchorPoints[ii] = new Point(x, y);
+                Canvas.SetLeft(t, x);
+                Canvas.SetTop(t, y);
+            }
+        }
+
+
+        /// <summary>
+        /// PointCollectionのPointがすべて収まるRect取得
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>        
+        private static Rect GetPointsRect(IEnumerable<Point> points)
+        {
+            double minx = double.MaxValue;
+            double miny = double.MaxValue;
+            double maxX = double.MinValue;
+            double maxY = double.MinValue;
+            foreach (Point pp in points)
+            {
+                if (pp.X < minx) minx = pp.X;
+                if (pp.Y < miny) miny = pp.Y;
+                if (pp.X > maxX) maxX = pp.X;
+                if (pp.Y > maxY) maxY = pp.Y;
+            }
+            return new Rect(minx, miny, maxX - minx, maxY - miny);
+        }
+
+        private void SetLocatePointAndAnchorThumb(int idx, double x, double y)
+        {
+            MyAnchorPoints[idx] = new Point(x, y);
+            Canvas.SetLeft(MyAnchorThumbs[idx], x);
+            Canvas.SetTop(MyAnchorThumbs[idx], y);
+        }
+
+        private void SetMyBindings()
+        {
+            MyGeoShape.SetBinding(GeoShapeSize.MyAnchorPointsProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyPointsProperty)
+            });
+            MyGeoShape.SetBinding(GeoShapeSize.StrokeProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeProperty)
+            });
+            MyGeoShape.SetBinding(GeoShapeSize.StrokeThicknessProperty, new Binding()
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                Path = new PropertyPath(MyStrokeThicknessProperty)
+            });
+
+        }
+
+
+    }
 
     /// <summary>
-    /// CanvasにShapeとアンカー点表示と移動だけ
+    /// リサイズAdornerを付けたCanvasにShapeとアンカー点表示と移動
+    /// 左上要素のリサイズでShapeが移動してしまう不具合
     /// </summary>
     public class ShapeCanvas : Canvas
     {
@@ -113,34 +265,6 @@ namespace _20230510
             }
         }
 
-
-        /// <summary>
-        /// PointCollectionのPointがすべて収まるRect取得
-        /// </summary>
-        /// <param name="points"></param>
-        /// <returns></returns>        
-        private static Rect GetPointsRect(IEnumerable<Point> points)
-        {
-            double minx = double.MaxValue;
-            double miny = double.MaxValue;
-            double maxX = double.MinValue;
-            double maxY = double.MinValue;
-            foreach (Point pp in points)
-            {
-                if (pp.X < minx) minx = pp.X;
-                if (pp.Y < miny) miny = pp.Y;
-                if (pp.X > maxX) maxX = pp.X;
-                if (pp.Y > maxY) maxY = pp.Y;
-            }
-            return new Rect(minx, miny, maxX - minx, maxY - miny);
-        }
-
-        private void SetLocatePointAndAnchorThumb(int idx, double x, double y)
-        {
-            MyAnchorPoints[idx] = new Point(x, y);
-            Canvas.SetLeft(MyAnchorThumbs[idx], x);
-            Canvas.SetTop(MyAnchorThumbs[idx], y);
-        }
 
         private void SetMyBindings()
         {
