@@ -8,13 +8,198 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows;
-//ResizeCanvasのシンプル版
-//リサイズできるCanvas
-//ハンドルの座標はCanvasのサイズと座標にバインド
-//ハンドルのドラッグイベントでCanvasのサイズと座標を変更する
-//このときCanvasのサイズがマイナスにならないようにしている
+
+
 namespace _20230520
 {
+    public class CanvasThumb2 : Thumb
+    {
+        #region SizeHandlThumbs
+
+        //R:Right, L:Left, T:Top, B:Bottom
+        public Thumb TTR { get; set; } = new() { Width = 20, Height = 20 };
+        public Thumb TTB { get; set; } = new() { Width = 20, Height = 20 };
+        public Thumb TTL { get; set; } = new() { Width = 20, Height = 20 };
+        public Thumb TTT { get; set; } = new() { Width = 20, Height = 20 };
+        public Thumb TTTR { get; set; } = new() { Width = 20, Height = 20 };
+        public Thumb TTBL { get; set; } = new() { Width = 20, Height = 20 };
+        public Thumb TTBR { get; set; } = new() { Width = 20, Height = 20 };
+        public Thumb TTTL { get; set; } = new() { Width = 20, Height = 20 };
+        #endregion SizeHandlThumbs
+        public Canvas MyTemplateCanvas { get; private set; }
+
+
+        public CanvasThumb2()
+        {
+            MyTemplateCanvas = SetMyTemplate<Canvas>();
+            MyTemplateCanvas.Children.Add(new TextBlock() { Text = "aaaaaaaaaaaaaaaaaaaaaaa" });
+            DragDelta += CanvasThumb2_DragDelta;
+            Canvas.SetLeft(this, 0);
+            Canvas.SetTop(this, 0);
+            SetMyBindings();
+
+            MyTemplateCanvas.Children.Add(TTR); TTR.DragDelta += (o, e) => { TTWidth(e); };
+            MyTemplateCanvas.Children.Add(TTB); TTB.DragDelta += (o, e) => { TTHeight(e); };
+            MyTemplateCanvas.Children.Add(TTL); TTL.DragDelta += (o, e) => { TTWidthAndX(e); };
+            MyTemplateCanvas.Children.Add(TTT); TTT.DragDelta += (o, e) => { TTHeightAndY(e); };
+            MyTemplateCanvas.Children.Add(TTTR); TTTR.DragDelta += (o, e) => { TTHeightAndY(e); TTWidth(e); };
+            MyTemplateCanvas.Children.Add(TTBL); TTBL.DragDelta += (o, e) => { TTWidthAndX(e); TTHeight(e); };
+            MyTemplateCanvas.Children.Add(TTBR); TTBR.DragDelta += (o, e) => { TTWidth(e); TTHeight(e); };
+            MyTemplateCanvas.Children.Add(TTTL); TTTL.DragDelta += (o, e) => { TTWidthAndX(e); TTHeightAndY(e); };
+
+        }
+
+        private void CanvasThumb2_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (sender is CanvasThumb2 canvas && canvas == e.OriginalSource)
+            {
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+                Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+            }
+        }
+
+        private T SetMyTemplate<T>()
+        {
+            FrameworkElementFactory factory = new(typeof(T), "nemo");
+            Template = new ControlTemplate() { VisualTree = factory };
+            ApplyTemplate();
+            return (T)Template.FindName("nemo", this);
+        }
+
+        private void SetMyBindings()
+        {
+            SetBinding(WidthProperty, new Binding() { Source = MyTemplateCanvas, Path = new PropertyPath(WidthProperty), Mode = BindingMode.TwoWay });
+            SetBinding(HeightProperty, new Binding() { Source = MyTemplateCanvas, Path = new PropertyPath(HeightProperty), Mode = BindingMode.TwoWay });
+            SetBinding(BackgroundProperty, new Binding() { Source = MyTemplateCanvas, Path = new PropertyPath(BackgroundProperty), Mode = BindingMode.TwoWay });
+
+            Binding bWidth = new()
+            {
+                Source = this,
+                Path = new PropertyPath(WidthProperty)
+            };
+            Binding bWidthC = new()
+            {
+                Source = this,
+                Path = new PropertyPath(WidthProperty),
+                Converter = new MyConverterHalf()
+            };
+            Binding bHeight = new()
+            {
+                Source = this,
+                Path = new PropertyPath(HeightProperty)
+            };
+            Binding bHeightC = new()
+            {
+                Source = this,
+                Path = new PropertyPath(HeightProperty),
+                Converter = new MyConverterHalf()
+            };
+            TTR.SetBinding(Canvas.LeftProperty, bWidth);
+            TTR.SetBinding(Canvas.TopProperty, bHeightC);
+            TTB.SetBinding(Canvas.LeftProperty, bWidthC);
+            TTB.SetBinding(Canvas.TopProperty, bHeight);
+            TTT.SetBinding(Canvas.LeftProperty, bWidthC);
+            TTL.SetBinding(Canvas.TopProperty, bHeightC);
+            TTBR.SetBinding(Canvas.LeftProperty, bWidth);
+            TTBR.SetBinding(Canvas.TopProperty, bHeight);
+            TTTR.SetBinding(Canvas.LeftProperty, bWidth);
+            TTBL.SetBinding(Canvas.TopProperty, bHeight);
+        }
+
+
+        private void TTHeight(DragDeltaEventArgs e)
+        {
+            double value = Height + e.VerticalChange;
+            Height = value >= 0 ? value : 0;
+        }
+
+        private void TTWidth(DragDeltaEventArgs e)
+        {
+            double value = Width + e.HorizontalChange;
+            Width = value >= 0 ? value : 0;
+        }
+
+        private void TTWidthAndX(DragDeltaEventArgs e)
+        {
+            double value = Width - e.HorizontalChange;
+            if (value >= 0)
+            {
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+                Width = value;
+            }
+            else
+            {
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + Width);
+                Width = 0;
+            }
+        }
+        private void TTHeightAndY(DragDeltaEventArgs e)
+        {
+            double value = Height - e.VerticalChange;
+            if (value >= 0)
+            {
+                Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+                Height = value;
+            }
+            else
+            {
+                Canvas.SetTop(this, Canvas.GetTop(this) + Height);
+                Height = 0;
+            }
+        }
+
+
+    }
+
+
+    /// <summary>
+    /// 失敗
+    /// ResizeCanvas2をTemplateにしたThumb
+    /// 上と左方向のサイズ変更で不具合、Canvas単体時はCanvasの座標の変更でいいけど
+    /// ThumbのTemplateにした場合はThumbの座標を変更する必要がある、これができない
+    /// </summary>
+    public class CanvasThumb : Thumb
+    {
+        public ResizeCanvas2 MyTemplateCanvas { get; private set; }
+        public CanvasThumb()
+        {
+            Canvas.SetLeft(this, 0);
+            Canvas.SetTop(this, 0);
+            MyTemplateCanvas = SetMyTemplate<ResizeCanvas2>();
+            DragDelta += CanvasThumb_DragDelta;
+            SetMyBindings();
+        }
+
+        private void CanvasThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (e.Source == e.OriginalSource)
+            {
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+                Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+            }
+        }
+
+        private T SetMyTemplate<T>()
+        {
+            FrameworkElementFactory factory = new(typeof(T), "nemo");
+            Template = new ControlTemplate() { VisualTree = factory };
+            ApplyTemplate();
+            return (T)Template.FindName("nemo", this);
+        }
+        private void SetMyBindings()
+        {
+            MyTemplateCanvas.SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(WidthProperty), Mode = BindingMode.TwoWay });
+            MyTemplateCanvas.SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(HeightProperty), Mode = BindingMode.TwoWay });
+
+        }
+    }
+
+
+    //ResizeCanvasのシンプル版
+    //リサイズできるCanvas
+    //ハンドルの座標はCanvasのサイズと座標にバインド
+    //ハンドルのドラッグイベントでCanvasのサイズと座標を変更する
+    //このときCanvasのサイズがマイナスにならないようにしている
     public class ResizeCanvas2 : Canvas
     {
         //R:Right, L:Left, T:Top, B:Bottom
@@ -42,6 +227,60 @@ namespace _20230520
 
             SetMyBinding();
         }
+
+        //private void TTWidthAndX(DragDeltaEventArgs e)
+        //{
+        //    if (e.Source == e.OriginalSource)
+        //    {
+        //        double value = Width - e.HorizontalChange;
+        //        if (value >= 0)
+        //        {
+        //            Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+        //            Width = value;
+        //        }
+        //        else
+        //        {
+        //            Canvas.SetLeft(this, Canvas.GetLeft(this) + Width);
+        //            Width = 0;
+        //        }
+        //    }
+        //}
+        //private void TTHeightAndY(DragDeltaEventArgs e)
+        //{
+        //    if (e.Source == e.OriginalSource)
+        //    {
+        //        double value = Height - e.VerticalChange;
+        //        if (value >= 0)
+        //        {
+        //            Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+        //            Height = value;
+        //        }
+        //        else
+        //        {
+        //            Canvas.SetTop(this, Canvas.GetTop(this) + Height);
+        //            Height = 0;
+        //        }
+        //    }
+        //}
+
+        //private void TTHeight(DragDeltaEventArgs e)
+        //{
+        //    if (e.Source == e.OriginalSource)
+        //    {
+        //        double value = Height + e.VerticalChange;
+        //        Height = value >= 0 ? value : 0;
+        //    }
+        //}
+
+        //private void TTWidth(DragDeltaEventArgs e)
+        //{
+        //    if (e.Source == e.OriginalSource)
+        //    {
+        //        double value = Width + e.HorizontalChange;
+        //        Width = value >= 0 ? value : 0;
+        //    }
+        //}
+
 
         private void TTWidthAndX(DragDeltaEventArgs e)
         {
