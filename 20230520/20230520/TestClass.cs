@@ -6,6 +6,10 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 
+//リサイズできるCanvas
+//ハンドルの座標はCanvasのサイズと座標にバインド
+//ハンドルのドラッグイベントでCanvasのサイズと座標を変更する
+//このときCanvasのサイズがマイナスにならないようにしている
 namespace _20230520
 {
     public class ResizeCanvas : Canvas
@@ -35,6 +39,7 @@ namespace _20230520
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+        //R:Right, L:Left, T:Top, B:Bottom
         public TThumb TTR { get; set; } = new() { Width = 20, Height = 20 };
         public TThumb TTB { get; set; } = new() { Width = 20, Height = 20 };
         public TThumb TTL { get; set; } = new() { Width = 20, Height = 20 };
@@ -48,7 +53,7 @@ namespace _20230520
         public ResizeCanvas()
         {
             Background = Brushes.AliceBlue;
-            Loaded += ResizeCanvas_Loaded;
+
             Children.Add(TTR); TTR.DragDelta += (o, e) => { TTWidth(e); };
             Children.Add(TTB); TTB.DragDelta += (o, e) => { TTHeight(e); };
             Children.Add(TTL); TTL.DragDelta += (o, e) => { TTWidthAndX(e); };
@@ -57,8 +62,47 @@ namespace _20230520
             Children.Add(TTBL); TTBL.DragDelta += (o, e) => { TTWidthAndX(e); TTHeight(e); };
             Children.Add(TTBR); TTBR.DragDelta += (o, e) => { TTWidth(e); TTHeight(e); };
             Children.Add(TTTL); TTTL.DragDelta += (o, e) => { TTWidthAndX(e); TTHeightAndY(e); };
+            SetMyBindig();
         }
 
+        private void SetMyBindig()
+        {
+            SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(XProperty), Mode = BindingMode.TwoWay });
+            SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(YProperty), Mode = BindingMode.TwoWay });
+
+            Binding bWidth = new()
+            {
+                Source = this,
+                Path = new PropertyPath(WidthProperty)
+            };
+            Binding bWidthC = new()
+            {
+                Source = this,
+                Path = new PropertyPath(WidthProperty),
+                Converter = new MyConverterHalf()
+            };
+            Binding bHeight = new()
+            {
+                Source = this,
+                Path = new PropertyPath(HeightProperty)
+            };
+            Binding bHeightC = new()
+            {
+                Source = this,
+                Path = new PropertyPath(HeightProperty),
+                Converter = new MyConverterHalf()
+            };
+            TTR.SetBinding(TThumb.XProperty, bWidth);
+            TTR.SetBinding(TThumb.YProperty, bHeightC);
+            TTT.SetBinding(TThumb.XProperty, bWidthC);
+            TTL.SetBinding(TThumb.YProperty, bHeightC);
+            TTB.SetBinding(TThumb.XProperty, bWidthC);
+            TTB.SetBinding(TThumb.YProperty, bHeight);
+            TTBR.SetBinding(TThumb.XProperty, bWidth);
+            TTBR.SetBinding(TThumb.YProperty, bHeight);
+            TTTR.SetBinding(TThumb.XProperty, bWidth);
+            TTBL.SetBinding(TThumb.YProperty, bHeight);
+        }
 
         private void TTWidthAndX(DragDeltaEventArgs e)
         {
@@ -101,27 +145,8 @@ namespace _20230520
             Width = value >= 0 ? value : 0;
         }
 
-
-        private void ResizeCanvas_Loaded(object sender, RoutedEventArgs e)
-        {
-            SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(XProperty), Mode = BindingMode.TwoWay });
-            SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(YProperty), Mode = BindingMode.TwoWay });
-
-            TTBR.SetBinding(TThumb.XProperty, new Binding() { Source = this, Path = new PropertyPath(WidthProperty) });
-            TTBR.SetBinding(TThumb.YProperty, new Binding() { Source = this, Path = new PropertyPath(HeightProperty) });
-            TTR.SetBinding(TThumb.XProperty, new Binding() { Source = this, Path = new PropertyPath(WidthProperty) });
-            TTR.SetBinding(TThumb.YProperty, new Binding() { Source = this, Path = new PropertyPath(HeightProperty), Converter = new MyConverterHalf() });
-            TTTR.SetBinding(TThumb.XProperty, new Binding() { Source = this, Path = new PropertyPath(WidthProperty) });
-            TTT.SetBinding(TThumb.XProperty, new Binding() { Source = this, Path = new PropertyPath(WidthProperty), Converter = new MyConverterHalf() });
-            TTL.SetBinding(TThumb.YProperty, new Binding() { Source = this, Path = new PropertyPath(HeightProperty), Converter = new MyConverterHalf() });
-            TTBL.SetBinding(TThumb.YProperty, new Binding() { Source = this, Path = new PropertyPath(HeightProperty) });
-            TTB.SetBinding(TThumb.XProperty, new Binding() { Source = this, Path = new PropertyPath(WidthProperty), Converter = new MyConverterHalf() });
-            TTB.SetBinding(TThumb.YProperty, new Binding() { Source = this, Path = new PropertyPath(HeightProperty) });
-
-        }
-
-
     }
+
 
     public class TThumb : Thumb
     {
