@@ -196,5 +196,34 @@ namespace _20230520
         }
     }
 
+    public class MyConverterHandlThumb : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double handlSize= (double)values[0];
+            double v= (double)values[1];
+            return v - handlSize;
+        }
 
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyConverterHandlThumbHalf : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double handlSize = (double)values[0];
+            double v = (double)values[1];
+            //return (v / 2.0) - (handlSize / 2.0);
+            return (v + handlSize) / 2.0 - handlSize;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
