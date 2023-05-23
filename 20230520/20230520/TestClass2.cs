@@ -13,6 +13,211 @@ using System.Windows.Shapes;
 
 namespace _20230520
 {
+    /// <summary>
+    /// CanvasThumb5の改変
+    /// 中の要素をTextBlockからPolylineにしただけ
+    /// </summary>
+    public class CanvasThumb6 : Thumb
+    {
+        #region 依存関係プロパティ
+
+        public double MyHandlThumbSize
+        {
+            get { return (double)GetValue(MyHandlThumbSizeProperty); }
+            set { SetValue(MyHandlThumbSizeProperty, value); }
+        }
+        public static readonly DependencyProperty MyHandlThumbSizeProperty =
+            DependencyProperty.Register(nameof(MyHandlThumbSize), typeof(double), typeof(CanvasThumb6),
+                new FrameworkPropertyMetadata(20.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        #endregion 依存関係プロパティ
+
+        #region SizeHandlThumbs
+
+        //R:Right, L:Left, T:Top, B:Bottom
+        public Thumb TTR { get; set; } = new();
+        public Thumb TTB { get; set; } = new();
+        public Thumb TTL { get; set; } = new();
+        public Thumb TTT { get; set; } = new();
+        public Thumb TTTR { get; set; } = new();
+        public Thumb TTBL { get; set; } = new();
+        public Thumb TTBR { get; set; } = new();
+        public Thumb TTTL { get; set; } = new();
+        #endregion SizeHandlThumbs
+        //要素を表示するため、TemplateをCanvas
+        public Canvas MyTemplateCanvas { get; private set; }
+        //中の要素
+        public PolyLineCanvas MyContent;
+
+        public CanvasThumb6()
+        {
+            Background = Brushes.AliceBlue;
+            MyTemplateCanvas = SetMyTemplate<Canvas>();
+            MyContent = new()
+            {
+                MyAnchirPoints = new PointCollection() { new Point(0, 0), new Point(150, 100) },
+                MyStrokeThickness = 20,
+                MyStroke = Brushes.Gold,
+            };
+            Canvas.SetLeft(MyContent, 0);
+            Canvas.SetTop(MyContent, 0);
+            MyTemplateCanvas.Children.Add(MyContent);
+
+            DragDelta += CanvasThumb2_DragDelta;
+            Canvas.SetLeft(this, 0);
+            Canvas.SetTop(this, 0);
+            SetMyBindings();
+
+            MyTemplateCanvas.Children.Add(TTTL); TTTL.DragDelta += (o, e) => { TTWidthAndX(e); TTHeightAndY(e); };
+            MyTemplateCanvas.Children.Add(TTT); TTT.DragDelta += (o, e) => { TTHeightAndY(e); };
+            MyTemplateCanvas.Children.Add(TTTR); TTTR.DragDelta += (o, e) => { TTHeightAndY(e); TTWidth(e); };
+            MyTemplateCanvas.Children.Add(TTL); TTL.DragDelta += (o, e) => { TTWidthAndX(e); };
+            MyTemplateCanvas.Children.Add(TTR); TTR.DragDelta += (o, e) => { TTWidth(e); };
+            MyTemplateCanvas.Children.Add(TTBL); TTBL.DragDelta += (o, e) => { TTWidthAndX(e); TTHeight(e); };
+            MyTemplateCanvas.Children.Add(TTB); TTB.DragDelta += (o, e) => { TTHeight(e); };
+            MyTemplateCanvas.Children.Add(TTBR); TTBR.DragDelta += (o, e) => { TTWidth(e); TTHeight(e); };
+
+        }
+
+        private void CanvasThumb2_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (sender is CanvasThumb6 canvas && canvas == e.OriginalSource)
+            {
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+                Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+            }
+        }
+
+        private T SetMyTemplate<T>()
+        {
+            FrameworkElementFactory factory = new(typeof(T), "nemo");
+            Template = new ControlTemplate() { VisualTree = factory };
+            ApplyTemplate();
+            return (T)Template.FindName("nemo", this);
+        }
+
+        private void SetMyBindings()
+        {
+            //サイズをTemplateCanvasのサイズに合わせる
+            SetBinding(WidthProperty, new Binding() { Source = MyTemplateCanvas, Path = new PropertyPath(WidthProperty), Mode = BindingMode.TwoWay });
+            SetBinding(HeightProperty, new Binding() { Source = MyTemplateCanvas, Path = new PropertyPath(HeightProperty), Mode = BindingMode.TwoWay });
+            SetBinding(BackgroundProperty, new Binding() { Source = MyTemplateCanvas, Path = new PropertyPath(BackgroundProperty), Mode = BindingMode.TwoWay });
+
+            //ハンドルサイズ
+            Binding handlSize = new Binding() { Source = this, Path = new PropertyPath(MyHandlThumbSizeProperty) };
+            TTB.SetBinding(WidthProperty, handlSize);
+            TTB.SetBinding(HeightProperty, handlSize);
+            TTBL.SetBinding(WidthProperty, handlSize);
+            TTBL.SetBinding(HeightProperty, handlSize);
+            TTBR.SetBinding(WidthProperty, handlSize);
+            TTBR.SetBinding(HeightProperty, handlSize);
+            TTL.SetBinding(WidthProperty, handlSize);
+            TTL.SetBinding(HeightProperty, handlSize);
+            TTR.SetBinding(WidthProperty, handlSize);
+            TTR.SetBinding(HeightProperty, handlSize);
+            TTTL.SetBinding(WidthProperty, handlSize);
+            TTTL.SetBinding(HeightProperty, handlSize);
+            TTTR.SetBinding(WidthProperty, handlSize);
+            TTTR.SetBinding(HeightProperty, handlSize);
+            TTT.SetBinding(WidthProperty, handlSize);
+            TTT.SetBinding(HeightProperty, handlSize);
+
+            //ハンドルの座標、ハンドルのサイズを考慮してサイズに合わせる
+            Binding bWidth = new() { Source = this, Path = new PropertyPath(WidthProperty) };
+            Binding bHeight = new() { Source = this, Path = new PropertyPath(HeightProperty) };
+            MultiBinding mbw = new() { Converter = new MyConverterHandlThumb() };
+            mbw.Bindings.Add(handlSize);
+            mbw.Bindings.Add(bWidth);
+            MultiBinding mbh = new() { Converter = new MyConverterHandlThumb() };
+            mbh.Bindings.Add(handlSize);
+            mbh.Bindings.Add(bHeight);
+            MultiBinding mbwh = new() { Converter = new MyConverterHandlThumbHalf() };
+            mbwh.Bindings.Add(handlSize);
+            mbwh.Bindings.Add(bWidth);
+            MultiBinding mbhh = new() { Converter = new MyConverterHandlThumbHalf() };
+            mbhh.Bindings.Add(handlSize);
+            mbhh.Bindings.Add(bHeight);
+
+            TTR.SetBinding(Canvas.LeftProperty, mbw);
+            TTR.SetBinding(Canvas.TopProperty, mbhh);
+            TTB.SetBinding(Canvas.LeftProperty, mbwh);
+            TTB.SetBinding(Canvas.TopProperty, mbh);
+            TTT.SetBinding(Canvas.LeftProperty, mbwh);
+            TTL.SetBinding(Canvas.TopProperty, mbhh);
+            TTBR.SetBinding(Canvas.LeftProperty, mbw);
+            TTBR.SetBinding(Canvas.TopProperty, mbh);
+            TTTR.SetBinding(Canvas.LeftProperty, mbw);
+            TTBL.SetBinding(Canvas.TopProperty, mbh);
+
+        }
+
+        #region ハンドル移動
+
+        private void TTHeight(DragDeltaEventArgs e)
+        {
+            double value = Height + e.VerticalChange;
+            Height = value >= 0 ? value : 0;
+        }
+
+        private void TTWidth(DragDeltaEventArgs e)
+        {
+            double value = Width + e.HorizontalChange;
+            Width = value >= 0 ? value : 0;
+        }
+
+        private void TTWidthAndX(DragDeltaEventArgs e)
+        {
+            double value = Width - e.HorizontalChange;
+            if (value >= 0)
+            {
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+                Width = value;
+                Canvas.SetLeft(MyContent, Canvas.GetLeft(MyContent) - e.HorizontalChange);
+            }
+            else
+            {
+                Canvas.SetLeft(this, Canvas.GetLeft(this) + Width);
+                Width = 0;
+            }
+        }
+        private void TTHeightAndY(DragDeltaEventArgs e)
+        {
+            double value = Height - e.VerticalChange;
+            if (value >= 0)
+            {
+                Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+                Height = value;
+                Canvas.SetTop(MyContent, Canvas.GetTop(MyContent) - e.VerticalChange);
+            }
+            else
+            {
+                Canvas.SetTop(this, Canvas.GetTop(this) + Height);
+                Height = 0;
+            }
+        }
+        #endregion ハンドル移動
+
+        //サイズを中の要素に合わせる＋座標も変更
+        public void FitSizeContent()
+        {
+            Width = MyContent.ActualWidth;
+            Height = MyContent.ActualHeight;
+            Canvas.SetLeft(this, Canvas.GetLeft(this) + Canvas.GetLeft(MyContent));
+            Canvas.SetTop(this, Canvas.GetTop(this) + Canvas.GetTop(MyContent));
+            Canvas.SetLeft(MyContent, 0);
+            Canvas.SetTop(MyContent, 0);
+        }
+
+    }
+
+
+    /// <summary>
+    /// CanvasThumb4の改変
+    /// 中の要素をTextBlockからPolylineにしただけ
+    /// </summary>
     public class CanvasThumb5 : Thumb
     {
         #region 依存関係プロパティ

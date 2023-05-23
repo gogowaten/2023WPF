@@ -57,11 +57,14 @@ namespace _20230520
         #endregion 依存関係プロパティ
         public Polyline MyShape { get; private set; } = new();
         public ObservableCollection<Thumb> MyAnchorThumbs { get; private set; } = new();
+        public Rect MyBound { get; private set; } = new();
         public PolyLineCanvas()
         {
+            Background = Brushes.WhiteSmoke;
             Children.Add(MyShape);
             SetMyBindings();
             Loaded += PolyLineCanvas_Loaded;
+
         }
 
         private void PolyLineCanvas_Loaded(object sender, RoutedEventArgs e)
@@ -82,19 +85,35 @@ namespace _20230520
             for (int i = 0; i < MyAnchirPoints.Count; i++)
             {
                 Thumb tt = new() { Width = 20, Height = 20, };
-                Canvas.SetLeft(tt, 0);
-                Canvas.SetTop(tt, 0);
+                Point pp = MyAnchirPoints[i];
+                Canvas.SetLeft(tt, pp.X);
+                Canvas.SetTop(tt, pp.Y);
                 MyAnchorThumbs.Add(tt);
+                Children.Add(tt);
                 tt.DragDelta += Tt_DragDelta;
             }
+            SetBoungs();
+        }
+
+        private void SetBoungs()
+        {
+            Rect bounds = VisualTreeHelper.GetDescendantBounds(MyShape);
+            MyBound = bounds;
+            Rect bounds2 = VisualTreeHelper.GetContentBounds(MyShape);
+            Rect bounds3 = VisualTreeHelper.GetDescendantBounds(this);
         }
 
         private void Tt_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            if(sender is Thumb tt)
+            if (sender is Thumb tt)
             {
                 int ii = MyAnchorThumbs.IndexOf(tt);
-
+                double xx = Canvas.GetLeft(tt) + e.HorizontalChange;
+                double yy = Canvas.GetTop(tt) + e.VerticalChange;
+                Canvas.SetLeft(tt, xx);
+                Canvas.SetTop(tt, yy);
+                MyAnchirPoints[ii] = new Point(xx, yy);
+                SetBoungs();
             }
         }
     }
