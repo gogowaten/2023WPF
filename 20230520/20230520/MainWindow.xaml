@@ -17,7 +17,18 @@
       <local:ResizeCanvas2 Width="100" Height="100" Canvas.Left="200" Canvas.Top="20"/>
       <local:CanvasThumb6 x:Name="MyContent" Width="100" Height="100" Background="DodgerBlue"/>-->
       <!--<local:PolyLineCanvas MyAnchirPoints="0,0 100,100 200,50"/>-->
-      <local:ResizableCanvas x:Name="MyContent" Canvas.Top="10" Canvas.Left="10"/>
+      <local:ResizableCanvas x:Name="MyContent" Width="100" Height="100" Canvas.Top="10" Canvas.Left="10"/>
+      <local:GeoShape x:Name="MyGeoShape" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="50">
+        <local:GeoShape.RenderTransform>
+          <TransformGroup>
+            <ScaleTransform/>
+            <SkewTransform/>
+            <RotateTransform Angle="20"/>
+            <TranslateTransform/>
+          </TransformGroup>
+        </local:GeoShape.RenderTransform>      
+      </local:GeoShape>
+      <local:GeoShape MyPoints="0,0 100,0" Stroke="blue" StrokeThickness="10" MyAngle="30"/>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Slider Value="{Binding ElementName=MyContent, Path=MyHandlThumbSize}"
@@ -27,6 +38,8 @@
       <TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Top), StringFormat=y \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=ActualWidth, StringFormat=w \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=ActualHeight, StringFormat=h \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShape, Path=MyRenderBounds, StringFormat=0.0}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShape, Path=MyRect, StringFormat=0.0}"/>
     </StackPanel>
   </Grid>
 </Window>
