@@ -8,9 +8,114 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace _20230520
 {
+    /// <summary>
+    /// GeoShapeの改変 
+    /// MyRenderBoundsの更新を自動(Binding)にした
+    /// ArrangeOverride時の更新が不要になった
+    /// Loaded時の更新が不要になった
+    /// かなりスッキリしたけど、MyRenderBoundsが読み取り専用じゃなくなってしまった
+    /// </summary>
+    public class GeoShape2 : Shape
+    {
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(GeoShape2),
+                new FrameworkPropertyMetadata(new PointCollection(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public Rect MyRenderBounds
+        {
+            get { return (Rect)GetValue(MyRenderBoundsProperty); }
+            set { SetValue(MyRenderBoundsProperty, value); }
+        }
+        public static readonly DependencyProperty MyRenderBoundsProperty =
+            DependencyProperty.Register(nameof(MyRenderBounds), typeof(Rect), typeof(GeoShape2),
+                new FrameworkPropertyMetadata(new Rect(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public PathGeometry MyGeometry
+        {
+            get { return (PathGeometry)GetValue(MyGeometryProperty); }
+            set { SetValue(MyGeometryProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeometryProperty =
+            DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoShape2),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public Pen MyPen
+        {
+            get { return (Pen)GetValue(MyPenProperty); }
+            set { SetValue(MyPenProperty, value); }
+        }
+        public static readonly DependencyProperty MyPenProperty =
+            DependencyProperty.Register(nameof(MyPen), typeof(Pen), typeof(GeoShape2),
+                new FrameworkPropertyMetadata(new Pen(Brushes.Red, 10.0),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        protected override Geometry DefiningGeometry
+        {
+            get
+            {
+                if (MyPoints.Count <= 1) return Geometry.Empty;
+
+                StreamGeometry geometry = new();
+                using (var content = geometry.Open())
+                {
+                    content.BeginFigure(MyPoints[0], false, false);
+                    content.PolyLineTo(MyPoints.Skip(1).ToList(), true, false);
+
+                }
+                geometry.Freeze();
+                //Bounds計算用のGeometryを更新
+                MyGeometry = geometry.GetWidenedPathGeometry(MyPen);
+
+                return geometry;
+            }
+        }
+
+        public GeoShape2()
+        {
+
+            //MyPenにStrokeとStrokeThicknessをバインド
+            MultiBinding mb = new() { Converter = new MyConverterPen() };
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(StrokeProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(StrokeThicknessProperty) });
+            SetBinding(MyPenProperty, mb);
+
+            //MyRenderBoundsにMyGeometryとRenderTransformをバインド
+            mb = new() { Converter = new MyConverterGeometry2Bounds(), Mode = BindingMode.OneWay };
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MyGeometryProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RenderTransformProperty) });
+            SetBinding(MyRenderBoundsProperty, mb);
+
+        }
+
+
+
+
+
+    }
     public class GeoShape : Shape
     {
 
@@ -82,7 +187,8 @@ namespace _20230520
 
             //回転角度のバインド。角度変更でArrangeOverrideを発生させるため
             SetBinding(MyAngleProperty, new Binding() { Source = this, Path = new PropertyPath(RenderTransformProperty), Converter = new MyConverterRenderTransform2Angle() });
-        
+
+
         }
 
         private void GeoShape_Loaded(object sender, RoutedEventArgs e)
@@ -90,7 +196,7 @@ namespace _20230520
             UpdataRenderBounds();
         }
 
-        //Transform変更(開店)時にも実行したいけど、ArrangeOverrideでは反応しない
+        //Transform変更(回転)時にも実行したいけど、ArrangeOverrideでは反応しない
         //→なぜかできた、MyAngleとRenderTransformをバインドしたらなぜかArrangeOverrideが発動
         protected override Size ArrangeOverride(Size finalSize)
         {
@@ -133,6 +239,59 @@ namespace _20230520
     }
 
 
+    public class MyConverterPen : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            Brush b = (Brush)values[0];
+            double thickness = (double)values[1];
+            return new Pen(b, thickness);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            Pen p = (Pen)value;
+            object[] objects = new object[2];
+            objects[0] = p.Brush;
+            objects[1] = p.Thickness;
+            return objects;
+        }
+    }
+
+    public class MyConverterGeometry2Bounds2 : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            PathGeometry geo = (PathGeometry)value;
+            if (geo == null) return new Rect();
+            return geo.GetRenderBounds(null);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyConverterGeometry2Bounds : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            PathGeometry geo = (PathGeometry)values[0];
+            if (geo == null) { return new Rect(); }
+            Transform tf = (Transform)values[1];
+
+            geo.Transform = tf;
+            Rect r = geo.GetRenderBounds(null);
+            return r;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// RenderTransformの回転角度(RotateTransform)を取り出す
     /// </summary>
@@ -157,7 +316,7 @@ namespace _20230520
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double angel=(double)value;
+            double angel = (double)value;
             TransformGroup tfg = new();
             tfg.Children.Add(new RotateTransform(angel));
             return tfg;
