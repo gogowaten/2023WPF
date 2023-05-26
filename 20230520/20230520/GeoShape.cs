@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
+
 namespace _20230520
 {
     /// <summary>
@@ -87,7 +88,7 @@ namespace _20230520
 
                 }
                 geometry.Freeze();
-                //Bounds計算用のGeometryを更新
+                //Bounds計算用のGeometryを更新、StrokeThicknessを考慮したGeometry
                 MyGeometry = geometry.GetWidenedPathGeometry(MyPen);
 
                 return geometry;
