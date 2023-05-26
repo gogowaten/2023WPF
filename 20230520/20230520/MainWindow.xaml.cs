@@ -23,6 +23,7 @@ namespace _20230520
         public MainWindow()
         {
             InitializeComponent();
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -30,4 +31,5 @@ namespace _20230520
             //MyContent.FitSizeContent();
         }
     }
+    
 }

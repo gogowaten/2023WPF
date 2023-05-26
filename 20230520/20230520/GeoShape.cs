@@ -43,7 +43,8 @@ namespace _20230520
         public static readonly DependencyProperty MyRenderBoundsProperty =
             MyRenderBoundsPropertyKey.DependencyProperty;
 
-
+        //回転角度。RenderTransformとバインドすると回転角度変更時に
+        //ArrangeOverrideが発生するようになる
         public double MyAngle
         {
             get { return (double)GetValue(MyAngleProperty); }
@@ -79,6 +80,7 @@ namespace _20230520
         {
             Loaded += GeoShape_Loaded;
 
+            //回転角度のバインド。角度変更でArrangeOverrideを発生させるため
             SetBinding(MyAngleProperty, new Binding() { Source = this, Path = new PropertyPath(RenderTransformProperty), Converter = new MyConverterRenderTransform2Angle() });
         
         }
@@ -131,6 +133,9 @@ namespace _20230520
     }
 
 
+    /// <summary>
+    /// RenderTransformの回転角度(RotateTransform)を取り出す
+    /// </summary>
     public class MyConverterRenderTransform2Angle : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

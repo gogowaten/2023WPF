@@ -29,6 +29,7 @@
         </local:GeoShape.RenderTransform>      
       </local:GeoShape>
       <local:GeoShape MyPoints="0,0 100,0" Stroke="blue" StrokeThickness="10" MyAngle="30"/>
+      
     </Canvas>
     <StackPanel Grid.Column="1">
       <Slider Value="{Binding ElementName=MyContent, Path=MyHandlThumbSize}"
@@ -39,7 +40,7 @@
       <TextBlock Text="{Binding ElementName=MyContent, Path=ActualWidth, StringFormat=w \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=ActualHeight, StringFormat=h \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyGeoShape, Path=MyRenderBounds, StringFormat=0.0}"/>
-      <TextBlock Text="{Binding ElementName=MyGeoShape, Path=MyRect, StringFormat=0.0}"/>
+      <!--<TextBlock Text="{Binding ElementName=MyGeoShape, Path=MyRect, StringFormat=0.0}"/>-->
     </StackPanel>
   </Grid>
 </Window>
