@@ -24,5 +24,20 @@ namespace _20230526_PolyLineEx
         {
             InitializeComponent();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var neko = MyShape.RenderedGeometry.Bounds;
+            var inu = MyShape.MyRenderBounds;
+
+            //TransformBounds と RenderTransformOrigin
+            //        https://social.msdn.microsoft.com/Forums/vstudio/en-US/b50eda7f-f888-4ce1-a604-385ec7b6ad7f/transformbounds-and-rendertransformorigin?forum=wpf
+
+            //Originや全てのTransformを考慮したRectの取得
+            Rect des = VisualTreeHelper.GetDescendantBounds(MyShape);
+            GeneralTransform can = MyShape.TransformToAncestor(MyCanvas);
+            var result = can.TransformBounds(des);//実際のBounds
+            var dd = can.TransformBounds(inu);//これは違った、ってことはMyRenderBoundsはいらなかった？
+        }
     }
 }

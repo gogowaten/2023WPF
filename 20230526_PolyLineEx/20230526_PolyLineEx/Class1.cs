@@ -8,9 +8,15 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows;
 using System.Globalization;
+using System.Data;
 
 namespace _20230526_PolyLineEx
 {
+    /// <summary>
+    /// 実際の描画位置とサイズを表すRect型プロパティの、MyRenderBoundsを持つPolyLineShape
+    /// StrokeThicknessやRenderTransformも反映、ただし
+    /// RenderTransformOriginは反映されない、これは親要素が絡むからできない
+    /// </summary>
     public class PolyLineExShape : Shape
     {
 
@@ -26,7 +32,7 @@ namespace _20230526_PolyLineEx
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-
+        //本当は外部からは読み取り専用にしたい
         public Rect MyRenderBounds
         {
             get { return (Rect)GetValue(MyRenderBoundsProperty); }
@@ -34,11 +40,9 @@ namespace _20230526_PolyLineEx
         }
         public static readonly DependencyProperty MyRenderBoundsProperty =
             DependencyProperty.Register(nameof(MyRenderBounds), typeof(Rect), typeof(PolyLineExShape),
-                new FrameworkPropertyMetadata(new Rect(),
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new FrameworkPropertyMetadata(new Rect()));
 
+        //本当は外部からは読み取り専用にしたい
         public PathGeometry MyGeometry
         {
             get { return (PathGeometry)GetValue(MyGeometryProperty); }
@@ -46,10 +50,19 @@ namespace _20230526_PolyLineEx
         }
         public static readonly DependencyProperty MyGeometryProperty =
             DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(PolyLineExShape),
-                new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new FrameworkPropertyMetadata(null));
+        //これ↓だと無限ループになるのでAffectsRenderとAffectsMeasureはいらない
+        //  public PathGeometry MyGeometry
+        //{
+        //    get { return (PathGeometry)GetValue(MyGeometryProperty); }
+        //    set { SetValue(MyGeometryProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyGeometryProperty =
+        //    DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(PolyLineExShape),
+        //        new FrameworkPropertyMetadata(null,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
         public Pen MyPen
@@ -96,11 +109,11 @@ namespace _20230526_PolyLineEx
             SetBinding(MyPenProperty, mb);
 
             //MyRenderBoundsにMyGeometryとRenderTransformをバインド
-            mb = new() { Converter = new MyConverterGeometry2Bounds(), Mode = BindingMode.OneWay };
+            mb = new() { Converter = new MyConverterGeometry2Bounds() };
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MyGeometryProperty) });
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RenderTransformProperty) });
             SetBinding(MyRenderBoundsProperty, mb);
-
+            
         }
 
     }
@@ -131,10 +144,27 @@ namespace _20230526_PolyLineEx
             PathGeometry geo = (PathGeometry)values[0];
             if (geo == null) { return new Rect(); }
             Transform tf = (Transform)values[1];
-
             geo.Transform = tf;
-            Rect r = geo.GetRenderBounds(null);
-            return r;
+            return geo.GetRenderBounds(null);
+
+
+
+            ////RenderTransformOriginも含めたBoundsの計算がわからん
+            //PathGeometry geoc = geo.Clone();
+            //if (tf is TransformGroup group)
+            //{
+            //    foreach (var item in group.Children)
+            //    {
+            //        if (item is RotateTransform rotate)
+            //        {
+            //            //rotate.CenterX = geo.Bounds.Width / 2.0;
+            //            //rotate.CenterY = geo.Bounds.Height / 2.0;
+            //            geoc.Transform = rotate;
+            //            return geoc.GetRenderBounds(null);
+            //        }
+            //    }
+            //}
+            //return new Rect();
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

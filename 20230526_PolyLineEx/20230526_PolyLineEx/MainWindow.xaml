@@ -11,21 +11,22 @@
       <ColumnDefinition/>
       <ColumnDefinition Width="200"/>
     </Grid.ColumnDefinitions>
-    <Canvas>
+    <Canvas x:Name="MyCanvas">
       <local:PolyLineExShape x:Name="MyShape"
-        MyPoints="0,0 100,10" Stroke="Gold" StrokeThickness="20" RenderTransformOrigin="0.5,0.5">
+        MyPoints="0,0 100,0" Stroke="Gold" StrokeThickness="10" RenderTransformOrigin="0.5,0.5">
         <local:PolyLineExShape.RenderTransform>
           <TransformGroup x:Name="MyTF">
-            <ScaleTransform/>
+            <ScaleTransform ScaleX="1"/>
             <SkewTransform/>
-            <RotateTransform x:Name="MyRotate" Angle="5"/>
+            <RotateTransform x:Name="MyRotate" Angle="45"/>
             <TranslateTransform/>
           </TransformGroup>
         </local:PolyLineExShape.RenderTransform>
       </local:PolyLineExShape>
     </Canvas>
     <StackPanel Grid.Column="1">
-      <!--<TextBlock Text="{Binding ElementName=MyShape, Path=MyRenderBounds, StringFormat=bounds : {0: #; -0; 0}}"/>-->
+      <TextBlock Text="{Binding ElementName=MyShape, Path=MyRenderBounds, StringFormat=bounds : {0: #; -0; 0}}"/>
+      <Button Content="test" Click="Button_Click"/>
     </StackPanel>
     </Grid>
 </Window>
