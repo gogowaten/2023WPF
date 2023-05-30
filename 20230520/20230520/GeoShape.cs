@@ -22,7 +22,8 @@ namespace _20230520
     /// </summary>
     public class GeoShape2 : Shape
     {
-
+        #region 依存関係プロパティ
+        
         public PointCollection MyPoints
         {
             get { return (PointCollection)GetValue(MyPointsProperty); }
@@ -43,7 +44,7 @@ namespace _20230520
         }
         public static readonly DependencyProperty MyRenderBoundsProperty =
             DependencyProperty.Register(nameof(MyRenderBounds), typeof(Rect), typeof(GeoShape2),
-                new FrameworkPropertyMetadata(new Rect());
+                new FrameworkPropertyMetadata(new Rect()));
 
         public PathGeometry MyGeometry
         {
@@ -66,7 +67,7 @@ namespace _20230520
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
+        #endregion 依存関係プロパティ
 
         protected override Geometry DefiningGeometry
         {
