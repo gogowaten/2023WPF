@@ -43,10 +43,7 @@ namespace _20230520
         }
         public static readonly DependencyProperty MyRenderBoundsProperty =
             DependencyProperty.Register(nameof(MyRenderBounds), typeof(Rect), typeof(GeoShape2),
-                new FrameworkPropertyMetadata(new Rect(),
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new FrameworkPropertyMetadata(new Rect());
 
         public PathGeometry MyGeometry
         {
@@ -55,10 +52,7 @@ namespace _20230520
         }
         public static readonly DependencyProperty MyGeometryProperty =
             DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoShape2),
-                new FrameworkPropertyMetadata(null,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new FrameworkPropertyMetadata(null));
 
 
         public Pen MyPen
