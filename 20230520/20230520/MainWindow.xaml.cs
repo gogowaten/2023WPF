@@ -28,8 +28,7 @@ namespace _20230520
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //MyContent.FitSizeContent();
-            var neko = MyGeoShape2.MyRenderBounds;
+            MyCCanvas.TestChangeMyElement();
         }
     }
     

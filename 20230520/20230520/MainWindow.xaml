@@ -16,7 +16,7 @@
       <!--<local:ResizeCanvas Width="100" Height="100" Canvas.Left="20" Canvas.Top="20"/>
       <local:ResizeCanvas2 Width="100" Height="100" Canvas.Left="200" Canvas.Top="20"/>
       <local:CanvasThumb6 x:Name="MyContent" Width="100" Height="100" Background="DodgerBlue"/>-->
-      <local:PolyLineCanvas MyAnchirPoints="0,0 100,100 200,50"/>
+      <!--<local:PolyLineCanvas MyAnchirPoints="0,0 100,100 200,50"/>-->
       <!--<local:ResizableCanvas x:Name="MyContent" Width="100" Height="100" Canvas.Top="10" Canvas.Left="10"/>
       <local:GeoShape2 x:Name="MyGeoShape2" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="100">
         <local:GeoShape2.RenderTransform>
@@ -29,17 +29,17 @@
         </local:GeoShape2.RenderTransform>      
       </local:GeoShape2>
       <local:GeoShape MyPoints="0,0 100,0" Stroke="blue" StrokeThickness="10" MyAngle="30"/>-->
-      
+      <local:CCanvas x:Name="MyCCanvas"/>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Slider Value="{Binding ElementName=MyContent, Path=MyHandlThumbSize}"
               Minimum="0" Maximum="30"/>
       <Button Content="pittariSize" Click="Button_Click"/>
-      <TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Left), StringFormat=x \= {0}}"/>
+      <!--<TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Left), StringFormat=x \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Top), StringFormat=y \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=ActualWidth, StringFormat=w \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=ActualHeight, StringFormat=h \= {0}}"/>
-      <TextBlock Text="{Binding ElementName=MyGeoShape2, Path=MyRenderBounds, StringFormat=0.0}"/>
+      <TextBlock Text="{Binding ElementName=MyGeoShape2, Path=MyRenderBounds, StringFormat=0.0}"/>-->
       <!--<TextBlock Text="{Binding ElementName=MyGeoShape, Path=MyRect, StringFormat=0.0}"/>-->
     </StackPanel>
   </Grid>

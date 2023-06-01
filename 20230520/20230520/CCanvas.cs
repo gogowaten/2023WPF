@@ -9,11 +9,15 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows;
 using System.Windows.Shapes;
-
+using System.Globalization;
 
 namespace _20230520
 {
-
+    /// <summary>
+    /// 2つのRectangleを表示
+    /// 1つのRectangleにサイズ変更用のハンドルThumbを表示
+    /// 公開メソッドで別のRectangleにハンドルThumbを表示切替
+    /// </summary>
     public class CCanvas : Canvas
     {
         #region 依存関係プロパティ
@@ -38,10 +42,11 @@ namespace _20230520
         public Thumb TTB { get; set; } = new();
         public Thumb TTL { get; set; } = new();
         public Thumb TTT { get; set; } = new();
-        public Thumb TTTR { get; set; } = new();
-        public Thumb TTBL { get; set; } = new();
-        public Thumb TTBR { get; set; } = new();
-        public Thumb TTTL { get; set; } = new();
+        public Thumb TTRT { get; set; } = new();
+        public Thumb TTLB { get; set; } = new();
+        public Thumb TTRB { get; set; } = new();
+        public Thumb TTLT { get; set; } = new();
+        private readonly List<Thumb> MySizeHandlThumbs = new();
 
         public FrameworkElement MyElement { get; set; } = new();
 
@@ -51,101 +56,116 @@ namespace _20230520
         public CCanvas()
         {
             Background = Brushes.WhiteSmoke;
-            Children.Add(TTR); TTR.DragDelta += (o, e) => { TTWidth(e); };
-            Children.Add(TTB); TTB.DragDelta += (o, e) => { TTHeight(e); };
-            Children.Add(TTL); TTL.DragDelta += (o, e) => { TTWidthAndX(e); };
-            Children.Add(TTT); TTT.DragDelta += (o, e) => { TTHeightAndY(e); };
-            Children.Add(TTTR); TTTR.DragDelta += (o, e) => { TTHeightAndY(e); TTWidth(e); };
-            Children.Add(TTBL); TTBL.DragDelta += (o, e) => { TTWidthAndX(e); TTHeight(e); };
-            Children.Add(TTBR); TTBR.DragDelta += (o, e) => { TTWidth(e); TTHeight(e); };
-            Children.Add(TTTL); TTTL.DragDelta += (o, e) => { TTWidthAndX(e); TTHeightAndY(e); };
+            Children.Add(TTR); TTR.DragDelta += (o, e) => { SetWidth(e); };
+            Children.Add(TTB); TTB.DragDelta += (o, e) => { SetHeight(e); };
+            Children.Add(TTL); TTL.DragDelta += (o, e) => { SetWidthAndLeft(e); };
+            Children.Add(TTT); TTT.DragDelta += (o, e) => { SetHeightAndTop(e); };
 
+            Children.Add(TTRT); TTRT.DragDelta += (o, e) => { SetHeightAndTop(e); SetWidth(e); };
+            Children.Add(TTLB); TTLB.DragDelta += (o, e) => { SetWidthAndLeft(e); SetHeight(e); };
+            Children.Add(TTRB); TTRB.DragDelta += (o, e) => { SetWidth(e); SetHeight(e); };
+            Children.Add(TTLT); TTLT.DragDelta += (o, e) => { SetWidthAndLeft(e); SetHeightAndTop(e); };
+            
+            MySizeHandlThumbs.Add(TTR);
+            MySizeHandlThumbs.Add(TTB);
+            MySizeHandlThumbs.Add(TTL);
+            MySizeHandlThumbs.Add(TTT);
+            MySizeHandlThumbs.Add(TTRT);
+            MySizeHandlThumbs.Add(TTRB);
+            MySizeHandlThumbs.Add(TTLT);
+            MySizeHandlThumbs.Add(TTLB);
+            foreach (var item in MySizeHandlThumbs) { SetZIndex(item, 1); }
             SetMyBinding();
-            Children.Add(MyRectangle0); Canvas.SetLeft(MyRectangle0, 20); Canvas.SetTop(MyRectangle0, 20);
-            Children.Add(MyRectangle1); Canvas.SetLeft(MyRectangle1, 50); Canvas.SetTop(MyRectangle1, 50);
-            SetMyElement(MyRectangle0);
+            Children.Add(MyRectangle0); SetLeft(MyRectangle0, 220); SetTop(MyRectangle0, 20);
+            Children.Add(MyRectangle1); SetLeft(MyRectangle1, 50); SetTop(MyRectangle1, 50);
+            SetMyElement(MyRectangle1);
         }
 
         private void SetMyElement(FrameworkElement element)
         {
             MyElement = element;
+            Binding bLeft = new() { Source = MyElement, Path = new PropertyPath(LeftProperty) };
+            Binding bWidth = new() { Source = MyElement, Path = new PropertyPath(WidthProperty) };
+            Binding bTop = new() { Source = MyElement, Path = new PropertyPath(TopProperty) };
+            Binding bHeight = new() { Source = MyElement, Path = new PropertyPath(HeightProperty) };
+            TTT.SetBinding(TopProperty, bTop);
+            TTLT.SetBinding(TopProperty, bTop);
+            TTLT.SetBinding(LeftProperty, bLeft);
+            TTLB.SetBinding(LeftProperty, bLeft);
+            TTRT.SetBinding(TopProperty, bTop);
+            TTL.SetBinding(LeftProperty, bLeft);
+
+            MultiBinding mb = new() { Converter = new MyConverterHandlLocate() };
+            mb.Bindings.Add(bLeft);
+            mb.Bindings.Add(bWidth);
+            TTR.SetBinding(LeftProperty, mb);
+            TTRT.SetBinding(LeftProperty, mb);
+            TTRB.SetBinding(LeftProperty, mb);
+
+            mb = new() { Converter = new MyConverterHandlLocate() };
+            mb.Bindings.Add(bTop); mb.Bindings.Add(bHeight);
+            TTRB.SetBinding(TopProperty, mb);
+            TTLB.SetBinding(TopProperty, mb);
+            TTB.SetBinding(TopProperty, mb);
+
+            mb = new() { Converter = new MyCovnerterHandlLocateHalf() };
+            mb.Bindings.Add(bTop);
+            mb.Bindings.Add(bHeight);
+            TTR.SetBinding(TopProperty, mb);
+            TTL.SetBinding(TopProperty, mb);
+
+            mb = new() { Converter = new MyCovnerterHandlLocateHalf() };
+            mb.Bindings.Add(bLeft); mb.Bindings.Add(bWidth);
+            TTT.SetBinding(LeftProperty, mb);
+            TTB.SetBinding(LeftProperty, mb);
+
         }
 
-        private void TTWidthAndX(DragDeltaEventArgs e)
+        private void SetWidth(DragDeltaEventArgs e)
         {
-            double value = Width - e.HorizontalChange;
-            if (value >= 0)
+            double value = MyElement.Width + e.HorizontalChange;
+            MyElement.Width = value >= 0 ? value : 0;
+        }
+        private void SetWidthAndLeft(DragDeltaEventArgs e)
+        {
+            double w = MyElement.Width - e.HorizontalChange;
+            if (w >= 0)
             {
-                Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
-                Width = value;
+                SetLeft(MyElement, GetLeft(MyElement) + e.HorizontalChange);
+                MyElement.Width -= e.HorizontalChange;
             }
             else
             {
-                Canvas.SetLeft(this, Canvas.GetLeft(this) + Width);
-                Width = 0;
+                SetLeft(MyElement, GetLeft(MyElement) + MyElement.Width);
+                MyElement.Width = 0;
             }
         }
-        private void TTHeightAndY(DragDeltaEventArgs e)
+        
+        private void SetHeight(DragDeltaEventArgs e)
         {
-            double value = Height - e.VerticalChange;
-            if (value >= 0)
+            double h = MyElement.Height + e.VerticalChange;
+            MyElement.Height = h >= 0 ? h : 0;
+        }
+
+        private void SetHeightAndTop(DragDeltaEventArgs e)
+        {
+            double h = MyElement.Height - e.VerticalChange;
+            if (h >= 0)
             {
-                Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
-                Height = value;
+                SetTop(MyElement, GetTop(MyElement) + e.VerticalChange);
+                MyElement.Height -= e.VerticalChange;
             }
             else
             {
-                Canvas.SetTop(this, Canvas.GetTop(this) + Height);
-                Height = 0;
+                SetTop(MyElement, GetTop(MyElement) + MyElement.Height);
+                MyElement.Height = 0;
             }
         }
 
-        private void TTHeight(DragDeltaEventArgs e)
-        {
-            double value = Height + e.VerticalChange;
-            Height = value >= 0 ? value : 0;
-        }
-
-        private void TTWidth(DragDeltaEventArgs e)
-        {
-            double value = Width + e.HorizontalChange;
-            Width = value >= 0 ? value : 0;
-        }
 
         private void SetMyBinding()
         {
-            Binding bWidth = new()
-            {
-                Source = this,
-                Path = new PropertyPath(WidthProperty)
-            };
-            Binding bWidthC = new()
-            {
-                Source = this,
-                Path = new PropertyPath(WidthProperty),
-                Converter = new MyConverterHalf()
-            };
-            Binding bHeight = new()
-            {
-                Source = this,
-                Path = new PropertyPath(HeightProperty)
-            };
-            Binding bHeightC = new()
-            {
-                Source = this,
-                Path = new PropertyPath(HeightProperty),
-                Converter = new MyConverterHalf()
-            };
-            TTR.SetBinding(Canvas.LeftProperty, bWidth);
-            TTR.SetBinding(Canvas.TopProperty, bHeightC);
-            TTB.SetBinding(Canvas.LeftProperty, bWidthC);
-            TTB.SetBinding(Canvas.TopProperty, bHeight);
-            TTT.SetBinding(Canvas.LeftProperty, bWidthC);
-            TTL.SetBinding(Canvas.TopProperty, bHeightC);
-            TTBR.SetBinding(Canvas.LeftProperty, bWidth);
-            TTBR.SetBinding(Canvas.TopProperty, bHeight);
-            TTTR.SetBinding(Canvas.LeftProperty, bWidth);
-            TTBL.SetBinding(Canvas.TopProperty, bHeight);
+
 
             //ハンドルサイズ
             Binding handlSize = new Binding() { Source = this, Path = new PropertyPath(MyHandlThumbSizeProperty) };
@@ -153,15 +173,48 @@ namespace _20230520
             TTB.SetBinding(WidthProperty, handlSize); TTB.SetBinding(HeightProperty, handlSize);
             TTL.SetBinding(WidthProperty, handlSize); TTL.SetBinding(HeightProperty, handlSize);
             TTR.SetBinding(WidthProperty, handlSize); TTR.SetBinding(HeightProperty, handlSize);
-            TTTL.SetBinding(WidthProperty, handlSize); TTTL.SetBinding(HeightProperty, handlSize);
-            TTTR.SetBinding(WidthProperty, handlSize); TTTR.SetBinding(HeightProperty, handlSize);
-            TTBR.SetBinding(WidthProperty, handlSize); TTBR.SetBinding(HeightProperty, handlSize);
-            TTBL.SetBinding(WidthProperty, handlSize); TTBL.SetBinding(HeightProperty, handlSize);
+            TTLT.SetBinding(WidthProperty, handlSize); TTLT.SetBinding(HeightProperty, handlSize);
+            TTRT.SetBinding(WidthProperty, handlSize); TTRT.SetBinding(HeightProperty, handlSize);
+            TTRB.SetBinding(WidthProperty, handlSize); TTRB.SetBinding(HeightProperty, handlSize);
+            TTLB.SetBinding(WidthProperty, handlSize); TTLB.SetBinding(HeightProperty, handlSize);
 
         }
 
+        public void TestChangeMyElement()
+        {
+            SetMyElement(MyRectangle0);
+        }
 
 
+    }
 
+
+    public class MyConverterHandlLocate : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double left = (double)values[0];
+            double width = (double)values[1];
+            return left + width;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class MyCovnerterHandlLocateHalf : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double locate = (double)values[0];
+            double size = (double)values[1];
+            return locate + (size / 2.0);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
