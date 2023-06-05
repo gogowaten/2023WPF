@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 
 namespace _20230520
 {
@@ -28,8 +29,17 @@ namespace _20230520
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyCCanvas.TestChangeMyElement();
+            //MyCCanvas.TestChangeMyElement();
+        }
+
+        private void MyThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (sender is TThumb tt)
+            {
+                tt.X += e.HorizontalChange;
+                tt.Y += e.VerticalChange;
+            }
         }
     }
-    
+
 }

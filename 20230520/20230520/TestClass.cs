@@ -148,39 +148,6 @@ namespace _20230520
     }
 
 
-    public class TThumb : Thumb
-    {
-        public double X
-        {
-            get { return (double)GetValue(XProperty); }
-            set { SetValue(XProperty, value); }
-        }
-        public static readonly DependencyProperty XProperty =
-            DependencyProperty.Register(nameof(X), typeof(double), typeof(TThumb),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-
-        public double Y
-        {
-            get { return (double)GetValue(YProperty); }
-            set { SetValue(YProperty, value); }
-        }
-        public static readonly DependencyProperty YProperty =
-            DependencyProperty.Register(nameof(Y), typeof(double), typeof(TThumb),
-                new FrameworkPropertyMetadata(0.0,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-        public TThumb()
-        {
-            SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(XProperty), Mode = BindingMode.TwoWay });
-            SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(YProperty), Mode = BindingMode.TwoWay });
-
-        }
-    }
 
     public class MyConverterHalf : IValueConverter
     {

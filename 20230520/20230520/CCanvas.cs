@@ -80,6 +80,7 @@ namespace _20230520
             Children.Add(MyRectangle0); SetLeft(MyRectangle0, 220); SetTop(MyRectangle0, 20);
             Children.Add(MyRectangle1); SetLeft(MyRectangle1, 50); SetTop(MyRectangle1, 50);
             SetMyElement(MyRectangle1);
+            
         }
 
         private void SetMyElement(FrameworkElement element)
