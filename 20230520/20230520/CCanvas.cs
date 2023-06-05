@@ -14,6 +14,7 @@ using System.Globalization;
 namespace _20230520
 {
     /// <summary>
+    /// 一つの任意要素にサイズ変更のハンドルを付けることができるCanvas
     /// 2つのRectangleを表示
     /// 1つのRectangleにサイズ変更用のハンドルThumbを表示
     /// 公開メソッドで別のRectangleにハンドルThumbを表示切替
