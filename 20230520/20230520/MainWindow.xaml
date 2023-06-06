@@ -30,10 +30,12 @@
       </local:GeoShape2>
       <local:GeoShape MyPoints="0,0 100,0" Stroke="blue" StrokeThickness="10" MyAngle="30"/>-->
       <!--<local:CCanvas x:Name="MyCCanvas"/>-->
-      <local:TThumbText x:Name="MyThumb" DragDelta="MyThumb_DragDelta"
-                     Background="WhiteSmoke"
-                        MyText="testtext" FontSize="50">        
-      </local:TThumbText>
+      <!--<local:TThumbText x:Name="MyThumb" DragDelta="MyThumb_DragDelta" Background="WhiteSmoke"
+                        MyText="testtext" FontSize="50"/>-->
+      <local:TThumbGroup x:Name="MyThumb">
+        <local:TThumbText MyText="aaaaaaaa" FontSize="50" X="50" Y="20"/>
+        <local:TThumbText MyText="aaaaaaaa" FontSize="50" X="50" Y="120"/>
+      </local:TThumbGroup>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Slider Value="{Binding ElementName=MyContent, Path=MyHandlThumbSize}"

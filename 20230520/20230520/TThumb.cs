@@ -12,11 +12,36 @@ using System.Windows.Markup;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
+using System.Collections.ObjectModel;
 
 namespace _20230520
 {
+    [ContentProperty(nameof(MyThumbs))]
+    public class TThumbGroup : TThumb
+    {
+        public ItemsControl MyTemplateItemsControl { get; set; }
+        public ObservableCollection<TThumb> MyThumbs { get; set; } = new();
+        public TThumbGroup()
+        {
+            MyTemplateItemsControl = SetTemplate();
+        }
+        private ItemsControl SetTemplate()
+        {
+            FrameworkElementFactory fItems = new(typeof(ItemsControl), "nemo");
+            ItemsPanelTemplate ipt = new(new FrameworkElementFactory(typeof(Canvas)));
+            fItems.SetValue(ItemsControl.ItemsPanelProperty, ipt);
+            fItems.SetValue(ItemsControl.ItemsSourceProperty, new Binding(nameof(MyThumbs)) { Source = this });
+
+            Template = new ControlTemplate() { VisualTree = fItems };
+            ApplyTemplate();
+            return (ItemsControl)Template.FindName("nemo", this);
+        }
+    }
 
 
+    /// <summary>
+    /// TextBlockのThumb
+    /// </summary>
     public class TThumbText : TThumbC
     {
 
