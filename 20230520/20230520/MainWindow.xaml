@@ -32,14 +32,17 @@
       <!--<local:CCanvas x:Name="MyCCanvas"/>-->
       <!--<local:TThumbText x:Name="MyThumb" DragDelta="MyThumb_DragDelta" Background="WhiteSmoke"
                         MyText="testtext" FontSize="50"/>-->
-      <local:TThumbGroup x:Name="MyThumb">
+      <!--<local:TThumbGroup2 x:Name="MyThumb">
         <local:TThumbText MyText="aaaaaaaa" FontSize="50" X="50" Y="20"/>
-        <local:TThumbText MyText="aaaaaaaa" FontSize="50" X="50" Y="120"/>
-      </local:TThumbGroup>
+        <local:TThumbText MyText="bbbbbbbb" FontSize="50" X="50" Y="120"/>
+      </local:TThumbGroup2>-->
+      <local:TThumbContent x:Name="MyThumb">
+        <TextBlock Text="AAAAAAAA"/>
+      </local:TThumbContent>
     </Canvas>
     <StackPanel Grid.Column="1">
-      <Slider Value="{Binding ElementName=MyContent, Path=MyHandlThumbSize}"
-              Minimum="0" Maximum="30"/>
+      <!--<Slider Value="{Binding ElementName=MyContent, Path=MyHandlThumbSize}"
+              Minimum="0" Maximum="30"/>-->
       <Button Content="pittariSize" Click="Button_Click"/>
       <!--<TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Left), StringFormat=x \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Top), StringFormat=y \= {0}}"/>
