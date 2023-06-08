@@ -36,9 +36,18 @@
         <local:TThumbText MyText="aaaaaaaa" FontSize="50" X="50" Y="20"/>
         <local:TThumbText MyText="bbbbbbbb" FontSize="50" X="50" Y="120"/>
       </local:TThumbGroup2>-->
-      <local:TThumbContent x:Name="MyThumb">
+      
+      <!--<local:TThumbContent x:Name="MyThumb" Y="100">
         <TextBlock Text="AAAAAAAA"/>
+      </local:TThumbContent>-->
+
+      <local:TThumbContent x:Name="MyThumb">
+        <local:TThumbGroup2>
+          <local:TThumbText MyText="AAAAAA" X="50"/>
+          <local:TThumbText MyText="BBBBBBB" Y="50"/>
+        </local:TThumbGroup2>
       </local:TThumbContent>
+      
     </Canvas>
     <StackPanel Grid.Column="1">
       <!--<Slider Value="{Binding ElementName=MyContent, Path=MyHandlThumbSize}"

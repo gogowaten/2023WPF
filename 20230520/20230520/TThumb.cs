@@ -37,10 +37,12 @@ namespace _20230520
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public ContentControl MyTemplate { get; set; }
-        //public FrameworkElement MyElement { get; set; } = new();
         public TThumbContent()
         {
             MyTemplate = SetTemplate();
+            MyTemplate.Width = 100;
+            MyTemplate.Height= 100;
+            MyTemplate.Background = Brushes.Red;
             MyTemplate.SetBinding(ContentControl.ContentProperty, new Binding() { Source = this, Path = new PropertyPath(MyElementProperty) });
         }
         private ContentControl SetTemplate()
@@ -212,6 +214,7 @@ namespace _20230520
     }
     public class TThumb : Thumb
     {
+
         public double X
         {
             get { return (double)GetValue(XProperty); }
@@ -224,7 +227,6 @@ namespace _20230520
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-
         public double Y
         {
             get { return (double)GetValue(YProperty); }
@@ -236,11 +238,22 @@ namespace _20230520
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public bool MyIsMove { get; set; } = true;
         public TThumb()
         {
             SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(XProperty), Mode = BindingMode.TwoWay });
             SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(YProperty), Mode = BindingMode.TwoWay });
+            DragDelta += TThumb_DragDelta;
+        }
 
+        private void TThumb_DragDelta(object sender, DragDeltaEventArgs e)
+        {
+            if (MyIsMove)
+            {
+                X += e.HorizontalChange;
+                Y += e.VerticalChange;
+            }
         }
     }
 
