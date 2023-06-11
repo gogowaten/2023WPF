@@ -13,6 +13,15 @@ using System.Runtime.CompilerServices;
 
 namespace _20230520
 {
+    public class GeoShape3 : Shape
+    {
+        protected override Geometry DefiningGeometry => throw new NotImplementedException();
+
+
+    }
+
+
+
     /// <summary>
     /// GeoShapeの改変 
     /// MyRenderBoundsの更新を自動(Binding)にした
@@ -104,7 +113,7 @@ namespace _20230520
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MyGeometryProperty) });
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RenderTransformProperty) });
             SetBinding(MyRenderBoundsProperty, mb);
-
+            
         }
 
     }
