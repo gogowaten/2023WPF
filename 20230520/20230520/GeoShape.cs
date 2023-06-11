@@ -107,11 +107,11 @@ namespace _20230520
 
         }
 
-
-
-
-
     }
+
+
+
+
     public class GeoShape : Shape
     {
 
