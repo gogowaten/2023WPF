@@ -991,7 +991,8 @@ namespace _20230520
     }
 
 
-    //ResizeCanvasのシンプル版
+    //ResizeCanvasのシンプル版にしたつもりだったけど、あんまり変わらん
+    //変更点は依存関係プロパティのX,Yをなくしたこと
     //リサイズできるCanvas
     //ハンドルの座標はCanvasのサイズと座標にバインド
     //ハンドルのドラッグイベントでCanvasのサイズと座標を変更する
@@ -1024,58 +1025,6 @@ namespace _20230520
             SetMyBinding();
         }
 
-        //private void TTWidthAndX(DragDeltaEventArgs e)
-        //{
-        //    if (e.Source == e.OriginalSource)
-        //    {
-        //        double value = Width - e.HorizontalChange;
-        //        if (value >= 0)
-        //        {
-        //            Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
-        //            Width = value;
-        //        }
-        //        else
-        //        {
-        //            Canvas.SetLeft(this, Canvas.GetLeft(this) + Width);
-        //            Width = 0;
-        //        }
-        //    }
-        //}
-        //private void TTHeightAndY(DragDeltaEventArgs e)
-        //{
-        //    if (e.Source == e.OriginalSource)
-        //    {
-        //        double value = Height - e.VerticalChange;
-        //        if (value >= 0)
-        //        {
-        //            Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
-        //            Height = value;
-        //        }
-        //        else
-        //        {
-        //            Canvas.SetTop(this, Canvas.GetTop(this) + Height);
-        //            Height = 0;
-        //        }
-        //    }
-        //}
-
-        //private void TTHeight(DragDeltaEventArgs e)
-        //{
-        //    if (e.Source == e.OriginalSource)
-        //    {
-        //        double value = Height + e.VerticalChange;
-        //        Height = value >= 0 ? value : 0;
-        //    }
-        //}
-
-        //private void TTWidth(DragDeltaEventArgs e)
-        //{
-        //    if (e.Source == e.OriginalSource)
-        //    {
-        //        double value = Width + e.HorizontalChange;
-        //        Width = value >= 0 ? value : 0;
-        //    }
-        //}
 
 
         private void TTWidthAndX(DragDeltaEventArgs e)
@@ -1083,12 +1032,12 @@ namespace _20230520
             double value = Width - e.HorizontalChange;
             if (value >= 0)
             {
-                Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+                SetLeft(this, GetLeft(this) + e.HorizontalChange);
                 Width = value;
             }
             else
             {
-                Canvas.SetLeft(this, Canvas.GetLeft(this) + Width);
+                SetLeft(this, GetLeft(this) + Width);
                 Width = 0;
             }
         }
@@ -1097,12 +1046,12 @@ namespace _20230520
             double value = Height - e.VerticalChange;
             if (value >= 0)
             {
-                Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+                SetTop(this, GetTop(this) + e.VerticalChange);
                 Height = value;
             }
             else
             {
-                Canvas.SetTop(this, Canvas.GetTop(this) + Height);
+                SetTop(this, GetTop(this) + Height);
                 Height = 0;
             }
         }

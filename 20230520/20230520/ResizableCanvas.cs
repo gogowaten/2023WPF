@@ -65,12 +65,12 @@ namespace _20230520
             double value = Width - e.HorizontalChange;
             if (value >= 0)
             {
-                Canvas.SetLeft(this, Canvas.GetLeft(this) + e.HorizontalChange);
+                SetLeft(this, GetLeft(this) + e.HorizontalChange);
                 Width = value;
             }
             else
             {
-                Canvas.SetLeft(this, Canvas.GetLeft(this) + Width);
+                SetLeft(this, GetLeft(this) + Width);
                 Width = 0;
             }
         }
@@ -79,12 +79,12 @@ namespace _20230520
             double value = Height - e.VerticalChange;
             if (value >= 0)
             {
-                Canvas.SetTop(this, Canvas.GetTop(this) + e.VerticalChange);
+                SetTop(this, GetTop(this) + e.VerticalChange);
                 Height = value;
             }
             else
             {
-                Canvas.SetTop(this, Canvas.GetTop(this) + Height);
+                SetTop(this, GetTop(this) + Height);
                 Height = 0;
             }
         }

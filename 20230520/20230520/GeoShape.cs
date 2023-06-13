@@ -15,8 +15,88 @@ namespace _20230520
 {
     public class GeoShape3 : Shape
     {
-        protected override Geometry DefiningGeometry => throw new NotImplementedException();
+        public GeoShape3()
+        {
+            //MyPenにStrokeとStrokeThicknessをバインド
+            MultiBinding mb = new() { Converter = new MyConverterPen() };
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(StrokeProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(StrokeThicknessProperty) });
+            SetBinding(MyPenProperty, mb);
 
+            //MyRenderBoundsにMyGeometryとRenderTransformをバインド
+            SetBinding(MyRenderRectProperty, new Binding() { Source = this, Path = new PropertyPath(MyGeometryProperty), Converter = new MyConverterGeometry2Bounds2() });
+
+        }
+
+
+        protected override Geometry DefiningGeometry
+        {
+            get
+            {
+                if (MyPoints.Count <= 1) return Geometry.Empty;
+
+                StreamGeometry geometry = new();
+                using (var content = geometry.Open())
+                {
+                    content.BeginFigure(MyPoints[0], false, false);
+                    content.PolyLineTo(MyPoints.Skip(1).ToList(), true, false);
+
+                }
+                geometry.Freeze();
+                //Bounds計算用のGeometryを更新、StrokeThicknessを考慮したGeometry
+                MyGeometry = geometry.GetWidenedPathGeometry(MyPen);
+
+                return geometry;
+            }
+        }
+
+
+        #region 依存関係プロパティ
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(GeoShape3),
+                new FrameworkPropertyMetadata(new PointCollection(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public Rect MyRenderRect
+        {
+            get { return (Rect)GetValue(MyRenderRectProperty); }
+            set { SetValue(MyRenderRectProperty, value); }
+        }
+        public static readonly DependencyProperty MyRenderRectProperty =
+            DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(GeoShape3),
+                new FrameworkPropertyMetadata(new Rect()));
+
+        public PathGeometry MyGeometry
+        {
+            get { return (PathGeometry)GetValue(MyGeometryProperty); }
+            set { SetValue(MyGeometryProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeometryProperty =
+            DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoShape3),
+                new FrameworkPropertyMetadata(null));
+
+
+        public Pen MyPen
+        {
+            get { return (Pen)GetValue(MyPenProperty); }
+            set { SetValue(MyPenProperty, value); }
+        }
+        public static readonly DependencyProperty MyPenProperty =
+            DependencyProperty.Register(nameof(MyPen), typeof(Pen), typeof(GeoShape3),
+                new FrameworkPropertyMetadata(new Pen(Brushes.Red, 10.0),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        #endregion 依存関係プロパティ
 
     }
 
@@ -32,7 +112,7 @@ namespace _20230520
     public class GeoShape2 : Shape
     {
         #region 依存関係プロパティ
-        
+
         public PointCollection MyPoints
         {
             get { return (PointCollection)GetValue(MyPointsProperty); }
@@ -113,7 +193,7 @@ namespace _20230520
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(MyGeometryProperty) });
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(RenderTransformProperty) });
             SetBinding(MyRenderBoundsProperty, mb);
-            
+
         }
 
     }
@@ -263,6 +343,9 @@ namespace _20230520
         }
     }
 
+    /// <summary>
+    /// PathGeometryをRectに変換、Transform無考慮
+    /// </summary>
     public class MyConverterGeometry2Bounds2 : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

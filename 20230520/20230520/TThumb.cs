@@ -20,6 +20,110 @@ using System.Globalization;
 
 namespace _20230520
 {
+
+    public class TThumbResizableCanvas : TThumb
+    {
+        #region 依存関係プロパティ
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TThumbResizableCanvas),
+                new FrameworkPropertyMetadata(new PointCollection(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        //public Rect MyRenderRect
+        //{
+        //    get { return (Rect)GetValue(MyRenderRectProperty); }
+        //    set { SetValue(MyRenderRectProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyRenderRectProperty =
+        //    DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(TThumbResizableCanvas),
+        //        new FrameworkPropertyMetadata(new Rect()));
+
+        //public PathGeometry MyGeometry
+        //{
+        //    get { return (PathGeometry)GetValue(MyGeometryProperty); }
+        //    set { SetValue(MyGeometryProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyGeometryProperty =
+        //    DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(TThumbResizableCanvas),
+        //        new FrameworkPropertyMetadata(null));
+
+
+        public Pen MyPen
+        {
+            get { return (Pen)GetValue(MyPenProperty); }
+            set { SetValue(MyPenProperty, value); }
+        }
+        public static readonly DependencyProperty MyPenProperty =
+            DependencyProperty.Register(nameof(MyPen), typeof(Pen), typeof(TThumbResizableCanvas),
+                new FrameworkPropertyMetadata(new Pen(Brushes.Red, 10.0),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public Brush MyStroke
+        {
+            get { return (Brush)GetValue(MyStrokeProperty); }
+            set { SetValue(MyStrokeProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeProperty =
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(TThumbResizableCanvas),
+                new FrameworkPropertyMetadata(Brushes.Blue,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public double MyStrokeThickness
+        {
+            get { return (double)GetValue(MyStrokeThicknessProperty); }
+            set { SetValue(MyStrokeThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeThicknessProperty =
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(TThumbResizableCanvas),
+                new FrameworkPropertyMetadata(1.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        #endregion 依存関係プロパティ
+
+        public ResizableCanvas MyResizableCanvas { get; private set; }
+        public GeoShape3 MyGeoShape { get; private set; } = new();
+
+        public TThumbResizableCanvas()
+        {
+            MyResizableCanvas = SetMyTemplate();
+            MyResizableCanvas.Children.Add(MyGeoShape);
+            SetMyBindings();
+        }
+
+        private ResizableCanvas SetMyTemplate()
+        {
+            FrameworkElementFactory fCanvas = new(typeof(ResizableCanvas), "nemo");
+            Template = new ControlTemplate() { VisualTree = fCanvas };
+            ApplyTemplate();
+            return (ResizableCanvas)Template.FindName("nemo", this);
+        }
+
+        private void SetMyBindings()
+        {
+            MyGeoShape.SetBinding(GeoShape3.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
+            MyGeoShape.SetBinding(GeoShape3.MyPenProperty, new Binding() { Source = this, Path = new PropertyPath(MyPenProperty) });
+            MyGeoShape.SetBinding(Shape.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeProperty) });
+            MyGeoShape.SetBinding(Shape.StrokeThicknessProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeThicknessProperty) });
+
+        }
+    }
+
     [ContentProperty(nameof(MyElement))]
     public class TThumbContent : TThumb
     {
@@ -41,7 +145,7 @@ namespace _20230520
         {
             MyTemplate = SetTemplate();
             MyTemplate.Width = 100;
-            MyTemplate.Height= 100;
+            MyTemplate.Height = 100;
             MyTemplate.Background = Brushes.Red;
             MyTemplate.SetBinding(ContentControl.ContentProperty, new Binding() { Source = this, Path = new PropertyPath(MyElementProperty) });
         }

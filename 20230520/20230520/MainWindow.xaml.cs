@@ -29,7 +29,7 @@ namespace _20230520
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MyThumb.MyTemplate.Content = new TextBlock() { Text="aaaaaaaa"};
+            //MyThumb.MyTemplate.Content = new TextBlock() { Text="aaaaaaaa"};
         }
 
         private void MyThumb_DragDelta(object sender, DragDeltaEventArgs e)

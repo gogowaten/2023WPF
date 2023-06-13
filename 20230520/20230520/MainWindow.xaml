@@ -18,7 +18,7 @@
       <local:CanvasThumb6 x:Name="MyContent" Width="100" Height="100" Background="DodgerBlue"/>-->
       <!--<local:PolyLineCanvas MyAnchirPoints="0,0 100,100 200,50"/>-->
       <!--<local:ResizableCanvas x:Name="MyContent" Width="100" Height="100" Canvas.Top="10" Canvas.Left="10"/>-->
-      <local:GeoShape2 x:Name="MyShape" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="1" RenderTransformOrigin="0.5,0.5">
+      <!--<local:GeoShape2 x:Name="MyShape" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="1" RenderTransformOrigin="0.5,0.5">
         <local:GeoShape2.RenderTransform>
           <TransformGroup>
             <ScaleTransform ScaleX="1.0"/>
@@ -27,7 +27,8 @@
             <TranslateTransform X="00"/>
           </TransformGroup>
         </local:GeoShape2.RenderTransform>      
-      </local:GeoShape2>
+      </local:GeoShape2>-->
+      <local:GeoShape3 x:Name="MyShape" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="10" Canvas.Top="20"/>
       <!--<local:GeoShape MyPoints="0,0 100,0" Stroke="blue" StrokeThickness="10" MyAngle="30"/>-->
       <!--<local:CCanvas x:Name="MyCCanvas"/>-->
       <!--<local:TThumbText x:Name="MyThumb" DragDelta="MyThumb_DragDelta" Background="WhiteSmoke"
