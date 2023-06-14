@@ -13,9 +13,65 @@ using System.Runtime.CompilerServices;
 
 namespace _20230520
 {
-    public class GeoShape3 : Shape
+
+    /// <summary>
+    /// 直線図形
+    /// </summary>
+    public class GeoPolyLineShape : Shape
     {
-        public GeoShape3()
+        #region 依存関係プロパティ
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(GeoPolyLineShape),
+                new FrameworkPropertyMetadata(new PointCollection(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        /// <summary>
+        /// 図形自体のRect、読み取り専用
+        /// </summary>
+        public Rect MyRenderRect
+        {
+            get { return (Rect)GetValue(MyRenderRectProperty); }
+            set { SetValue(MyRenderRectProperty, value); }
+        }
+        public static readonly DependencyProperty MyRenderRectProperty =
+            DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(GeoPolyLineShape),
+                new FrameworkPropertyMetadata(new Rect()));
+
+        /// <summary>
+        /// 線の太さを考慮した図形のPathGeometry。読み取り専用
+        /// </summary>
+        public PathGeometry MyGeometry
+        {
+            get { return (PathGeometry)GetValue(MyGeometryProperty); }
+            set { SetValue(MyGeometryProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeometryProperty =
+            DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoPolyLineShape),
+                new FrameworkPropertyMetadata(null));
+
+
+        public Pen MyPen
+        {
+            get { return (Pen)GetValue(MyPenProperty); }
+            set { SetValue(MyPenProperty, value); }
+        }
+        public static readonly DependencyProperty MyPenProperty =
+            DependencyProperty.Register(nameof(MyPen), typeof(Pen), typeof(GeoPolyLineShape),
+                new FrameworkPropertyMetadata(new Pen(Brushes.Red, 10.0),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        #endregion 依存関係プロパティ
+
+        public GeoPolyLineShape()
         {
             //MyPenにStrokeとStrokeThicknessをバインド
             MultiBinding mb = new() { Converter = new MyConverterPen() };
@@ -51,52 +107,6 @@ namespace _20230520
         }
 
 
-        #region 依存関係プロパティ
-
-        public PointCollection MyPoints
-        {
-            get { return (PointCollection)GetValue(MyPointsProperty); }
-            set { SetValue(MyPointsProperty, value); }
-        }
-        public static readonly DependencyProperty MyPointsProperty =
-            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(GeoShape3),
-                new FrameworkPropertyMetadata(new PointCollection(),
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-
-        public Rect MyRenderRect
-        {
-            get { return (Rect)GetValue(MyRenderRectProperty); }
-            set { SetValue(MyRenderRectProperty, value); }
-        }
-        public static readonly DependencyProperty MyRenderRectProperty =
-            DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(GeoShape3),
-                new FrameworkPropertyMetadata(new Rect()));
-
-        public PathGeometry MyGeometry
-        {
-            get { return (PathGeometry)GetValue(MyGeometryProperty); }
-            set { SetValue(MyGeometryProperty, value); }
-        }
-        public static readonly DependencyProperty MyGeometryProperty =
-            DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoShape3),
-                new FrameworkPropertyMetadata(null));
-
-
-        public Pen MyPen
-        {
-            get { return (Pen)GetValue(MyPenProperty); }
-            set { SetValue(MyPenProperty, value); }
-        }
-        public static readonly DependencyProperty MyPenProperty =
-            DependencyProperty.Register(nameof(MyPen), typeof(Pen), typeof(GeoShape3),
-                new FrameworkPropertyMetadata(new Pen(Brushes.Red, 10.0),
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-        #endregion 依存関係プロパティ
 
     }
 

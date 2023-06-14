@@ -97,7 +97,7 @@ namespace _20230520
         #endregion 依存関係プロパティ
 
         public ResizableCanvas MyResizableCanvas { get; private set; }
-        public GeoShape3 MyGeoShape { get; private set; } = new();
+        public GeoPolyLineShape MyGeoShape { get; private set; } = new();
 
         public TThumbResizableCanvas()
         {
@@ -116,8 +116,8 @@ namespace _20230520
 
         private void SetMyBindings()
         {
-            MyGeoShape.SetBinding(GeoShape3.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
-            MyGeoShape.SetBinding(GeoShape3.MyPenProperty, new Binding() { Source = this, Path = new PropertyPath(MyPenProperty) });
+            MyGeoShape.SetBinding(GeoPolyLineShape.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
+            MyGeoShape.SetBinding(GeoPolyLineShape.MyPenProperty, new Binding() { Source = this, Path = new PropertyPath(MyPenProperty) });
             MyGeoShape.SetBinding(Shape.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeProperty) });
             MyGeoShape.SetBinding(Shape.StrokeThicknessProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeThicknessProperty) });
 

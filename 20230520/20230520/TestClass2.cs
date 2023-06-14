@@ -21,13 +21,13 @@ namespace _20230520
     {
         #region 依存関係プロパティ
 
-        public double MyHandlThumbSize
+        public double MyHandleThumbSize
         {
-            get { return (double)GetValue(MyHandlThumbSizeProperty); }
-            set { SetValue(MyHandlThumbSizeProperty, value); }
+            get { return (double)GetValue(MyHandleThumbSizeProperty); }
+            set { SetValue(MyHandleThumbSizeProperty, value); }
         }
-        public static readonly DependencyProperty MyHandlThumbSizeProperty =
-            DependencyProperty.Register(nameof(MyHandlThumbSize), typeof(double), typeof(CanvasThumb6),
+        public static readonly DependencyProperty MyHandleThumbSizeProperty =
+            DependencyProperty.Register(nameof(MyHandleThumbSize), typeof(double), typeof(CanvasThumb6),
                 new FrameworkPropertyMetadata(20.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
@@ -107,7 +107,7 @@ namespace _20230520
             SetBinding(BackgroundProperty, new Binding() { Source = MyTemplateCanvas, Path = new PropertyPath(BackgroundProperty), Mode = BindingMode.TwoWay });
 
             //ハンドルサイズ
-            Binding handlSize = new Binding() { Source = this, Path = new PropertyPath(MyHandlThumbSizeProperty) };
+            Binding handlSize = new Binding() { Source = this, Path = new PropertyPath(MyHandleThumbSizeProperty) };
             TTB.SetBinding(WidthProperty, handlSize);
             TTB.SetBinding(HeightProperty, handlSize);
             TTBL.SetBinding(WidthProperty, handlSize);

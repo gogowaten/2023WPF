@@ -13,6 +13,99 @@ using System.Windows.Controls.Primitives;
 
 namespace _20230520
 {
+
+    /// <summary>
+    /// GeoPolyLineShapeを表示するサイズ可変Canvas
+    /// 頂点Thumbを持つ
+    /// </summary>
+    public class PolyLineCanvas2 : ResizableCanvas
+    {
+        #region 依存関係プロパティ
+
+        /// <summary>
+        /// 図形の頂点用ハンドルThumbのサイズ
+        /// </summary>
+        public double MyShapeHandleSize
+        {
+            get { return (double)GetValue(MyShapeHandleSizeProperty); }
+            set { SetValue(MyShapeHandleSizeProperty, value); }
+        }
+        public static readonly DependencyProperty MyShapeHandleSizeProperty =
+            DependencyProperty.Register(nameof(MyShapeHandleSize), typeof(double), typeof(PolyLineCanvas2),
+                new FrameworkPropertyMetadata(20.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public PointCollection MyAnchirPoints
+        {
+            get { return (PointCollection)GetValue(MyAnchorPointsProperty); }
+            set { SetValue(MyAnchorPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyAnchorPointsProperty =
+            DependencyProperty.Register(nameof(MyAnchirPoints), typeof(PointCollection), typeof(PolyLineCanvas2),
+                new FrameworkPropertyMetadata(new PointCollection(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public Brush MyStroke
+        {
+            get { return (Brush)GetValue(MyStrokeProperty); }
+            set { SetValue(MyStrokeProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeProperty =
+            DependencyProperty.Register(nameof(MyStroke), typeof(Brush), typeof(PolyLineCanvas2),
+                new FrameworkPropertyMetadata(Brushes.Gold,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public double MyStrokeThickness
+        {
+            get { return (double)GetValue(MyStrokeThicknessProperty); }
+            set { SetValue(MyStrokeThicknessProperty, value); }
+        }
+        public static readonly DependencyProperty MyStrokeThicknessProperty =
+            DependencyProperty.Register(nameof(MyStrokeThickness), typeof(double), typeof(PolyLineCanvas2),
+                new FrameworkPropertyMetadata(20.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        #endregion 依存関係プロパティ
+
+        public GeoPolyLineShape MyGeoPolyLineShape { get; private set; } = new();
+
+        public PolyLineCanvas2()
+        {
+            Children.Add(MyGeoPolyLineShape);
+            SetMyBindings();
+            
+        }
+
+        private void SetMyBindings()
+        {
+            MyGeoPolyLineShape.SetBinding(GeoPolyLineShape.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorPointsProperty) });
+            MyGeoPolyLineShape.SetBinding(GeoPolyLineShape.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeProperty) });
+            MyGeoPolyLineShape.SetBinding(GeoPolyLineShape.StrokeThicknessProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeThicknessProperty) });
+
+        }
+
+        public void EditBegin()
+        {
+
+        }
+
+        public void EditEnd()
+        {
+
+        }
+    }
+
     public class PolyLineCanvas : Canvas
     {
         #region 依存関係プロパティ

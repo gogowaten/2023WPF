@@ -28,7 +28,8 @@
           </TransformGroup>
         </local:GeoShape2.RenderTransform>      
       </local:GeoShape2>-->
-      <local:GeoShape3 x:Name="MyShape" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="10" Canvas.Top="20"/>
+      <!--<local:GeoPolyLineShape x:Name="MyShape" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="10" Canvas.Top="20"/>-->
+      <local:PolyLineCanvas2 MyAnchirPoints="0,0 100,0"/>
       <!--<local:GeoShape MyPoints="0,0 100,0" Stroke="blue" StrokeThickness="10" MyAngle="30"/>-->
       <!--<local:CCanvas x:Name="MyCCanvas"/>-->
       <!--<local:TThumbText x:Name="MyThumb" DragDelta="MyThumb_DragDelta" Background="WhiteSmoke"
