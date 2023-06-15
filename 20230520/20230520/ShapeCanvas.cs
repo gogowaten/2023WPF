@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Windows.Controls.Primitives;
+using System.Globalization;
 
 namespace _20230520
 {
@@ -18,7 +19,7 @@ namespace _20230520
     /// GeoPolyLineShapeを表示するサイズ可変Canvas
     /// 頂点Thumbを持つ
     /// </summary>
-    public class PolyLineCanvas2 : ResizableCanvas
+    public class PolyLineCanvas2 : Canvas
     {
         #region 依存関係プロパティ
 
@@ -84,14 +85,24 @@ namespace _20230520
         {
             Children.Add(MyGeoPolyLineShape);
             SetMyBindings();
-            
+            Loaded += PolyLineCanvas2_Loaded;
+        }
+
+        private void PolyLineCanvas2_Loaded(object sender, RoutedEventArgs e)
+        {
+            var neko = MyGeoPolyLineShape.MyRenderRect;
         }
 
         private void SetMyBindings()
         {
             MyGeoPolyLineShape.SetBinding(GeoPolyLineShape.MyPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyAnchorPointsProperty) });
-            MyGeoPolyLineShape.SetBinding(GeoPolyLineShape.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeProperty) });
-            MyGeoPolyLineShape.SetBinding(GeoPolyLineShape.StrokeThicknessProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeThicknessProperty) });
+            MyGeoPolyLineShape.SetBinding(Shape.StrokeProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeProperty) });
+            MyGeoPolyLineShape.SetBinding(Shape.StrokeThicknessProperty, new Binding() { Source = this, Path = new PropertyPath(MyStrokeThicknessProperty) });
+
+            SetBinding(WidthProperty, new Binding() { Source = MyGeoPolyLineShape, Path = new PropertyPath(GeoPolyLineShape.MyRenderRectProperty), Converter = new MyConverterRect2Width() });
+            SetBinding(HeightProperty, new Binding() { Source = MyGeoPolyLineShape, Path = new PropertyPath(GeoPolyLineShape.MyRenderRectProperty), Converter = new MyConverterRect2Height() });
+            SetBinding(Canvas.LeftProperty, new Binding() { Source = MyGeoPolyLineShape, Path = new PropertyPath(GeoPolyLineShape.MyRenderRectProperty), Converter = new MyConverterRect2X() });
+            SetBinding(Canvas.TopProperty, new Binding() { Source = MyGeoPolyLineShape, Path = new PropertyPath(GeoPolyLineShape.MyRenderRectProperty), Converter = new MyConverterRect2Y() });
 
         }
 
@@ -210,4 +221,80 @@ namespace _20230520
             }
         }
     }
+
+    public class MyConverterRect2Width : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Rect r = (Rect)value;
+            
+            if ((Rect)value is Rect rr && rr.IsEmpty == false)
+            {
+                return rr.Width;
+            }
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyConverterRect2Height : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if((Rect)value is Rect rr && rr.IsEmpty == false)
+            {
+                return rr.Height;
+            }
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyConverterRect2X : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //Rect r = (Rect)value;
+            //return -r.X;
+            if ((Rect)value is Rect rr && rr.IsEmpty == false)
+            {
+                return rr.X;
+            }
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class MyConverterRect2Y : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            //Rect r = (Rect)value;
+            //return -r.Y;
+            if ((Rect)value is Rect rr && rr.IsEmpty == false)
+            {
+                return rr.Y;
+            }
+            return 0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
 }

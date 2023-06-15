@@ -45,6 +45,20 @@ namespace _20230520
             DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(GeoPolyLineShape),
                 new FrameworkPropertyMetadata(new Rect()));
 
+
+        //public Rect MyRenderRect
+        //{
+        //    get { return (Rect)GetValue(MyRenderRectProperty); }
+        //    set { SetValue(MyRenderRectProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyRenderRectProperty =
+        //    DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(GeoPolyLineShape),
+        //        new FrameworkPropertyMetadata(Rect.Empty,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
         /// <summary>
         /// 線の太さを考慮した図形のPathGeometry。読み取り専用
         /// </summary>
@@ -56,6 +70,19 @@ namespace _20230520
         public static readonly DependencyProperty MyGeometryProperty =
             DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoPolyLineShape),
                 new FrameworkPropertyMetadata(null));
+
+
+        //public PathGeometry MyGeometry
+        //{
+        //    get { return (PathGeometry)GetValue(MyGeometryProperty); }
+        //    set { SetValue(MyGeometryProperty, value); }
+        //}
+        //public static readonly DependencyProperty MyGeometryProperty =
+        //    DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoPolyLineShape),
+        //        new FrameworkPropertyMetadata(null,
+        //            FrameworkPropertyMetadataOptions.AffectsRender |
+        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
+        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
         public Pen MyPen

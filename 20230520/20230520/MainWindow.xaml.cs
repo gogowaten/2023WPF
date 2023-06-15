@@ -29,7 +29,8 @@ namespace _20230520
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //MyThumb.MyTemplate.Content = new TextBlock() { Text="aaaaaaaa"};
+            var neko = MyContent.MyGeoPolyLineShape.MyRenderRect;
+           var width= BindingOperations.GetBinding(MyContent, WidthProperty);
         }
 
         private void MyThumb_DragDelta(object sender, DragDeltaEventArgs e)

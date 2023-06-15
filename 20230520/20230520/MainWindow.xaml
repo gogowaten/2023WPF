@@ -29,7 +29,7 @@
         </local:GeoShape2.RenderTransform>      
       </local:GeoShape2>-->
       <!--<local:GeoPolyLineShape x:Name="MyShape" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="10" Canvas.Top="20"/>-->
-      <local:PolyLineCanvas2 MyAnchirPoints="0,0 100,0"/>
+      <local:PolyLineCanvas2 x:Name="MyContent" MyAnchirPoints="0,0 100,00" MyStrokeThickness="20"/>
       <!--<local:GeoShape MyPoints="0,0 100,0" Stroke="blue" StrokeThickness="10" MyAngle="30"/>-->
       <!--<local:CCanvas x:Name="MyCCanvas"/>-->
       <!--<local:TThumbText x:Name="MyThumb" DragDelta="MyThumb_DragDelta" Background="WhiteSmoke"
@@ -60,6 +60,7 @@
       <TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Top), StringFormat=y \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=ActualWidth, StringFormat=w \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=ActualHeight, StringFormat=h \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyContent, Path=MyGeoPolyLineShape.MyRenderRect, StringFormat=r  {0: 0.0; -0.0; 0.0}}"/>
       <TextBlock Text="{Binding ElementName=MyShape, Path=MyRenderBounds, StringFormat=r  {0: 0.0; -0.0; 0.0}}"/>
       <!--<TextBlock Text="{Binding ElementName=MyGeoShape, Path=MyRect, StringFormat=0.0}"/>-->
     </StackPanel>
