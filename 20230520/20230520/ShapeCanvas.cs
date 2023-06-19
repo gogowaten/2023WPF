@@ -18,6 +18,8 @@ namespace _20230520
     /// <summary>
     /// GeoPolyLineShapeを表示するサイズ可変Canvas
     /// 頂点Thumbを持つ
+    /// 図形サイズに自身のサイズをバインドしているけど
+    /// なぜかActual系は一手遅れて更新される
     /// </summary>
     public class PolyLineCanvas2 : Canvas
     {
@@ -106,6 +108,12 @@ namespace _20230520
 
         }
 
+        protected override Size MeasureOverride(Size constraint)
+        {
+            var rr = MyGeoPolyLineShape.MyRenderRect;
+            return base.MeasureOverride(constraint);
+        }
+
         public void EditBegin()
         {
 
@@ -116,6 +124,8 @@ namespace _20230520
 
         }
     }
+
+
 
     public class PolyLineCanvas : Canvas
     {
@@ -227,7 +237,7 @@ namespace _20230520
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Rect r = (Rect)value;
-            
+
             if ((Rect)value is Rect rr && rr.IsEmpty == false)
             {
                 return rr.Width;
@@ -245,7 +255,7 @@ namespace _20230520
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if((Rect)value is Rect rr && rr.IsEmpty == false)
+            if ((Rect)value is Rect rr && rr.IsEmpty == false)
             {
                 return rr.Height;
             }

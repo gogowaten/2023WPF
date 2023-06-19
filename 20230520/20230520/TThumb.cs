@@ -21,6 +21,15 @@ using System.Globalization;
 namespace _20230520
 {
 
+    public class TTTestThumb:TThumb
+    {
+        public TTTestThumb()
+        {
+
+        }
+
+    }
+
     public class TThumbResizableCanvas : TThumb
     {
         #region 依存関係プロパティ

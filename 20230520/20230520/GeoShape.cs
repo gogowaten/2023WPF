@@ -36,16 +36,6 @@ namespace _20230520
         /// <summary>
         /// 図形自体のRect、読み取り専用
         /// </summary>
-        public Rect MyRenderRect
-        {
-            get { return (Rect)GetValue(MyRenderRectProperty); }
-            set { SetValue(MyRenderRectProperty, value); }
-        }
-        public static readonly DependencyProperty MyRenderRectProperty =
-            DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(GeoPolyLineShape),
-                new FrameworkPropertyMetadata(new Rect()));
-
-
         //public Rect MyRenderRect
         //{
         //    get { return (Rect)GetValue(MyRenderRectProperty); }
@@ -53,10 +43,20 @@ namespace _20230520
         //}
         //public static readonly DependencyProperty MyRenderRectProperty =
         //    DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(GeoPolyLineShape),
-        //        new FrameworkPropertyMetadata(Rect.Empty,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        //        new FrameworkPropertyMetadata(new Rect()));
+
+
+        public Rect MyRenderRect
+        {
+            get { return (Rect)GetValue(MyRenderRectProperty); }
+            set { SetValue(MyRenderRectProperty, value); }
+        }
+        public static readonly DependencyProperty MyRenderRectProperty =
+            DependencyProperty.Register(nameof(MyRenderRect), typeof(Rect), typeof(GeoPolyLineShape),
+                new FrameworkPropertyMetadata(Rect.Empty,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
         /// <summary>

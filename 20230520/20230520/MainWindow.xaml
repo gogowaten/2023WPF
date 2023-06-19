@@ -29,7 +29,7 @@
         </local:GeoShape2.RenderTransform>      
       </local:GeoShape2>-->
       <!--<local:GeoPolyLineShape x:Name="MyShape" MyPoints="0,0 100,0" Stroke="Red" StrokeThickness="10" Canvas.Top="20"/>-->
-      <local:PolyLineCanvas2 x:Name="MyContent" MyAnchirPoints="0,0 100,10" MyStrokeThickness="20"/>
+      <local:PolyLineCanvas2 x:Name="MyContent" MyAnchirPoints="0,0 100,30" MyStrokeThickness="20"/>
       <!--<local:GeoShape MyPoints="0,0 100,0" Stroke="blue" StrokeThickness="10" MyAngle="30"/>-->
       <!--<local:CCanvas x:Name="MyCCanvas"/>-->
       <!--<local:TThumbText x:Name="MyThumb" DragDelta="MyThumb_DragDelta" Background="WhiteSmoke"
@@ -55,13 +55,15 @@
       <!--<Slider Value="{Binding ElementName=MyContent, Path=MyHandlThumbSize}"
               Minimum="0" Maximum="30"/>-->
       <Button Content="pittariSize" Click="Button_Click"/>
-      
+      <Button Content="kakudohenkou" Click="Button_Click_1"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Left), StringFormat=x \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=(Canvas.Top), StringFormat=y \= {0}}"/>
-      <TextBlock Text="{Binding ElementName=MyContent, Path=ActualWidth, StringFormat=w \= {0}}"/>
-      <TextBlock Text="{Binding ElementName=MyContent, Path=ActualHeight, StringFormat=h \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyContent, Path=ActualWidth, StringFormat=aw \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyContent, Path=Width, StringFormat=w \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyContent, Path=ActualHeight, StringFormat=ah \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyContent, Path=Height, StringFormat=h \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyContent, Path=MyGeoPolyLineShape.MyRenderRect, StringFormat=r  {0: 0.0; -0.0; 0.0}}"/>
-      <TextBlock Text="{Binding ElementName=MyShape, Path=MyRenderBounds, StringFormat=r  {0: 0.0; -0.0; 0.0}}"/>
+      <!--<TextBlock Text="{Binding ElementName=MyShape, Path=MyRenderBounds, StringFormat=r  {0: 0.0; -0.0; 0.0}}"/>-->
       <!--<TextBlock Text="{Binding ElementName=MyGeoShape, Path=MyRect, StringFormat=0.0}"/>-->
     </StackPanel>
   </Grid>

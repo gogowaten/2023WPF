@@ -30,7 +30,11 @@ namespace _20230520
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var neko = MyContent.MyGeoPolyLineShape.MyRenderRect;
-           var width= BindingOperations.GetBinding(MyContent, WidthProperty);
+            var width = BindingOperations.GetBinding(MyContent, WidthProperty);
+            Geometry clip = LayoutInformation.GetLayoutClip(MyContent);
+            UIElement dispa = LayoutInformation.GetLayoutExceptionElement(MyContent.Dispatcher);
+            Rect slot = LayoutInformation.GetLayoutSlot(MyContent);
+            Size des = MyContent.DesiredSize;
         }
 
         private void MyThumb_DragDelta(object sender, DragDeltaEventArgs e)
@@ -40,6 +44,11 @@ namespace _20230520
                 tt.X += e.HorizontalChange;
                 tt.Y += e.VerticalChange;
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MyContent.MyAnchirPoints[1] =new Point(100, 50);
         }
     }
 
