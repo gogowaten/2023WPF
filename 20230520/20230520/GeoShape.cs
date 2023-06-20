@@ -34,7 +34,7 @@ namespace _20230520
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         /// <summary>
-        /// 図形自体のRect、読み取り専用
+        /// 図形自体のRect、読み取り専用にしたほうがいい？
         /// </summary>
         //public Rect MyRenderRect
         //{
@@ -59,19 +59,21 @@ namespace _20230520
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
+        public double MyRenderWidth
+        {
+            get { return (double)GetValue(MyRenderWidthProperty); }
+            set { SetValue(MyRenderWidthProperty, value); }
+        }
+        public static readonly DependencyProperty MyRenderWidthProperty =
+            DependencyProperty.Register(nameof(MyRenderWidth), typeof(double), typeof(GeoPolyLineShape),
+                new FrameworkPropertyMetadata(0.0,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
         /// <summary>
         /// 線の太さを考慮した図形のPathGeometry。読み取り専用
         /// </summary>
-        public PathGeometry MyGeometry
-        {
-            get { return (PathGeometry)GetValue(MyGeometryProperty); }
-            set { SetValue(MyGeometryProperty, value); }
-        }
-        public static readonly DependencyProperty MyGeometryProperty =
-            DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoPolyLineShape),
-                new FrameworkPropertyMetadata(null));
-
-
         //public PathGeometry MyGeometry
         //{
         //    get { return (PathGeometry)GetValue(MyGeometryProperty); }
@@ -79,10 +81,20 @@ namespace _20230520
         //}
         //public static readonly DependencyProperty MyGeometryProperty =
         //    DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoPolyLineShape),
-        //        new FrameworkPropertyMetadata(null,
-        //            FrameworkPropertyMetadataOptions.AffectsRender |
-        //            FrameworkPropertyMetadataOptions.AffectsMeasure |
-        //            FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+        //        new FrameworkPropertyMetadata(null));
+
+
+        public PathGeometry MyGeometry
+        {
+            get { return (PathGeometry)GetValue(MyGeometryProperty); }
+            set { SetValue(MyGeometryProperty, value); }
+        }
+        public static readonly DependencyProperty MyGeometryProperty =
+            DependencyProperty.Register(nameof(MyGeometry), typeof(PathGeometry), typeof(GeoPolyLineShape),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
         public Pen MyPen
@@ -106,9 +118,9 @@ namespace _20230520
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(StrokeThicknessProperty) });
             SetBinding(MyPenProperty, mb);
 
-            //MyRenderBoundsにMyGeometryとRenderTransformをバインド
-            SetBinding(MyRenderRectProperty, new Binding() { Source = this, Path = new PropertyPath(MyGeometryProperty), Converter = new MyConverterGeometry2Bounds2() });
-
+            ////MyRenderBoundsにMyGeometryとRenderTransformをバインド
+            //SetBinding(MyRenderRectProperty, new Binding() { Source = this, Path = new PropertyPath(MyGeometryProperty), Converter = new MyConverterGeometry2Bounds2() });
+            SetBinding(MyRenderWidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyRenderRectProperty), Converter = new MyConverterRect2Width() });
         }
 
 
@@ -128,7 +140,8 @@ namespace _20230520
                 geometry.Freeze();
                 //Bounds計算用のGeometryを更新、StrokeThicknessを考慮したGeometry
                 MyGeometry = geometry.GetWidenedPathGeometry(MyPen);
-
+                MyRenderRect = MyGeometry.GetRenderBounds(null);
+                
                 return geometry;
             }
         }

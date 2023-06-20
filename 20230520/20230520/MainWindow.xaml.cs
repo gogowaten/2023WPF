@@ -29,7 +29,7 @@ namespace _20230520
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var neko = MyContent.MyGeoPolyLineShape.MyRenderRect;
+            //var neko = MyContent.MyGeoPolyLineShape.MyRenderRect;
             var width = BindingOperations.GetBinding(MyContent, WidthProperty);
             Geometry clip = LayoutInformation.GetLayoutClip(MyContent);
             UIElement dispa = LayoutInformation.GetLayoutExceptionElement(MyContent.Dispatcher);
@@ -48,7 +48,7 @@ namespace _20230520
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            MyContent.MyAnchirPoints[1] =new Point(100, 50);
+            //MyContent.MyAnchirPoints[1] =new Point(100, 50);
         }
     }
 

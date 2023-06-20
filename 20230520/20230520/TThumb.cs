@@ -21,13 +21,45 @@ using System.Globalization;
 namespace _20230520
 {
 
-    public class TTTestThumb:TThumb
+    public class TTTestThumb : TThumb
     {
+
+        public PointCollection MyPoints
+        {
+            get { return (PointCollection)GetValue(MyPointsProperty); }
+            set { SetValue(MyPointsProperty, value); }
+        }
+        public static readonly DependencyProperty MyPointsProperty =
+            DependencyProperty.Register(nameof(MyPoints), typeof(PointCollection), typeof(TTTestThumb),
+                new FrameworkPropertyMetadata(new PointCollection(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public PolyLineCanvas2 MyPolyLineCanvas2 { get; set; } = new();
+        Canvas MyCanvas { get; set; }
+
         public TTTestThumb()
         {
 
-        }
+            MyPolyLineCanvas2.SetBinding(PolyLineCanvas2.MyAnchorPointsProperty, new Binding() { Source = this, Path = new PropertyPath(MyPointsProperty) });
+            MyCanvas = SetMyTemplate<Canvas>();
+            MyCanvas.Children.Add(MyPolyLineCanvas2);
 
+            MyCanvas.SetBinding(WidthProperty, new Binding() { Source = MyPolyLineCanvas2, Path = new PropertyPath(WidthProperty) });
+            MyCanvas.SetBinding(HeightProperty, new Binding() { Source = MyPolyLineCanvas2, Path = new PropertyPath(HeightProperty) });
+            //SetBinding(WidthProperty, new Binding() { Source = MyPolyLineCanvas2, Path = new PropertyPath(WidthProperty) });
+            //SetBinding(HeightProperty, new Binding() { Source = MyPolyLineCanvas2, Path = new PropertyPath(HeightProperty) });
+
+            MyCanvas.Background = Brushes.DodgerBlue;
+        }
+        private T SetMyTemplate<T>()
+        {
+            FrameworkElementFactory factory = new(typeof(T), "nemo");
+            Template = new ControlTemplate() { VisualTree = factory };
+            ApplyTemplate();
+            return (T)Template.FindName("nemo", this);
+        }
     }
 
     public class TThumbResizableCanvas : TThumb

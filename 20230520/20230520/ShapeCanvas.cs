@@ -93,6 +93,7 @@ namespace _20230520
         private void PolyLineCanvas2_Loaded(object sender, RoutedEventArgs e)
         {
             var neko = MyGeoPolyLineShape.MyRenderRect;
+            var rrect = MyGeoPolyLineShape.RenderedGeometry.GetRenderBounds(MyGeoPolyLineShape.MyPen);
         }
 
         private void SetMyBindings()
