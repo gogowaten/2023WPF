@@ -61,10 +61,10 @@ namespace _20230620
         public GeoPolyLine MyGeoPolyLine { get; set; } = new();
         public TTPolylineThumb()
         {
+            
             MyTemplate = SetMyTemplate<Canvas>();
             MyTemplate.Children.Add(MyGeoPolyLine);
-            //Canvas.SetLeft(this, 0);
-            //Canvas.SetTop(this, 0);
+            MyTemplate.Background = Brushes.Blue;
             SetMyBindings();
             
             LayoutUpdated += TTPolylineThumb_LayoutUpdated;
