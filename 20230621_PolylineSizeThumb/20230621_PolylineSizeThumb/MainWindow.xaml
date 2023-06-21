@@ -1,0 +1,39 @@
+﻿<Window x:Class="_20230621_PolylineSizeThumb.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230621_PolylineSizeThumb"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="200"/>
+    </Grid.ColumnDefinitions>
+    <Canvas x:Name="MyCanvas">
+      <local:TTPolylineThumb x:Name="MyThumb" MyPoints="0,0 100,150 200,50" MyStrokeThickness="20"/>
+    </Canvas>
+    <StackPanel Grid.Column="1">
+      <GroupBox Header="Thumb" DataContext="{Binding ElementName=MyThumb}">
+        <StackPanel>
+          <TextBlock Text="{Binding Width, StringFormat=width {0:0.0}}"/>
+          <TextBlock Text="{Binding ActualWidth, StringFormat=width {0:0.0}(actual)}"/>
+          <TextBlock Text="{Binding Height, StringFormat=height {0:0.0}}"/>
+          <TextBlock Text="{Binding ActualHeight, StringFormat=height {0:0.0}(actual)}"/>
+          <TextBlock Text="{Binding (Canvas.Left), StringFormat=left {0}}"/>
+          <TextBlock Text="{Binding (Canvas.Top), StringFormat=top {0}}"/>
+          <TextBlock Text="{Binding MyStrokeThickness, StringFormat=stroke \thickness {0}}"/>
+          <Slider Value="{Binding MyStrokeThickness}" Minimum="0" Maximum="100" IsSnapToTickEnabled="True"/>
+        </StackPanel>
+      </GroupBox>
+      <GroupBox Header="Shape" DataContext="{Binding ElementName=MyThumb, Path=MyGeoPolyLine}">
+        <StackPanel>
+          <TextBlock Text="{Binding MyRenderRect, StringFormat=rect {0: 0.0; -0.0; 0.0}}"/>
+          <TextBlock Text="{Binding MyPoints, StringFormat=points {0}}"/>
+        </StackPanel>
+      </GroupBox>
+      <Button Content="toggle points[0].X 0 or 50" Click="Button_Click"/>
+    </StackPanel>
+  </Grid>
+</Window>
