@@ -127,8 +127,8 @@ namespace _20230620
     //        mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(StrokeProperty) });
     //        mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(StrokeThicknessProperty) });
     //        SetBinding(MyPenProperty, mb);
-           
-            
+
+
     //    }
 
     //}
@@ -158,7 +158,6 @@ namespace _20230620
         /// <summary>
         /// 図形自体のRect、読み取り専用にしたほうがいい？
         /// </summary>
-
         public Rect MyRenderRect
         {
             get { return (Rect)GetValue(MyRenderRectProperty); }
@@ -170,28 +169,27 @@ namespace _20230620
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-        public Rect MyRenderRect2
+
+        public double MyRenderWidth
         {
-            get { return (Rect)GetValue(MyRenderRect2Property); }
-            set { SetValue(MyRenderRect2Property, value); }
+            get { return (double)GetValue(MyRenderWidthProperty); }
+            set { SetValue(MyRenderWidthProperty, value); }
         }
-        public static readonly DependencyProperty MyRenderRect2Property =
-            DependencyProperty.Register(nameof(MyRenderRect2), typeof(Rect), typeof(GeoPolyLine),
-                new FrameworkPropertyMetadata(Rect.Empty,
+        public static readonly DependencyProperty MyRenderWidthProperty =
+            DependencyProperty.Register(nameof(MyRenderWidth), typeof(double), typeof(GeoPolyLine),
+                new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-       
-
-        public Rect MyGeoRect
+        public double MyRenderHeight
         {
-            get { return (Rect)GetValue(MyGeoRectProperty); }
-            set { SetValue(MyGeoRectProperty, value); }
+            get { return (double)GetValue(MyRenderHeightProperty); }
+            set { SetValue(MyRenderHeightProperty, value); }
         }
-        public static readonly DependencyProperty MyGeoRectProperty =
-            DependencyProperty.Register(nameof(MyGeoRect), typeof(Rect), typeof(GeoPolyLine),
-                new FrameworkPropertyMetadata(Rect.Empty,
+        public static readonly DependencyProperty MyRenderHeightProperty =
+            DependencyProperty.Register(nameof(MyRenderHeight), typeof(double), typeof(GeoPolyLine),
+                new FrameworkPropertyMetadata(0.0,
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
@@ -212,7 +210,12 @@ namespace _20230620
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         #endregion 依存関係プロパティ
 
-        
+        //public Rect MyRenderRect { get; private set; }
+        //public double MyRenderWidth { get; private set; }
+        //public double MyRenderHeight { get; private set; }
+        //public double MyRenderLeft { get; private set; }
+        //public double MyRenderTop { get; private set; }
+
         protected override Geometry DefiningGeometry
         {
 
@@ -233,11 +236,11 @@ namespace _20230620
 
 
                 geometry.Freeze();
-                MyGeoRect = geometry.Bounds;
-                //以下2つは同じ値
-                MyRenderRect = geometry.GetWidenedPathGeometry(MyPen).GetRenderBounds(null);
-                MyRenderRect2 = geometry.GetRenderBounds(MyPen);
-                
+                MyRenderRect = geometry.GetRenderBounds(MyPen);
+                MyRenderWidth = MyRenderRect.Width;
+                MyRenderHeight = MyRenderRect.Height;
+                //MyRenderLeft = MyRenderRect.Left;
+                //MyRenderTop = MyRenderRect.Top;
                 return geometry;
             }
         }
@@ -281,8 +284,8 @@ namespace _20230620
             mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(StrokeThicknessProperty) });
             SetBinding(MyPenProperty, mb);
 
-            SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(MyRenderRect2Property), Converter = new MyConverterRectLeft() });
-            SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(MyRenderRect2Property), Converter = new MyConverterRectTop() });
+            //SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(MyRenderRect2Property), Converter = new MyConverterRectLeft() });
+            //SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(MyRenderRect2Property), Converter = new MyConverterRectTop() });
 
         }
 

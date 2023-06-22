@@ -12,16 +12,16 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      <local:TTPolylineThumb x:Name="MyThumb" MyPoints="0,0 100,50 200,10" MyStrokeThickness="20"/>
+      <local:TTPolylineThumb2 x:Name="MyThumb" MyPoints="0,0 100,50 200,120" MyStrokeThickness="20"/>
       <local:GeoPolyLine x:Name="MyShape" MyPoints="0,0 100,100" Stroke="Gold" StrokeThickness="20"/>
     </Canvas>
     <StackPanel Grid.Column="1">
       <Button Content="kakunin" Click="Button_Click"/>
       <TextBlock Text="{Binding ElementName=MyShape, Path=MyRenderRect, StringFormat=r1 {0: 0.0; -0.0; 0.0}}"/>
-      <TextBlock Text="{Binding ElementName=MyShape, Path=MyRenderRect2, StringFormat=r1 {0: 0.0; -0.0; 0.0}}"/>
-      <TextBlock Text="{Binding ElementName=MyShape, Path=MyGeoRect, StringFormat=r1 {0: 0.0; -0.0; 0.0}}"/>
-      <TextBlock Text="{Binding ElementName=MyThumb, Path=MyGeoPolyLine.MyRenderRect2, StringFormat=r1 {0: 0.0; -0.0; 0.0}}"/>
-      <TextBlock Text="{Binding ElementName=MyThumb, Path=MyGeoPolyLine.MyGeoRect, StringFormat=r1 {0: 0.0; -0.0; 0.0}}"/>
+      <TextBlock Text="{Binding ElementName=MyShape, Path=MyRenderRect, StringFormat=r1 {0: 0.0; -0.0; 0.0}}"/>
+      <TextBlock Text="{Binding ElementName=MyThumb, Path=MyGeoPolyLine.MyRenderRect, StringFormat=r1 {0: 0.0; -0.0; 0.0}}"/>
+      <TextBlock Text="{Binding ElementName=MyThumb, Path=MyGeoPolyLine.MyRenderWidth, StringFormat=r1 {0: 0.0; -0.0; 0.0}}"/>
+      
       <TextBlock Text="{Binding ElementName=MyThumb, Path=MyGeoPolyLine.(Canvas.Left), StringFormat=shapeleft {0: 0.0; -0.0; 0.0}}"/>
       <TextBlock Text="{Binding ElementName=MyThumb, Path=MyGeoPolyLine.(Canvas.Top), StringFormat=shapetop {0: 0.0; -0.0; 0.0}}"/>
       <TextBlock Text="{Binding ElementName=MyThumb, Path=ActualHeight, StringFormat=thumbActH {0}}"/>
@@ -30,6 +30,7 @@
       <TextBlock Text="{Binding ElementName=MyThumb, Path=Width, StringFormat=thumbW {0:0.0}}"/>
       <TextBlock Text="{Binding ElementName=MyThumb, Path=(Canvas.Left), StringFormat=thumbleft {0:0.0}}"/>
       <TextBlock Text="{Binding ElementName=MyThumb, Path=(Canvas.Top), StringFormat=thumbtop {0:0.0}}"/>
+      <TextBlock Text="{Binding ElementName=MyThumb, Path=MyTemplate.Width, StringFormat=tempW {0:0.0}}"/>
     </StackPanel>
   </Grid>
 </Window>

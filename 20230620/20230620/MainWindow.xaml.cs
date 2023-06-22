@@ -32,6 +32,7 @@ namespace _20230620
         {
             var tempw = MyThumb.MyTemplate.Width;
             var tempaw = MyThumb.MyTemplate.ActualWidth;
+            var rw = MyThumb.MyGeoPolyLine.MyRenderWidth;
         }
     }
 }
