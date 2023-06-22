@@ -12,7 +12,7 @@
       <ColumnDefinition Width="150"/>
     </Grid.ColumnDefinitions>
     <Canvas x:Name="MyCanvas">
-      <local:TTPolylineThumb2 x:Name="MyThumb" MyPoints="0,0 100,50 200,120" MyStrokeThickness="20"/>
+      <local:TTPolylineThumb2 x:Name="MyThumb" MyPoints="0,0 100,50 200,20" MyStrokeThickness="20"/>
       <local:GeoPolyLine x:Name="MyShape" MyPoints="0,0 100,100" Stroke="Gold" StrokeThickness="20"/>
     </Canvas>
     <StackPanel Grid.Column="1">
