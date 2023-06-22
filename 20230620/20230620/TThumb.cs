@@ -9,9 +9,34 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 
 namespace _20230620
 {
+
+    public class TTGroup : TThumb
+    {
+        public ItemsControl MyItemsControl { get;private set; }
+        public ObservableCollection<TThumb> MyItems { get; private set; } = new();
+        public TTGroup()
+        {
+            MyItemsControl = SetMyTemplate<ItemsControl>();
+            MyItemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(MyItems)) { Source = this });
+
+            
+        }
+        private T SetMyTemplate<T>()
+        {
+            FrameworkElementFactory factory = new(typeof(T), "nemo");
+            ItemsPanelTemplate ipt = new(new FrameworkElementFactory(typeof(Canvas)));
+            factory.SetValue(ItemsControl.ItemsPanelProperty, ipt);
+            Template = new ControlTemplate() { VisualTree = factory };
+            ApplyTemplate();
+            return (T)Template.FindName("nemo", this);
+        }
+
+    }
+
     /// <summary>
     /// Thumb(CanvasTemplate)	
     ///     ┗Shape
@@ -102,6 +127,7 @@ namespace _20230620
             ApplyTemplate();
             return (T)Template.FindName("nemo", this);
         }
+
     }
 
 

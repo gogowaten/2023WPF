@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "20230622Opacity", "20230622Opacity\20230622Opacity.csproj", "{F5951B94-0AAB-424C-99B4-98C09AB51FAA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5951B94-0AAB-424C-99B4-98C09AB51FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5951B94-0AAB-424C-99B4-98C09AB51FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5951B94-0AAB-424C-99B4-98C09AB51FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5951B94-0AAB-424C-99B4-98C09AB51FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {830EEAC0-CFD3-41AA-B3CD-4E716DD2F136}
+	EndGlobalSection
+EndGlobal
