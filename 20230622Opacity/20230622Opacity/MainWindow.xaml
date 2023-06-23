@@ -5,11 +5,45 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_20230622Opacity"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="600"
+        Title="MainWindow" Height="450" Width="800"
         AllowDrop="True">
+  <Window.Resources>
+    <Style TargetType="Button">
+      <Setter Property="Margin" Value="10,5,5,10"/>
+    </Style>
+    <local:MyConverter x:Key="opa"/>
+  </Window.Resources>
   <Grid>
-    <StackPanel>
-      <Button Content="exe" Click="Button_Click"/>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+    
+    <ListBox x:Name="MyListBox" SelectionMode="Extended"/>
+
+    <StackPanel Grid.Column="1">
+      <TextBlock Text="対象フォルダ"/>
+      <TextBlock x:Name="MyTextBlockDir" Text="" Margin="10,0,0,10"/>
+      <!--<GroupBox Header="完全透明のピクセルを">
+        <StackPanel Orientation="Horizontal">
+          <RadioButton Content="透明のまま" IsChecked="True"/>
+          <RadioButton Content="不透明黒" IsChecked="False"/>
+          <RadioButton Content="不透明白" IsChecked="False"/>
+        </StackPanel>
+      </GroupBox>-->
+      <TextBlock Text="{Binding ElementName=MySlider, Path=Value, StringFormat=Alpha \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MySlider, Path=Value, Converter={StaticResource opa},
+        StringFormat=Opacity \= {0:0.00}}"/>
+      <Slider x:Name="MySlider" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="True" Margin="10,0,10,0"/>
+      <UniformGrid Columns="3">
+        <Button Content="透明" Click="Button_Click_1"/>
+        <Button Content="半透明" Click="Button_Click_2"/>
+        <Button Content="不透明" Click="Button_Click_3"/>
+      </UniformGrid>
+      <Button Content="実行" Click="ButtonExe_Click"/>
+      <ProgressBar x:Name="MyProgressBar" Height="20"/>
+      <TextBlock Text="元画像"/>
+      <Image x:Name="MyImage" Stretch="Uniform"/>
     </StackPanel>
   </Grid>
 </Window>
