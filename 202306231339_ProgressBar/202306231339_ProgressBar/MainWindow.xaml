@@ -13,12 +13,53 @@
   <Grid>
     <StackPanel>
       <Button Content="click" Command="{Binding ButtonCommand}"/>
-    <StackPanel>
-      <StackPanel.DataContext>
-        <vm:MainWindowViwModel1/>
-      </StackPanel.DataContext>
-      <TextBox Text="{Binding ShowText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-      <Button Command="{Binding ShowCommand}" Content="test"/>
+      <StackPanel>
+        <StackPanel.DataContext>
+          <vm:MainWindowViewModel1/>
+        </StackPanel.DataContext>
+        <TextBox Text="{Binding ShowText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Command="{Binding ShowCommand}" Content="test"/>
+      </StackPanel>
+
+      <StackPanel>
+        <StackPanel.DataContext>
+          <vm:MainWindowViewModel2/>
+        </StackPanel.DataContext>
+        <TextBox Text="{Binding FirstValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Text="{Binding Operation}"/>
+        <TextBox Text="{Binding SecondValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Text="="/>
+        <TextBlock Text="{Binding ResultValue}"/>
+        <StackPanel Orientation="Horizontal">
+          <RadioButton Command="{Binding OperationCommand,UpdateSourceTrigger=PropertyChanged}" IsChecked="True"
+                       Content="足し算"
+                       CommandParameter="Add"
+                       GroupName="Group"/>
+          <RadioButton Command="{Binding OperationCommand,UpdateSourceTrigger=PropertyChanged}"
+                       Content="引き算"
+                       CommandParameter="Minus"
+                       GroupName="Group"/>
+          <!--<RadioButton Command="{Binding OperationCommand,UpdateSourceTrigger=PropertyChanged}" IsChecked="True"
+                       Content="Add"
+                       CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource Mode=Self}}"
+                       GroupName="Group"/>
+          <RadioButton Command="{Binding OperationCommand,UpdateSourceTrigger=PropertyChanged}"
+                       Content="Minus"
+                       CommandParameter="{Binding Path=Content,RelativeSource={RelativeSource Mode=Self}}"
+                       GroupName="Group"/>-->
+
+        </StackPanel>
+      </StackPanel>
+
+      <StackPanel>
+        <StackPanel.DataContext>
+          <vm:MainWindowViewModel3/>
+        </StackPanel.DataContext>
+        <ProgressBar Height="20" Value="{Binding PrgValue}"/>
+        <TextBlock HorizontalAlignment="Center" Text="{Binding PrgValue, StringFormat={}{0}%}"/>
+        <TextBlock HorizontalAlignment="Center" Text="{Binding Message}"/>
+        <Button Command="{Binding ButtonCommand}" Content="実行"/>
+        <Button Command="{Binding CancelCommand}" Content="中止"/>
       </StackPanel>
     </StackPanel>
   </Grid>
