@@ -10,15 +10,17 @@ using System.Windows.Controls;
 
 //【WPF】コマンドの使い方（ICommandインターフェース）
 //https://marunaka-blog.com/wpf-icommand/5279/
+//【WPF】処理実行中にProgressBarを表示する（MVVM）
+//https://marunaka-blog.com/wpf-progressbar-mvvm/7132/
+
 
 namespace _202306231339_ProgressBar.ViewModel
 {
-
+    #region フィールド、プロパティ
+    
     public class MainWindowViewModel3 : ViewModelBase
     {
-        private CancellationTokenSource CancellationTokenSource;
         private bool isBusy;
-
         public bool IsBusy
         {
             get { return isBusy; }
@@ -35,7 +37,6 @@ namespace _202306231339_ProgressBar.ViewModel
         }
 
         private int prgValue;
-
         public int PrgValue
         {
             get { return prgValue; }
@@ -43,28 +44,31 @@ namespace _202306231339_ProgressBar.ViewModel
         }
 
         private string message = "";
-
         public string Message
         {
             get { return message; }
             set { message = value; OnPropertyChanged(nameof(Message)); }
         }
 
-        public DelegateCommand ButtonCommand { get; set; }
-        public DelegateCommand CancelCommand { get; set; }
+        public DelegateCommand ButtonCommand { get; }
+        
+        public DelegateCommand CancelCommand { get; }
+
+        private CancellationTokenSource MyCancellationTokenSource;
+        #endregion フィールド、プロパティ
 
         public MainWindowViewModel3()
         {
-            CancellationTokenSource = new();
+            MyCancellationTokenSource = new();
             ButtonCommand = new(async () => await ExecuteAsync(), CanExecute);
-            CancelCommand = new(() => CancellationTokenSource.Cancel(), CanCancel);
+            CancelCommand = new(() => MyCancellationTokenSource.Cancel(), CanCancel);
         }
 
         private async Task ExecuteAsync()
         {
             IsBusy = true;
-            await WorkTask(CancellationTokenSource.Token);
-            CancellationTokenSource = new();
+            await WorkTask(MyCancellationTokenSource.Token);
+            MyCancellationTokenSource = new();
             IsBusy = false;
         }
 

@@ -11,22 +11,22 @@ namespace _202306231339_ProgressBar.Command
     {
         public event EventHandler? CanExecuteChanged;
 
-        private readonly Action action;
-        private readonly Func<bool>? canExecute;
+        private readonly Action MyAction;
+        private readonly Func<bool>? MyCanExecute;
         public DelegateCommand(Action action, Func<bool>? canExecute = default)
         {
-            this.action = action;
-            this.canExecute = canExecute;
+            MyAction = action;
+            MyCanExecute = canExecute;
         }
 
         public bool CanExecute(object? parameter)
         {
-            return canExecute?.Invoke() ?? true;
+            return MyCanExecute?.Invoke() ?? true;
         }
 
         public void Execute(object? parameter)
         {
-            action?.Invoke();
+            MyAction?.Invoke();
         }
 
         public void DelegateCanExecute()
