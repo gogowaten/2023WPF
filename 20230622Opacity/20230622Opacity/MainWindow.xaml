@@ -31,9 +31,9 @@
           <RadioButton Content="不透明白" IsChecked="False"/>
         </StackPanel>
       </GroupBox>-->
-      <TextBlock Text="{Binding ElementName=MySlider, Path=Value, StringFormat=Alpha \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MySlider, Path=Value, StringFormat=Alpha \= {0}}" HorizontalAlignment="Center"/>
       <TextBlock Text="{Binding ElementName=MySlider, Path=Value, Converter={StaticResource opa},
-        StringFormat=Opacity \= {0:0.00}}"/>
+        StringFormat=Opacity \= {0:0.00}}" HorizontalAlignment="Center"/>
       <Slider x:Name="MySlider" Minimum="0" Maximum="255" Value="255" IsSnapToTickEnabled="True" Margin="10,0,10,0"/>
       <UniformGrid Columns="3">
         <Button Content="透明" Click="Button_Click_1"/>

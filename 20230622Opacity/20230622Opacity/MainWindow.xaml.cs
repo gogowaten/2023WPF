@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -25,7 +26,7 @@ namespace _20230622Opacity
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string MY_APP_NAME = "OpaOpaCity";
+        private const string MY_APP_NAME = "OpaOpaOpacity";
         public string MyDirectory { get; private set; } = "";
         public MainWindow()
         {
@@ -33,7 +34,25 @@ namespace _20230622Opacity
             DataContext = this;
             Drop += MainWindow_Drop;
             MyListBox.SelectionChanged += MyListBox_SelectionChanged;
+            ContextMenu MyListBoxContext = new();
+            MenuItem item = new() { Header = "選択画像を変換" };
+            item.Click += Item_Click;
+            MyListBoxContext.Items.Add(item);
+            MyListBox.ContextMenu = MyListBoxContext;
 
+        }
+
+
+        private void Item_Click(object sender, RoutedEventArgs e)
+        {
+            
+            List<string> files = new();
+            foreach (var item in MyListBox.SelectedItems)
+            {
+                string str = (string)item;
+                files.Add(System.IO.Path.Combine(MyDirectory, str));
+            }
+            MyExe(files);
         }
 
         private void MyListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -85,45 +104,31 @@ namespace _20230622Opacity
             return names;
         }
 
-        private async void ButtonExe_Click(object sender, RoutedEventArgs e)
+
+
+        private void ButtonExe_Click(object sender, RoutedEventArgs e)
         {
-            await Task.Run(async () =>
-            {
-                while(true)
-                {
-                    MyProgressBar.Value += 1;
-                    awa
-                }
-            })
-            MyExe();
+            MyExe(Directory.GetFiles(MyDirectory, "*.png"));
         }
-        //private void ButtonExe_Click(object sender, RoutedEventArgs e)
-        //{
-        //    MyExe();
-        //}
 
         /// <summary>
         /// 実行
         /// 対象フォルダにopaフォルダ作成、そこにAlpha値を変換した画像を
         /// png形式で保存
         /// </summary>
-        private void MyExe()
+        private void MyExe(IEnumerable<string> files)
         {
             try
             {
                 if (!string.IsNullOrEmpty(MyDirectory))
                 {
                     string dir = MyDirectory + "\\opa";
-                    Directory.CreateDirectory(dir);
-                    string[] files = Directory.GetFiles(MyDirectory, "*.png");
-                    byte alpha = (byte)MySlider.Value;
+                    _ = Directory.CreateDirectory(dir);
                     foreach (var file in files)
                     {
-                        BitmapSource? bmp = GetBitmap(file);
-                        if (bmp == null) { continue; }
-                        bmp = ChangeOpacity(bmp, alpha);
-                        string saveName = dir + "\\" + System.IO.Path.GetFileName(file);
-                        SaveBitmapToPng(saveName, bmp);
+                        SaveExe(file,
+                            dir + "\\" + System.IO.Path.GetFileName(file),
+                            (byte)MySlider.Value);
                     }
                 }
             }
@@ -131,7 +136,24 @@ namespace _20230622Opacity
             {
                 MessageBox.Show(ex.Message);
             }
+        }
 
+        /// <summary>
+        /// 画像ファイルを指定Alphaに変換して保存
+        /// </summary>
+        /// <param name="bmpPath"></param>
+        /// <param name="savePath"></param>
+        /// <param name="alpha"></param>
+        /// <returns></returns>
+        private bool SaveExe(string bmpPath, string savePath, byte alpha)
+        {
+            if (GetBitmap(bmpPath) is BitmapSource bmp)
+            {
+                bmp = ChangeOpacity(bmp, alpha);
+                SaveBitmapToPng(savePath, bmp);
+                return true;
+            }
+            return false;
         }
 
         private void SaveBitmapToPng(string filename, BitmapSource bmp)
@@ -162,7 +184,7 @@ namespace _20230622Opacity
                 if (pixels[i] != 0)
                 {
                     pixels[i] = alpha;
-                }                
+                }
             }
             return BitmapSource.Create(w, h, bmp.DpiX, bmp.DpiY, PixelFormats.Bgra32, null, pixels, stride);
         }
