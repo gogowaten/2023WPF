@@ -31,6 +31,9 @@ namespace _20230622Opacity
         public MainWindow()
         {
             InitializeComponent();
+            MyButtonConvertAll.FontSize = FontSize * 1.5;
+            MyButtonConvertSelected.FontSize = FontSize * 1.5;
+
             DataContext = this;
             Drop += MainWindow_Drop;
             MyListBox.SelectionChanged += MyListBox_SelectionChanged;
@@ -221,6 +224,11 @@ namespace _20230622Opacity
         {
             MySlider.Value = 255;
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public class MyConverter : IValueConverter
@@ -236,4 +244,5 @@ namespace _20230622Opacity
             throw new NotImplementedException();
         }
     }
+
 }
