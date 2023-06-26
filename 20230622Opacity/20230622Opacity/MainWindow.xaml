@@ -31,7 +31,7 @@
           <RadioButton Content="不透明白" IsChecked="False"/>
         </StackPanel>
       </GroupBox>-->
-      <GroupBox Header="設定">
+      <GroupBox Header="設定" Margin="10">
         <StackPanel>
           <TextBlock Text="{Binding ElementName=MySlider, Path=Value, StringFormat=Alpha \= {0}}" HorizontalAlignment="Center"/>
           <TextBlock Text="{Binding ElementName=MySlider, Path=Value, Converter={StaticResource opa},
@@ -48,10 +48,9 @@
         <Button x:Name="MyButtonConvertSelected" Content="選択項目だけ変換" Click="ButtonSelectedExe_Click"/>
         <Button x:Name="MyButtonConvertAll" Content="全部変換" Click="ButtonExe_Click"/>
       </UniformGrid>
-      <ProgressBar x:Name="MyProgressBar" Height="20"/>
+      <ProgressBar x:Name="MyProgressBar" Height="2"/>
       <TextBlock Text="元画像"/>
       <Image x:Name="MyImage" StretchDirection="DownOnly" Stretch="Uniform" Height="auto" Width="200"/>
-      <Button Content="aaa"/>
     </StackPanel>
   </Grid>
 </Window>
