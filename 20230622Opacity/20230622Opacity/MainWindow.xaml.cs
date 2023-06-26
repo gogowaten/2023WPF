@@ -46,9 +46,9 @@ namespace _20230622Opacity
         }
 
 
-        private void Item_Click(object sender, RoutedEventArgs e)
+        
+        private void SelectedExe()
         {
-            
             List<string> files = new();
             foreach (var item in MyListBox.SelectedItems)
             {
@@ -109,10 +109,6 @@ namespace _20230622Opacity
 
 
 
-        private void ButtonExe_Click(object sender, RoutedEventArgs e)
-        {
-            MyExe(Directory.GetFiles(MyDirectory, "*.png"));
-        }
 
         /// <summary>
         /// 実行
@@ -225,9 +221,20 @@ namespace _20230622Opacity
             MySlider.Value = 255;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
 
+        private void ButtonExe_Click(object sender, RoutedEventArgs e)
+        {
+            MyExe(Directory.GetFiles(MyDirectory, "*.png"));
+        }
+
+        private void Item_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedExe();
+        }
+
+        private void ButtonSelectedExe_Click(object sender, RoutedEventArgs e)
+        {
+            SelectedExe();
         }
     }
 
