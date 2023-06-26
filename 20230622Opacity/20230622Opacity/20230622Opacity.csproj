@@ -6,6 +6,12 @@
     <RootNamespace>_20230622Opacity</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>opasity512.ico</ApplicationIcon>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="opasity512.ico" />
+  </ItemGroup>
 
 </Project>
