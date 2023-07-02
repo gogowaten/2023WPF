@@ -1,0 +1,29 @@
+﻿<Window x:Class="_20230702.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_20230702"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="600">
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="200"/>
+    </Grid.ColumnDefinitions>
+
+    <Canvas x:Name="MyCanvas">
+      <local:GroupThumb>
+        <local:RectangleThumb x:Name="MyRect0" X="0" Y="0"/>
+        <local:RectangleThumb x:Name="MyRect1" X="50" Y="50" MyFillBrush="Gold"/>
+      </local:GroupThumb>
+    </Canvas>
+
+    <StackPanel Grid.Column="1">
+      <TextBlock Text="{Binding ElementName=MyRect0, Path=X, StringFormat=x \= {0:0.0;-0.0;0.0}}"/>
+      <TextBlock Text="{Binding ElementName=MyRect0, Path=Y, StringFormat=y \= {0:0.0;-0.0;0.0}}"/>
+    </StackPanel>
+
+  </Grid>
+</Window>
