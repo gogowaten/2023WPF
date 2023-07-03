@@ -11,33 +11,104 @@ using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.Windows.Markup;
+using System.Runtime.CompilerServices;
 
 namespace _20230702
 {
 
+    public class IC : ItemsControl
+    {
+        private int myInt;
+
+        event Action<object>? OnItemChanged;
+        public int MyInt
+        {
+            get => myInt;
+            set
+            {
+                myInt = value;
+                OnItemChanged?.Invoke(nameof(myInt));
+            }
+        }
+        public IC()
+        {
+
+        }
+    }
+
     [ContentProperty(nameof(Items))]
     public class GroupThumb : Thumb
     {
+
+        public Rect MyRect
+        {
+            get { return (Rect)GetValue(MyRectProperty); }
+            set { SetValue(MyRectProperty, value); }
+        }
+        public static readonly DependencyProperty MyRectProperty =
+            DependencyProperty.Register(nameof(MyRect), typeof(Rect), typeof(GroupThumb),
+                new FrameworkPropertyMetadata(Rect.Empty,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
         public ItemsControl MyItemsControl { get; set; }
         public ObservableCollection<TThumb> Items { get; private set; } = new();
+
         public GroupThumb()
         {
-            //MyItemsControl = new();
-            //MyItemsControl.ItemsPanel = new ItemsPanelTemplate(new FrameworkElementFactory(typeof(Canvas)));
             MyItemsControl = SetMyTemplate();
             MyItemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(Items)) { Source = this });
 
+            SetBinding(MyRectProperty, new Binding() { Source = MyItemsControl, Path = new PropertyPath(ItemsControl.ItemsSourceProperty), Converter = new MyConverterItemsRect() });
+
+            MyItemsControl.LayoutUpdated += MyItemsControl_LayoutUpdated;
+        }
+
+        private void MyItemsControl_LayoutUpdated(object? sender, EventArgs e)
+        {
+            double left = double.MaxValue;
+            double top = double.MaxValue;
+            double right = double.MinValue;
+            double bottom = double.MinValue;
+
+            foreach (TThumb thumb in Items)
+            {
+                double minX = thumb.X; double minY = thumb.Y;
+                if (left < minX) left = minX;
+                if (top < minY) top = minY;
+                if (right < minX + thumb.Width) right = minX + thumb.Width;
+                if (bottom < minY + thumb.Height) bottom = minY + thumb.Height;
+            }
+            Rect r = new();
+            if (left == double.MaxValue) left = 0;
+            if(top == double.MaxValue) top = 0;
+            if (Items.Count > 0) { r = new Rect(left, top, right - left, bottom - top); }
+            Width = r.Width;
+            Height = r.Height;
+        }
+
+        private void Items_CurrentChanging(object sender, System.ComponentModel.CurrentChangingEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Items_CurrentChanged(object? sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private ItemsControl SetMyTemplate()
         {
             FrameworkElementFactory fItemsControl = new(typeof(ItemsControl), "nemo");
-            FrameworkElementFactory fff = new(typeof(Canvas));
-            fItemsControl.SetValue(ItemsControl.ItemsPanelProperty, new ItemsPanelTemplate(fff));
+            FrameworkElementFactory fItemsPanel = new(typeof(Canvas));
+            fItemsControl.SetValue(ItemsControl.ItemsPanelProperty, new ItemsPanelTemplate(fItemsPanel));
             Template = new ControlTemplate() { VisualTree = fItemsControl };
             ApplyTemplate();
             return (ItemsControl)Template.FindName("nemo", this);
         }
+
     }
 
 
@@ -98,6 +169,9 @@ namespace _20230702
             MyRectangle.SetBinding(Rectangle.FillProperty, new Binding() { Source = this, Path = new PropertyPath(MyFillBrushProperty) });
             MyRectangle.SetBinding(Rectangle.WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyObjWidthProperty) });
             MyRectangle.SetBinding(Rectangle.HeightProperty, new Binding() { Source = this, Path = new PropertyPath(MyObjHeightProperty) });
+
+            SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyObjWidthProperty) });
+            SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(MyObjHeightProperty) });
 
         }
     }
