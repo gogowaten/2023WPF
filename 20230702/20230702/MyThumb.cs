@@ -12,9 +12,23 @@ using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.Windows.Markup;
 using System.Runtime.CompilerServices;
+using System.ComponentModel;
+using System.Collections.Specialized;
+using System.Windows.Controls.Ribbon.Primitives;
 
 namespace _20230702
 {
+
+
+    public class OObservableCollection<T> : ObservableCollection<TThumb>
+    {
+        public OObservableCollection()
+        {
+
+
+        }
+
+    }
 
     public class IC : ItemsControl
     {
@@ -32,7 +46,17 @@ namespace _20230702
         }
         public IC()
         {
+            //ItemsSourceProperty.OverrideMetadata(typeof(IC), new FrameworkPropertyMetadata(null, OnItemSourceChanged));
+            SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(ItemsControl.ItemsSourceProperty), Converter = new MyConverterItems() });
+        }
 
+        private static void OnItemSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            IC iicc = (IC)d;
+            foreach (var item in iicc.Items)
+            {
+
+            }
         }
     }
 
@@ -53,6 +77,7 @@ namespace _20230702
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
+
         public ItemsControl MyItemsControl { get; set; }
         public ObservableCollection<TThumb> Items { get; private set; } = new();
 
@@ -61,43 +86,57 @@ namespace _20230702
             MyItemsControl = SetMyTemplate();
             MyItemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(Items)) { Source = this });
 
-            SetBinding(MyRectProperty, new Binding() { Source = MyItemsControl, Path = new PropertyPath(ItemsControl.ItemsSourceProperty), Converter = new MyConverterItemsRect() });
+            Items.CollectionChanged += Items_CollectionChanged;
 
-            MyItemsControl.LayoutUpdated += MyItemsControl_LayoutUpdated;
+            SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyRectProperty), Converter = new MyConverterRectWidth() });
         }
 
-        private void MyItemsControl_LayoutUpdated(object? sender, EventArgs e)
+        private void Items_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            double left = double.MaxValue;
-            double top = double.MaxValue;
-            double right = double.MinValue;
-            double bottom = double.MinValue;
-
-            foreach (TThumb thumb in Items)
+            switch (e.Action)
             {
-                double minX = thumb.X; double minY = thumb.Y;
-                if (left < minX) left = minX;
-                if (top < minY) top = minY;
-                if (right < minX + thumb.Width) right = minX + thumb.Width;
-                if (bottom < minY + thumb.Height) bottom = minY + thumb.Height;
+                case NotifyCollectionChangedAction.Add:
+                    if (e.NewItems?[0] is TThumb add) add.MyParentThumb = this;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    if (e.OldItems?[0] is TThumb rem) rem.MyParentThumb = null;
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    break;
             }
-            Rect r = new();
-            if (left == double.MaxValue) left = 0;
-            if(top == double.MaxValue) top = 0;
-            if (Items.Count > 0) { r = new Rect(left, top, right - left, bottom - top); }
-            Width = r.Width;
-            Height = r.Height;
         }
 
-        private void Items_CurrentChanging(object sender, System.ComponentModel.CurrentChangingEventArgs e)
+        public void SetMyRect()
         {
-            throw new NotImplementedException();
+            MyRect = GetMyRect(Items);
         }
 
-        private void Items_CurrentChanged(object? sender, EventArgs e)
+        private static Rect GetMyRect(ObservableCollection<TThumb> thumbs)
         {
-            throw new NotImplementedException();
+            if (thumbs.Count == 0) return new Rect();
+            TThumb tt = thumbs[0];
+            double left = tt.X;
+            double top = tt.Y;
+            double right = left + tt.Width;
+            double bottom = top + tt.Height;
+            foreach (TThumb thumb in thumbs)
+            {
+                double x = thumb.X; double y = thumb.Y;
+                double r = x + thumb.Width; double b = y + thumb.Height;
+                if (left > x) left = x;
+                if (top > y) top = y;
+                if (right < r) right = r;
+                if (bottom < b) bottom = b;
+            }
+            return new Rect(left, top, right - left, bottom - top);
         }
+
 
         private ItemsControl SetMyTemplate()
         {
@@ -225,6 +264,20 @@ namespace _20230702
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public GroupThumb MyParentThumb
+        {
+            get { return (GroupThumb)GetValue(MyParentThumbProperty); }
+            set { SetValue(MyParentThumbProperty, value); }
+        }
+        public static readonly DependencyProperty MyParentThumbProperty =
+            DependencyProperty.Register(nameof(MyParentThumb), typeof(GroupThumb), typeof(TThumb),
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
         #endregion 依存関係プロパティ
 
         public bool MyIsMove { get; set; } = true;
@@ -234,6 +287,12 @@ namespace _20230702
             SetBinding(Canvas.LeftProperty, new Binding() { Source = this, Path = new PropertyPath(XProperty), Mode = BindingMode.TwoWay });
             SetBinding(Canvas.TopProperty, new Binding() { Source = this, Path = new PropertyPath(YProperty), Mode = BindingMode.TwoWay });
             DragDelta += TThumb_DragDelta;
+            DragCompleted += TThumb_DragCompleted;
+        }
+
+        private void TThumb_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            if (MyParentThumb is GroupThumb tt) tt.SetMyRect();
         }
 
         private void TThumb_DragDelta(object sender, DragDeltaEventArgs e)
