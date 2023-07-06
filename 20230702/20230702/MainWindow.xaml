@@ -15,15 +15,28 @@
 
     <Canvas x:Name="MyCanvas">
       <local:GroupThumb x:Name="MyGroup">
+        <local:GroupThumb>
+          <local:RectangleThumb x:Name="MyRect0" X="0" Y="0"/>
+          <local:RectangleThumb x:Name="MyRect1" X="50" Y="50" MyFillBrush="Gold"/>
+        </local:GroupThumb>
+        <local:GroupThumb X="160" Y="50">
+          <local:RectangleThumb MyFillBrush="Gray" MyObjWidth="50" MyObjHeight="50"/>
+          <local:RectangleThumb MyFillBrush="LightGray" X="100" Y="80" MyObjWidth="50" MyObjHeight="50"/>
+        </local:GroupThumb>
+      </local:GroupThumb>
+      <!--<local:GroupThumb x:Name="MyGroup">
         <local:RectangleThumb x:Name="MyRect0" X="0" Y="0"/>
         <local:RectangleThumb x:Name="MyRect1" X="50" Y="50" MyFillBrush="Gold"/>
-      </local:GroupThumb>
+      </local:GroupThumb>-->
+
     </Canvas>
 
     <StackPanel Grid.Column="1">
+      <TextBlock Text="{Binding ElementName=MyGroup, Path=MyRect, StringFormat=GRect \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyGroup, Path=ActualWidth, StringFormat=G_Width \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyGroup, Path=MyItemsControl.ActualWidth, StringFormat=G_AWidth \= {0}}"/>
-      <TextBlock Text="{Binding ElementName=MyGroup, Path=MyRect, StringFormat=GRect \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGroup, Path=ActualHeight, StringFormat=G_Height \= {0}}"/>
+      <TextBlock Text="{Binding ElementName=MyGroup, Path=MyItemsControl.ActualHeight, StringFormat=G_AWidth \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyGroup, Path=MyItemsControl.Items.Count, StringFormat=count \= {0}}"/>
       <TextBlock Text="{Binding ElementName=MyRect0, Path=X, StringFormat=x \= {0:0.0;-0.0;0.0}}"/>
       <TextBlock Text="{Binding ElementName=MyRect0, Path=Y, StringFormat=y \= {0:0.0;-0.0;0.0}}"/>

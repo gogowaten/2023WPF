@@ -61,7 +61,7 @@ namespace _20230702
     }
 
     [ContentProperty(nameof(Items))]
-    public class GroupThumb : Thumb
+    public class GroupThumb : TThumb
     {
 
         public Rect MyRect
@@ -86,9 +86,29 @@ namespace _20230702
             MyItemsControl = SetMyTemplate();
             MyItemsControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(Items)) { Source = this });
 
-            Items.CollectionChanged += Items_CollectionChanged;
+            //背景色
+            //Background = Brushes.Red;
+            MyItemsControl.Background = Brushes.MediumAquamarine;
 
+            Items.CollectionChanged += Items_CollectionChanged;
+            Loaded += GroupThumb_Loaded;
             SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyRectProperty), Converter = new MyConverterRectWidth() });
+            SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(MyRectProperty), Converter = new MyConverterRectHeight() });
+
+        }
+
+        public void FixItemsLocate()
+        {
+            foreach (TThumb item in Items)
+            {
+                item.X -= MyRect.X;
+                item.Y -= MyRect.Y;
+            }
+        }
+
+        private void GroupThumb_Loaded(object sender, RoutedEventArgs e)
+        {
+            SetMyRect();
         }
 
         private void Items_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -112,19 +132,13 @@ namespace _20230702
             }
         }
 
-        public void SetMyRect()
-        {
-            MyRect = GetMyRect(Items);
-        }
-
+        
         private static Rect GetMyRect(ObservableCollection<TThumb> thumbs)
         {
             if (thumbs.Count == 0) return new Rect();
             TThumb tt = thumbs[0];
-            double left = tt.X;
-            double top = tt.Y;
-            double right = left + tt.Width;
-            double bottom = top + tt.Height;
+            double left = tt.X; double top = tt.Y;
+            double right = left + tt.Width; double bottom = top + tt.Height;
             foreach (TThumb thumb in thumbs)
             {
                 double x = thumb.X; double y = thumb.Y;
@@ -147,6 +161,16 @@ namespace _20230702
             ApplyTemplate();
             return (ItemsControl)Template.FindName("nemo", this);
         }
+
+
+        public void SetMyRect()
+        {
+            MyRect = GetMyRect(Items);
+            FixItemsLocate();
+            //親グループに伝播
+            if (MyParentThumb is GroupThumb group) group.SetMyRect();
+        }
+
 
     }
 
@@ -266,7 +290,7 @@ namespace _20230702
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 
-        public GroupThumb MyParentThumb
+        public GroupThumb? MyParentThumb
         {
             get { return (GroupThumb)GetValue(MyParentThumbProperty); }
             set { SetValue(MyParentThumbProperty, value); }

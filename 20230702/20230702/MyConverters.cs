@@ -12,6 +12,20 @@ using System.Windows;
 namespace _20230702
 {
 
+    public class MyConverterRectHeight : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            Rect rr = (Rect)value;
+            return rr.IsEmpty ? 0 : rr.Height;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class MyConverterRectWidth : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
