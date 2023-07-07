@@ -64,19 +64,6 @@ namespace _20230702
     public class GroupThumb : TThumb
     {
 
-        public Rect MyRect
-        {
-            get { return (Rect)GetValue(MyRectProperty); }
-            set { SetValue(MyRectProperty, value); }
-        }
-        public static readonly DependencyProperty MyRectProperty =
-            DependencyProperty.Register(nameof(MyRect), typeof(Rect), typeof(GroupThumb),
-                new FrameworkPropertyMetadata(Rect.Empty,
-                    FrameworkPropertyMetadataOptions.AffectsRender |
-                    FrameworkPropertyMetadataOptions.AffectsMeasure |
-                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-
 
         public ItemsControl MyItemsControl { get; set; }
         public ObservableCollection<TThumb> Items { get; private set; } = new();
@@ -89,16 +76,29 @@ namespace _20230702
             //背景色
             //Background = Brushes.Red;
             MyItemsControl.Background = Brushes.MediumAquamarine;
+            MyItemsControl.BorderBrush = Brushes.Red;
+            MyItemsControl.BorderThickness = new Thickness(1.0);
 
             Items.CollectionChanged += Items_CollectionChanged;
             Loaded += GroupThumb_Loaded;
-            SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyRectProperty), Converter = new MyConverterRectWidth() });
-            SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(MyRectProperty), Converter = new MyConverterRectHeight() });
+
+            //SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyRectProperty), Converter = new MyConverterRectWidth() });
+            //SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(MyRectProperty), Converter = new MyConverterRectHeight() });
+
+            MultiBinding mb = new();
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(XProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(YProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(WidthProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(HeightProperty) });
+            mb.Converter = new MyConverterRect();            
+            mb.Mode = BindingMode.TwoWay;
+            SetBinding(MyRectProperty, mb);
 
         }
 
         public void FixItemsLocate()
         {
+            //X = MyRect.X; Y = MyRect.Y;
             foreach (TThumb item in Items)
             {
                 item.X -= MyRect.X;
@@ -108,7 +108,10 @@ namespace _20230702
 
         private void GroupThumb_Loaded(object sender, RoutedEventArgs e)
         {
-            SetMyRect();
+            MyRect = GetMyRect(Items, MyRect);
+            //Width = 200;Height = 200;
+            var wid = Width;
+            //SetMyRect();
         }
 
         private void Items_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -132,13 +135,18 @@ namespace _20230702
             }
         }
 
-        
-        private static Rect GetMyRect(ObservableCollection<TThumb> thumbs)
+        /// <summary>
+        /// GroupThumbのRect取得
+        /// </summary>
+        /// <param name="thumbs">子要素群</param>
+        /// <param name="rect">今のRect</param>
+        /// <returns></returns>
+        private static Rect GetMyRect(ObservableCollection<TThumb> thumbs, Rect rect)
         {
             if (thumbs.Count == 0) return new Rect();
             TThumb tt = thumbs[0];
             double left = tt.X; double top = tt.Y;
-            double right = left + tt.Width; double bottom = top + tt.Height;
+            double right = 0; double bottom = 0;
             foreach (TThumb thumb in thumbs)
             {
                 double x = thumb.X; double y = thumb.Y;
@@ -148,7 +156,7 @@ namespace _20230702
                 if (right < r) right = r;
                 if (bottom < b) bottom = b;
             }
-            return new Rect(left, top, right - left, bottom - top);
+            return new Rect(left + rect.X, top + rect.Y, right - left, bottom - top);
         }
 
 
@@ -165,8 +173,8 @@ namespace _20230702
 
         public void SetMyRect()
         {
-            MyRect = GetMyRect(Items);
-            FixItemsLocate();
+            MyRect = GetMyRect(Items, MyRect);
+            //FixItemsLocate();
             //親グループに伝播
             if (MyParentThumb is GroupThumb group) group.SetMyRect();
         }
@@ -236,6 +244,7 @@ namespace _20230702
             SetBinding(WidthProperty, new Binding() { Source = this, Path = new PropertyPath(MyObjWidthProperty) });
             SetBinding(HeightProperty, new Binding() { Source = this, Path = new PropertyPath(MyObjHeightProperty) });
 
+            MyFrameworkElement = MyRectangle;
         }
     }
 
@@ -243,10 +252,19 @@ namespace _20230702
     public class CanvasBaseThumb : TThumb
     {
         public Canvas MyCanvas { get; private set; }
+        public FrameworkElement MyFrameworkElement { get; set; } = new();
         public CanvasBaseThumb()
         {
             MyCanvas = SetMyTemplate();
 
+            MultiBinding mb = new();
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(XProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(YProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(WidthProperty) });
+            mb.Bindings.Add(new Binding() { Source = this, Path = new PropertyPath(HeightProperty) });
+            mb.Converter = new MyConverterRect();
+            mb.Mode = BindingMode.TwoWay;
+            SetBinding(MyRectProperty, mb);
 
         }
 
@@ -288,6 +306,20 @@ namespace _20230702
                     FrameworkPropertyMetadataOptions.AffectsRender |
                     FrameworkPropertyMetadataOptions.AffectsMeasure |
                     FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+
+        public Rect MyRect
+        {
+            get { return (Rect)GetValue(MyRectProperty); }
+            set { SetValue(MyRectProperty, value); }
+        }
+        public static readonly DependencyProperty MyRectProperty =
+            DependencyProperty.Register(nameof(MyRect), typeof(Rect), typeof(GroupThumb),
+                new FrameworkPropertyMetadata(new Rect(),
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure |
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
 
 
         public GroupThumb? MyParentThumb

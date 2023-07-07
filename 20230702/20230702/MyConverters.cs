@@ -12,6 +12,27 @@ using System.Windows;
 namespace _20230702
 {
 
+    public class MyConverterRect : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            double x = (double)values[0];
+            double y = (double)values[1];
+            double width = (double)values[2];
+            double height = (double)values[3];
+            return new Rect(x, y, width, height);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            Rect rr = (Rect)value;
+            object[] newValues = new object[4];
+            newValues[0] = rr.Left; newValues[1] = rr.Top;
+            newValues[2] = rr.Width; newValues[3] = rr.Height;
+            return newValues;
+        }
+    }
+
     public class MyConverterRectHeight : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
