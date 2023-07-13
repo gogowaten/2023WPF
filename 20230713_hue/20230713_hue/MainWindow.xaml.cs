@@ -21,9 +21,23 @@ namespace _20230713_hue
     /// </summary>
     public partial class MainWindow : Window
     {
+        AppData MyAppData { get; set; } = new();
         public MainWindow()
         {
             InitializeComponent();
+
+            DataContext = MyAppData;
+
+        }
+
+        private void RadioButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var neko = MyAppData;
         }
     }
 }
