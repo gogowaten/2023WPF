@@ -19,17 +19,30 @@
       <ColumnDefinition Width="200"/>
     </Grid.ColumnDefinitions>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-      <Image x:Name="MyImage" Stretch="None"/>
-    </ScrollViewer>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition/>
+        <RowDefinition/>
+      </Grid.RowDefinitions>
+      <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Image x:Name="MyImage" Stretch="None" Source="{Binding MyBitmap}"/>
+      </ScrollViewer>
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+        <Image x:Name="MyImage2" Stretch="None"/>
+      </ScrollViewer>
+      
+    </Grid>
+
     <StackPanel Grid.Column="1">
       <GroupBox Header="色相範囲指定">
         <StackPanel>
           <nume:NumericUpDown x:Name="NumeHueBase" MyStringFormat="基準 000" MyMinValue="0" MyMaxValue="360" MyValue="10"/>
           <nume:NumericUpDown x:Name="NumeHueMin" MyStringFormat="下限 000" 
-                              MyMinValue="0" MyMaxValue="{Binding ElementName=NumeHueBase, Path=MyValue}"/>
+                              MyMinValue="0" MyMaxValue="360"
+                              MyValue="{Binding HueMin}"/>
           <nume:NumericUpDown x:Name="NumeHueMax" MyStringFormat="上限 000" 
-                              MyMinValue="{Binding ElementName=NumeHueBase, Path=MyValue}" MyMaxValue="360"/>
+                              MyMinValue="0" MyMaxValue="360"
+                              MyValue="{Binding HueMax}"/>
         </StackPanel>
       </GroupBox>
       <GroupBox Header="彩度範囲指定">
@@ -37,9 +50,9 @@
           <nume:NumericUpDown Name="NumeSatBase" MyStringFormat="基準 0.00" MyMinValue="0.0" MyMaxValue="1.0"
                               MySmallChange="0.01" MyLargeChange="0.1"/>
           <nume:NumericUpDown Name="NumeSatMin" MyStringFormat="下限 0.00" MyMinValue="0.0" MyMaxValue="1.0"
-                              MySmallChange="0.01" MyLargeChange="0.1"/>
+                              MySmallChange="0.01" MyLargeChange="0.1" MyValue="{Binding SatMin}"/>
           <nume:NumericUpDown Name="NumeSatMax" MyStringFormat="上限 0.00" MyMinValue="0.0" MyMaxValue="1.0"
-                              MySmallChange="0.01" MyLargeChange="0.1"/>
+                              MySmallChange="0.01" MyLargeChange="0.1" MyValue="{Binding SatMax}"/>
         </StackPanel>
       </GroupBox>
       <GroupBox Header="輝度範囲指定">
@@ -47,37 +60,42 @@
           <nume:NumericUpDown Name="NumeLumBase" MyStringFormat="基準 0.00" MyMinValue="0.0" MyMaxValue="1.0"
                               MySmallChange="0.01" MyLargeChange="0.1"/>
           <nume:NumericUpDown Name="NumeLumMin" MyStringFormat="下限 0.00" MyMinValue="0.0" MyMaxValue="1.0"
-                              MySmallChange="0.01" MyLargeChange="0.1"/>
+                              MySmallChange="0.01" MyLargeChange="0.1" MyValue="{Binding LumMin}"/>
           <nume:NumericUpDown Name="NumeLumMax" MyStringFormat="上限 0.00" MyMinValue="0.0" MyMaxValue="1.0"
-                              MySmallChange="0.01" MyLargeChange="0.1"/>
+                              MySmallChange="0.01" MyLargeChange="0.1" MyValue="{Binding LumMax}"/>
         </StackPanel>
       </GroupBox>
       <Button Content="test" Click="Button_Click"/>
       <Button Content="convet" Click="Button_Click_1"/>
       <GroupBox Header="色相移動">
         <DockPanel>
-          <RadioButton Content="指定" IsChecked="{Binding MyIsHueAdd, Converter={StaticResource notBool}}"/>
-          <RadioButton Content="加算" IsChecked="{Binding MyIsHueAdd}"/>
-          <nume:NumericUpDown x:Name="NumeHueChange" MyMinValue="{Binding MyIsHueAdd, Converter={StaticResource hueMin}}"
-                              MyMaxValue="360" MyStringFormat="000"/>
+          <RadioButton Content="加算" IsChecked="{Binding IsHueAdd}"/>
+          <RadioButton Content="指定" IsChecked="{Binding IsHueAdd, Converter={StaticResource notBool}}"/>
+          <nume:NumericUpDown x:Name="NumeHueChange" MyMinValue="{Binding IsHueAdd, Converter={StaticResource hueMin}}"
+                              MyMaxValue="360" MyStringFormat="000"
+                              MyValue="{Binding HueChange}"/>
         </DockPanel>
       </GroupBox>
       <GroupBox Header="彩度加算">
         <DockPanel>
-          <RadioButton x:Name="RadioSatSpe" Content="指定" IsChecked="{Binding MyIsSatAdd, Converter={StaticResource notBool}}"/>
-          <RadioButton x:Name="RadioSatAdd" Content="加算" IsChecked="{Binding MyIsSatAdd}"/>
+          <RadioButton x:Name="RadioSatAdd" Content="加算" IsChecked="{Binding IsSatAdd}"/>
+          <RadioButton x:Name="RadioSatSpe" Content="指定" 
+                       IsChecked="{Binding IsSatAdd, Converter={StaticResource notBool}}"/>
           <nume:NumericUpDown x:Name="NumeSatChange" MySmallChange="0.01" MyLargeChange="0.1"
-                              MyMinValue="{Binding MyIsSatAdd, Converter={StaticResource satLumNin}}"
-                              MyMaxValue="1.0" MyStringFormat="0.00"/>
+                              MyMinValue="{Binding IsSatAdd, Converter={StaticResource satLumNin}}"
+                              MyMaxValue="1.0" MyStringFormat="0.00"
+                              MyValue="{Binding SatChange}"/>
         </DockPanel>
       </GroupBox>
       <GroupBox Header="明度加算">
         <DockPanel>
-          <RadioButton x:Name="RadioLumSpe" Content="指定" IsChecked="{Binding MyIsLumAdd, Converter={StaticResource notBool}}"/>
-          <RadioButton x:Name="RadioLumAdd" Content="加算" IsChecked="{Binding MyIsLumAdd}"/>
+          <RadioButton x:Name="RadioLumAdd" Content="加算" IsChecked="{Binding IsLumAdd}"/>
+          <RadioButton x:Name="RadioLumSpe" Content="指定" 
+                       IsChecked="{Binding IsLumAdd, Converter={StaticResource notBool}}"/>
           <nume:NumericUpDown x:Name="NumeLumChange" MySmallChange="0.01" MyLargeChange="0.1"
-                              MyMinValue="{Binding MyIsLumAdd, Converter={StaticResource satLumNin}}"
-                              MyMaxValue="1.0" MyStringFormat="0.00"/>
+                              MyMinValue="{Binding IsLumAdd, Converter={StaticResource satLumNin}}"
+                              MyMaxValue="1.0" MyStringFormat="0.00"
+                              MyValue="{Binding LumChange}"/>
         </DockPanel>
       </GroupBox>
 
