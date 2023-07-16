@@ -7,6 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+      <ColumnDefinition Width="200"/>
+    </Grid.ColumnDefinitions>
+    <StackPanel Grid.Column="1">
+      <Button Content="test" Click="Button_Click"/>
+      <TextBlock x:Name="MyTextBlock"/>
+      <Button Content="start" Click="ButtonBegin_Click"/>
+      <Button Content="end" Click="ButtonEnd_Click" PreviewMouseDown="Button_PreviewMouseDown"/>
+      <TextBlock x:Name="MyTextBlockClicedColor"/>
+    </StackPanel>
     </Grid>
 </Window>
