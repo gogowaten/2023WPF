@@ -36,6 +36,12 @@ using System.Windows.Threading;//DispatcherTimerで使っている
 //WPFとVB.NET、表示した画像をクリックした場所の色の取得はややこしい - 午後わてんのブログ
 //https://gogowaten.hatenablog.com/entry/13952774
 
+//デスクトップ画面でカーソル位置の色を取得、クリック位置の色を取得
+//APIを使っているところは
+//  デスクトップ画面をBitmapSourceとして取得
+//  左クリックの検知
+//仕様：色の取得中はアプリのウィンドウは常に最前面になる
+
 namespace _20230716_getPixelTest
 {
     /// <summary>
@@ -221,9 +227,7 @@ namespace _20230716_getPixelTest
             _ = ReleaseDC(IntPtr.Zero, memDC);
 
             //画像
-            //source.Freeze();
             return source;
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
