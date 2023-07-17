@@ -11,30 +11,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
+//WinAPIとWPF(.NET 6.0)だけで画面上のカーソル位置の色取得してみた - 午後わてんのブログ
+//https://gogowaten.hatenablog.com/entry/2023/07/17/132509
+
+//参照の追加を使わずにWPFだけでデスクトップ画面でのカーソル位置の色を取得
+
 namespace _20230716_GetColorClickOnDesktop
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         #region API
-        #region API構造体
 
-        //Rect取得用
-        public struct RECT
-        {
-            //型はlongじゃなくてintが正解！！！！！！！！！！！！！！
-            //longだとおかしな値になる
-            public int left;
-            public int top;
-            public int right;
-            public int bottom;
-            public override readonly string ToString()
-            {
-                return $"横:{right - left:0000}, 縦:{bottom - top:0000}  ({left}, {top}, {right}, {bottom})";
-            }
-        }
         //座標取得用
         private struct POINT
         {
@@ -45,8 +32,6 @@ namespace _20230716_GetColorClickOnDesktop
                 return $"({X}, {Y})";
             }
         }
-        #endregion API構造体
-
 
         //DC(デバイスコンテキスト)取得
         //nullを渡すと画面全体のDCを取得、ウィンドウハンドルを渡すとそのウィンドウのクライアント領域DC
@@ -93,6 +78,7 @@ namespace _20230716_GetColorClickOnDesktop
 
         #endregion API
 
+        private BitmapSource? MyBitmap;//デスクトップ画面画像
         private POINT MyCursorPoint;//カーソル位置
         private readonly Data MyData;
         private readonly DispatcherTimer MyTimer;
@@ -118,13 +104,13 @@ namespace _20230716_GetColorClickOnDesktop
             GetCursorPos(out MyCursorPoint);
             //MyData.Bitmap = ScreenCapture();//リアルタイム更新はあかん、メモリがいくつあっても足りん
 
-            Color myColor = GetPixelColor(MyData.Bitmap, MyCursorPoint.X, MyCursorPoint.Y);
+            Color myColor = GetPixelColor(MyBitmap, MyCursorPoint.X, MyCursorPoint.Y);
             MyData.Brush = new SolidColorBrush(myColor);
 
             //左クリックされたらデスクトップ画面をキャプチャして色を取得
             if (GetKeyState(0x01) < 0)
             {
-                MyData.Bitmap = ScreenCapture();
+                MyBitmap = ScreenCapture();
                 MyData.BrushOfClicked = new SolidColorBrush(myColor);
             }
         }
@@ -186,7 +172,7 @@ namespace _20230716_GetColorClickOnDesktop
 
         private void ColorCaptureBegin()
         {
-            MyData.Bitmap = ScreenCapture();
+            MyBitmap = ScreenCapture();
 
             if (MyTimer.IsEnabled == false)
             {
@@ -234,18 +220,11 @@ namespace _20230716_GetColorClickOnDesktop
         }
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private BitmapSource? bitmap;
-        public BitmapSource? Bitmap { get => bitmap; set => SetProperty(ref bitmap, value); }
-
-
         private SolidColorBrush brush = Brushes.Transparent;
         public SolidColorBrush Brush { get => brush; set => SetProperty(ref brush, value); }
 
         private SolidColorBrush brushOfClicked = Brushes.Transparent;
         public SolidColorBrush BrushOfClicked { get => brushOfClicked; set => SetProperty(ref brushOfClicked, value); }
-
-        private bool isCapture;
-        public bool IsCapture { get => isCapture; set => SetProperty(ref isCapture, value); }
 
     }
 
