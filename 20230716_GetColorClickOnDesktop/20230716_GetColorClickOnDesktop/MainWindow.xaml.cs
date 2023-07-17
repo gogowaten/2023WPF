@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace _20230716_GetColorClickOnDesktop
@@ -122,9 +117,10 @@ namespace _20230716_GetColorClickOnDesktop
             //マウスカーソルの位置の色を取得、表示
             GetCursorPos(out MyCursorPoint);
             //MyData.Bitmap = ScreenCapture();//リアルタイム更新はあかん、メモリがいくつあっても足りん
+
             Color myColor = GetPixelColor(MyData.Bitmap, MyCursorPoint.X, MyCursorPoint.Y);
             MyData.Brush = new SolidColorBrush(myColor);
-            
+
             //左クリックされたらデスクトップ画面をキャプチャして色を取得
             if (GetKeyState(0x01) < 0)
             {
@@ -182,6 +178,7 @@ namespace _20230716_GetColorClickOnDesktop
             return source;
         }
 
+        //開始
         private void ButtonBegin_Click(object sender, RoutedEventArgs e)
         {
             ColorCaptureBegin();
@@ -194,13 +191,13 @@ namespace _20230716_GetColorClickOnDesktop
             if (MyTimer.IsEnabled == false)
             {
                 MyTimer.Start();
-                MyTextBlock.Text = "色取得中、終了するには「終了ボタン」";
+                MyTextBlock.Text = "＊ 色取得中 ＊";
                 MyTextBlock.Background = Brushes.Red;
                 this.Topmost = true;//アプリのウィンドウを常に最前面
-            }          
-
+            }
         }
 
+        //終了
         private void ButtonEnd_Click(object sender, RoutedEventArgs e)
         {
             ColorCaptureEnd();
@@ -226,4 +223,45 @@ namespace _20230716_GetColorClickOnDesktop
             MyBackupBrush = MyData.BrushOfClicked;
         }
     }
+
+    public class Data : INotifyPropertyChanged
+    {
+        protected void SetProperty<T>(ref T field, T value, [System.Runtime.CompilerServices.CallerMemberName] string? name = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return;
+            field = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private BitmapSource? bitmap;
+        public BitmapSource? Bitmap { get => bitmap; set => SetProperty(ref bitmap, value); }
+
+
+        private SolidColorBrush brush = Brushes.Transparent;
+        public SolidColorBrush Brush { get => brush; set => SetProperty(ref brush, value); }
+
+        private SolidColorBrush brushOfClicked = Brushes.Transparent;
+        public SolidColorBrush BrushOfClicked { get => brushOfClicked; set => SetProperty(ref brushOfClicked, value); }
+
+        private bool isCapture;
+        public bool IsCapture { get => isCapture; set => SetProperty(ref isCapture, value); }
+
+    }
+
+
+    public class MyConverterBrushToText : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            SolidColorBrush scb = (SolidColorBrush)value;
+            return scb.Color.ToString();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

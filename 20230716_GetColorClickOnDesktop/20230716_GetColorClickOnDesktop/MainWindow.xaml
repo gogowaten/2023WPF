@@ -6,17 +6,20 @@
         xmlns:local="clr-namespace:_20230716_GetColorClickOnDesktop"
         d:DataContext="{d:DesignInstance Type=local:Data}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150" Width="250">
+        Title="MainWindow" Height="250" Width="250">
   <Window.Resources>
     <local:MyConverterBrushToText x:Key="cBrush"/>
   </Window.Resources>
   <Grid>
     <StackPanel>
+      
       <UniformGrid Rows="1">
         <Button Content="開始" Click="ButtonBegin_Click"/>
         <Button Content="終了" Click="ButtonEnd_Click" PreviewMouseDown="Button_PreviewMouseDown"/>
       </UniformGrid>
-      <TextBlock x:Name="MyTextBlock" Text="syutokutyuu"/>
+      
+      <TextBlock x:Name="MyTextBlock" Padding="10" HorizontalAlignment="Center"/>
+
       <TextBlock Text="カーソル位置の色"/>
       <UniformGrid Rows="1">
         <Border Background="{Binding Brush}"/>
